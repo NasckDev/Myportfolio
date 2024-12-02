@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfólio Front-End Developer">
+    <title>My Portfólio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="img/icon.png">
+
+    <script src="index.js" defer></script>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">Logo</div>
+            <button class="menu-toggle" aria-label="Abrir menu">☰</button>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">Sobre</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projetos</a></li>
+                <li><a href="#contact">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <!-- Home Section -->
+    <section id="home" class="home">
+        <div class="video-container">
+            <!-- Vídeo de fundo -->
+            <video autoplay muted loop id="bg-video">
+                <source src="fundo.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="hero-content">
+            <h1 class="home-title">Olá, meu nome é <span>Alexandre Diogo</span></h1>
+            <p>Sou desenvolvedor Front-End apaixonado por criar interfaces incríveis.</p>
+            <br>
+            <a href="#about" class="btn">Saiba Mais</a>
+        </div>
+    </section>
+
+    <!-- Seção Sobre -->
+    <section id="about" class="about">
+        <div class="about-container">
+            <!-- Slideshow de Imagens -->
+            <div class="about-left">
+                <div class="slideshow-container">
+                    <div class="slide fade">
+                        <img src="https://via.placeholder.com/600x400?text=Imagem+1" alt="Imagem 1">
+                    </div>
+                    <div class="slide fade">
+                        <img src="https://via.placeholder.com/600x400?text=Imagem+2" alt="Imagem 2">
+                    </div>
+                    <div class="slide fade">
+                        <img src="https://via.placeholder.com/600x400?text=Imagem+3" alt="Imagem 3">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Texto Sobre Mim -->
+            <div class="about-right">
+                <h2>Sobre Mim</h2>
+                <p class="about-description">
+                    Olá! Eu sou Alexandre Diogo, um desenvolvedor front-end E estou sempre buscando aprender novas tecnologias e aprimorar minhas habilidades.
+                </p>
+                <p class="sub-text">
+                    Com experiência e criatividade, meu objetivo é construir soluções criativas e funcionais que proporcionem uma experiência fluida ao usuário.
+            </div>
+        </div>
+    </section>
+<br>
+
+    <section id="skills" class="skills">
+        <div class="skills-title">
+            <h1>
+                Minhas <span>Habilidades</span>
+            </h1>
+        </div>
+        <div class="skills-container">
+            <div class="skills-left">
+                <h3>Informações Pessoais</h3>
+                <div class="info-container">
+                    <p>Nome: <span>Alexandre Diogo</span></p>
+                    <p>Idade: <span>22 anos</span></p>
+                    <p>Localidade: <span>São Paulo, Brasil</span></p>
+                    <p>Relacionamento: <span>Casado</span></p>
+                    <p>Email: <span>aleh.dnascimento@gmail.com</span></p>
+                    <p>Idiomas: <span>Português, Espanhol, Inglês</span></p>
+                    <p>Formação: <span>Análise e Desenvolvimento de Sistemas</span></p>
+                    <p>Freelance: <span>Disponível</span></p>
+                </div>
+                <a href="#" class="btn-cv">Download CV</a>
+            </div>
+
+            <div class="skills-right">
+
+                <div class="box-container">
+                      <div class="box">
+                        <h3>10<span>+</span></h3>
+                        <p>Lorem ipsum dolor sit a met</p>
+                    </div>
+                    <div class="box">
+                        <h3>10<span>+</span></h3>
+                        <p>Lorem ipsum dolor sit a met</p>
+                    </div>
+                    <div class="box">
+                        <h3>10<span>+</span></h3>
+                        <p>Lorem ipsum dolor sit a met</p>
+                    </div>
+                    <div class="box">
+                        <h3>10<span>+</span></h3>
+                        <p>Lorem ipsum dolor sit a met</p>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+        <div class="skills-title second-title">
+        <h1> Minhas Tecnologias</h1>
+        </div>
+        <div class="skills-grid">
+            <div class="skill" data-percentage="90">
+                <svg width="120" height="120">
+                    <circle class="bg-circle" cx="60" cy="60" r="50"></circle>
+                    <circle class="progress-circle" cx="60" cy="60" r="50"></circle>
+                </svg>
+                <div class="percentage">0%</div>
+                <p class="label">HTML</p>
+            </div>
+            <div class="skill" data-percentage="80">
+                <svg width="120" height="120">
+                    <circle class="bg-circle" cx="60" cy="60" r="50"></circle>
+                    <circle class="progress-circle" cx="60" cy="60" r="50"></circle>
+                </svg>
+                <div class="percentage">0%</div>
+                <p class="label">CSS</p>
+            </div>
+            <div class="skill" data-percentage="70">
+                <svg width="120" height="120">
+                    <circle class="bg-circle" cx="60" cy="60" r="50"></circle>
+                    <circle class="progress-circle" cx="60" cy="60" r="50"></circle>
+                </svg>
+                <div class="percentage">0%</div>
+                <p class="label">JavaScript</p>
+            </div>
+            <div class="skill" data-percentage="85">
+                <svg width="120" height="120">
+                    <circle class="bg-circle" cx="60" cy="60" r="50"></circle>
+                    <circle class="progress-circle" cx="60" cy="60" r="50"></circle>
+                </svg>
+                <div class="percentage">0%</div>
+                <p class="label">React</p>
+            </div>
+            <div class="skill" data-percentage="75">
+                <svg width="120" height="120">
+                    <circle class="bg-circle" cx="60" cy="60" r="50"></circle>
+                    <circle class="progress-circle" cx="60" cy="60" r="50"></circle>
+                </svg>
+                <div class="percentage">0%</div>
+                <p class="label">Node.js</p>
+            </div>
+            <div class="skill" data-percentage="60">
+                <svg width="120" height="120">
+                    <circle class="bg-circle" cx="60" cy="60" r="50"></circle>
+                    <circle class="progress-circle" cx="60" cy="60" r="50"></circle>
+                </svg>
+                <div class="percentage">0%</div>
+                <p class="label">TypeScript</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- <section id="skills" class="skills-section"> -->
+        <section id="projects"></section>
+        
+    </section>
+    
+    
+    
+    
+</body>
+
+</html>
