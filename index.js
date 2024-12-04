@@ -166,6 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const contactForm = document.getElementById("contact-form");
     const formStatus = document.getElementById("form-status");
 
+    // Inicialização do EmailJS com sua chave pública
+    emailjs.init("_JHHcmkRsNT6iUer"); // Substitua com a chave pública
+
     contactForm.addEventListener("submit", async (e) => {
         e.preventDefault(); // Impede o envio padrão do formulário
 
@@ -174,8 +177,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Executa o reCAPTCHA v3 para gerar o token
         grecaptcha.ready(async function () {
             try {
-                const token = await grecaptcha.execute("YOUR_SITE_KEY", { action: "submit" });
-                document.getElementById("g-recaptcha-response").value = token; // Preenche o campo oculto com o token
+                const token = await grecaptcha.execute("_JHHcmkRsNT6iUer5", { action: "submit" });
+                document.getElementById("g-recaptcha-response").value = token; 
 
                 // Dados do formulário
                 const formData = {
@@ -186,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 };
 
                 // Enviar os dados para o EmailJS
-                await emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", formData, "YOUR_USER_ID");
+                await emailjs.send("service_gxqkx1a", "template_6aia1al", formData);
 
                 formStatus.textContent = "Mensagem enviada com sucesso!";
                 formStatus.className = "success";

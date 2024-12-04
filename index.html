@@ -7,8 +7,15 @@
     <title>My Portfólio</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Script do EmailJS -->
-    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <!-- Inclua o Script do EmailJS -->
+    <script type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+
+    <script type="text/javascript">
+    // Inicialize o EmailJS com sua publicKey
+    (function(){emailjs.init("_JHHcmkRsNT6iUer5");})();
+    </script>
      <!-- Script do EmailJS -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://www.google.com/recaptcha/api.js?render=6LfshJIqAAAAAAxcR2_xR0M_IplicgIkQ55R1Knz"></script>
