@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const formStatus = document.getElementById("form-status");
 
     // Inicialização do EmailJS com sua chave pública
-    emailjs.init("_JHHcmkRsNT6iUer"); // Substitua com a chave pública
+    emailjs.init("rimSORpDHmYTS76zE"); // Substitua pela chave pública nova
 
     contactForm.addEventListener("submit", async (e) => {
         e.preventDefault(); // Impede o envio padrão do formulário
