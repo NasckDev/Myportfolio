@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Executa o reCAPTCHA v3 para gerar o token
         grecaptcha.ready(async function () {
             try {
-                const token = await grecaptcha.execute("6LfshJIqAAAAAAxcR2_xR0M_IplicgIkQ55R1Knz", { action: "submit" });
+                const token = await grecaptcha.execute("YOUR_SITE_KEY", { action: "submit" });
                 document.getElementById("g-recaptcha-response").value = token; // Preenche o campo oculto com o token
 
                 // Dados do formulário
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 };
 
                 // Enviar os dados para o EmailJS
-                await emailjs.send("service_gxqkx1a", "template_6aia1al", formData, "_JHHcmkRsNT6iUer5");
+                await emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", formData, "YOUR_USER_ID");
 
                 formStatus.textContent = "Mensagem enviada com sucesso!";
                 formStatus.className = "success";
