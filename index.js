@@ -174,11 +174,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Enviar os dados do formulário para o EmailJS
                 emailjs.sendForm('default_service', 'template_6aia1al', contactForm)
                     .then(() => {
-                        btn.value = 'Send Email';
-                        alert('Sent!');
+                        btn.value = 'Enviar';
+                        formStatus.style.display = 'block';
+                        formStatus.textContent = 'Mensagem enviada com sucesso!';
+                        formStatus.classList.add('success');
+                        contactForm.reset(); // Limpa o formulário após o envio
                     }, (err) => {
-                        btn.value = 'Send Email';
-                        alert(JSON.stringify(err));
+                        btn.value = 'Enviar';
+                        formStatus.style.display = 'block';
+                        formStatus.textContent = 'Erro ao enviar a mensagem. Tente novamente.';
+                        formStatus.classList.add('error');
                     });
             });
         });
