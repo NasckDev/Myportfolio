@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Executa o reCAPTCHA v3 para gerar o token
         grecaptcha.ready(async function () {
             try {
-                const token = await grecaptcha.execute("_JHHcmkRsNT6iUer5", { action: "submit" });
+                const token = await grecaptcha.execute("6LfshJIqAAAAAAxcR2_xR0M_IplicgIkQ55R1Knz", { action: "submit" });
                 document.getElementById("g-recaptcha-response").value = token; 
 
                 // Dados do formulário

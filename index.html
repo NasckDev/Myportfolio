@@ -13,16 +13,13 @@
     </script>
 
     <script type="text/javascript">
-    // Inicialize o EmailJS com sua publicKey
+    // Inicialize o EmailJS com sua chave pública
     (function(){emailjs.init("_JHHcmkRsNT6iUer5");})();
     </script>
-     <!-- Script do EmailJS -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- Script do Google reCAPTCHA v3 -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LfshJIqAAAAAAxcR2_xR0M_IplicgIkQ55R1Knz"></script>
 
-
     <link rel="icon" type="image/x-icon" href="img/icon.png">
-
     <script src="index.js" defer></script>
 </head>
 <body>
@@ -41,6 +38,7 @@
     </header>
 
 
+    
     <!-- Home Section -->
     <section id="home" class="home">
         <div class="video-container">
@@ -257,34 +255,24 @@
   </div>
 </section>
 
-<!-- Seção de Contato -->
-<section class="contact-section" id="contact">
-    <h2 class="section-title">Entre em Contato</h2>
-    <form id="contact-form">
-      <div class="form-group">
-        <input type="text" name="name" placeholder="Seu Nome" required />
-      </div>
-      <div class="form-group">
-        <input type="email" name="email" placeholder="Seu Email" required />
-      </div>
-      <div class="form-group">
-        <textarea name="message" placeholder="Sua Mensagem" required></textarea>
-      </div>
-      <!-- Google reCAPTCHA -->
-      <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-
-      <button type="submit">Enviar</button>
-      <p id="form-status"></p>
-    </form>
-  </section>
-  
-  <!-- Google reCAPTCHA Script -->
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  
-    
-    
-    
-    
+    <!-- Seção de Contato -->
+    <section class="contact-section" id="contact">
+        <h2 class="section-title">Entre em Contato</h2>
+        <form id="contact-form">
+            <div class="form-group">
+                <input type="text" name="name" placeholder="Seu Nome" required />
+            </div>
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Seu Email" required />
+            </div>
+            <div class="form-group">
+                <textarea name="message" placeholder="Sua Mensagem" required></textarea>
+            </div>
+            <!-- Google reCAPTCHA -->
+            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+            <button type="submit">Enviar</button>
+            <p id="form-status"></p>
+        </form>
+    </section>
 </body>
-
 </html>
