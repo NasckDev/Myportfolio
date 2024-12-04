@@ -7,6 +7,11 @@
     <title>My Portfólio</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <!-- Script do EmailJS -->
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+     <!-- Script do EmailJS -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <link rel="icon" type="image/x-icon" href="img/icon.png">
 
     <script src="index.js" defer></script>
@@ -14,7 +19,7 @@
 <body>
     <header class="header">
         <nav class="navbar">
-            <div class="logo">Logo</div>
+            <div class="logo"><span style="color: #f39c12;">My</span> Portifolio</div>
             <button class="menu-toggle" aria-label="Abrir menu">☰</button>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
@@ -174,10 +179,98 @@
         </div>
     </section>
 
-    <!-- <section id="skills" class="skills-section"> -->
-        <section id="projects"></section>
-        
-    </section>
+
+    <section id="projects" class="projects-section">
+        <div class="skills-title">
+            <h1>
+                Meus <span>projetos</span>
+            </h1>
+        </div>
+  <div class="projects-slideshow-container">
+    <button class="projects-prev-btn" aria-label="Projeto Anterior">&lt;</button>
+    <div class="projects-slider-wrapper">
+      <!-- Projeto 1 -->
+      <div class="projects-card">
+        <img src="https://via.placeholder.com/400x250" alt="Projeto 1" class="projects-image">
+        <div class="projects-info">
+          <h3>Projeto 1</h3>
+          <p>Descrição breve do projeto 1.</p>
+          <a href="#" target="_blank" class="projects-link">Ver Projeto</a>
+        </div>
+      </div>
+      <!-- Projeto 2 -->
+      <div class="projects-card">
+        <img src="https://via.placeholder.com/400x250" alt="Projeto 2" class="projects-image">
+        <div class="projects-info">
+          <h3>Projeto 2</h3>
+          <p>Descrição breve do projeto 2.</p>
+          <a href="#" target="_blank" class="projects-link">Ver Projeto</a>
+        </div>
+      </div>
+      <!-- Projeto 3 -->
+      <div class="projects-card">
+        <img src="https://via.placeholder.com/400x250" alt="Projeto 3" class="projects-image">
+        <div class="projects-info">
+          <h3>Projeto 3</h3>
+          <p>Descrição breve do projeto 3.</p>
+          <a href="#" target="_blank" class="projects-link">Ver Projeto</a>
+        </div>
+      </div>
+      <!-- Projeto 4 -->
+      <div class="projects-card">
+        <img src="https://via.placeholder.com/400x250" alt="Projeto 4" class="projects-image">
+        <div class="projects-info">
+          <h3>Projeto 4</h3>
+          <p>Descrição breve do projeto 4.</p>
+          <a href="#" target="_blank" class="projects-link">Ver Projeto</a>
+        </div>
+      </div>
+      <!-- Projeto 5 -->
+      <div class="projects-card">
+        <img src="https://via.placeholder.com/400x250" alt="Projeto 5" class="projects-image">
+        <div class="projects-info">
+          <h3>Projeto 5</h3>
+          <p>Descrição breve do projeto 5.</p>
+          <a href="#" target="_blank" class="projects-link">Ver Projeto</a>
+        </div>
+      </div>
+      <!-- Projeto 6 -->
+      <div class="projects-card">
+        <img src="https://via.placeholder.com/400x250" alt="Projeto 6" class="projects-image">
+        <div class="projects-info">
+          <h3>Projeto 6</h3>
+          <p>Descrição breve do projeto 6.</p>
+          <a href="#" target="_blank" class="projects-link">Ver Projeto</a>
+        </div>
+      </div>
+    </div>
+    <button class="projects-next-btn" aria-label="Próximo Projeto">&gt;</button>
+  </div>
+</section>
+
+<!-- Seção de Contato -->
+<section class="contact-section" id="contact">
+    <h2 class="section-title">Entre em Contato</h2>
+    <form id="contact-form">
+      <div class="form-group">
+        <input type="text" name="name" placeholder="Seu Nome" required />
+      </div>
+      <div class="form-group">
+        <input type="email" name="email" placeholder="Seu Email" required />
+      </div>
+      <div class="form-group">
+        <textarea name="message" placeholder="Sua Mensagem" required></textarea>
+      </div>
+      <!-- Google reCAPTCHA -->
+      <div class="g-recaptcha" data-sitekey="6LfshJIqAAAAAAxcR2_xR0M_IplicgIkQ55R1Knz"></div>
+      <button type="submit">Enviar</button>
+      <p id="form-status"></p>
+    </form>
+  </section>
+  
+  <!-- Google reCAPTCHA Script -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  
     
     
     

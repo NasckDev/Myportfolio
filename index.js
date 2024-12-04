@@ -125,5 +125,88 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
+    
+    // Slideshow de Projetos
+    const projectsWrapper = document.querySelector('.projects-slider-wrapper');
+    const nextBtn = document.querySelector('.projects-next-btn');
+    const prevBtn = document.querySelector('.projects-prev-btn');
 
+    let currentSlide = 0;
+
+    function showProjectSlide(index) {
+        const slides = projectsWrapper.children;
+        const totalSlides = slides.length;
+        const slideWidth = slides[0].offsetWidth + parseInt(getComputedStyle(projectsWrapper).gap);
+        const maxOffset = -(totalSlides - Math.floor(projectsWrapper.offsetWidth / slideWidth)) * slideWidth;
+
+        if (index < 0) {
+            currentSlide = 0; // Voltar ao início
+        } else if (-index * slideWidth <= maxOffset) {
+            currentSlide = -(maxOffset / slideWidth); // Parar no último slide
+        } else {
+            currentSlide = index;
+        }
+
+        const offset = Math.min(0, -currentSlide * slideWidth); // Ajuste para centralizar
+        projectsWrapper.style.transform = `translateX(${offset}px)`;
+    }
+
+    nextBtn.addEventListener('click', () => {
+        showProjectSlide(currentSlide + 1);
+    });
+
+    prevBtn.addEventListener('click', () => {
+        showProjectSlide(currentSlide - 1);
+    });
+
+    // Ajustar slides ao redimensionar
+    window.addEventListener('resize', () => showProjectSlide(currentSlide));
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const contactForm = document.getElementById("contact-form");
+    const formStatus = document.getElementById("form-status");
+  
+    // Inicializar EmailJS
+    emailjs.init("_JHHcmkRsNT6iUer5"); // Substitua pela sua Public Key do EmailJS
+  
+    contactForm.addEventListener("submit", async (e) => {
+      e.preventDefault(); // Impede o envio padrão do formulário
+  
+      formStatus.textContent = "Validando...";
+  
+      // Validar reCAPTCHA
+      const recaptchaResponse = document.querySelector(".g-recaptcha-response").value;
+  
+      if (!recaptchaResponse) {
+        formStatus.textContent = "Por favor, confirme que você não é um robô.";
+        formStatus.className = "error";
+        return;
+      }
+  
+      // Dados do formulário
+      const formData = {
+        name: contactForm.name.value,
+        email: contactForm.email.value,
+        message: contactForm.message.value,
+        "g-recaptcha-response": recaptchaResponse,
+      };
+  
+      try {
+        formStatus.textContent = "Enviando mensagem...";
+  
+        await emailjs.send("service_gxqkx1a", "template_6aia1al", formData);
+  
+        formStatus.textContent = "Mensagem enviada com sucesso!";
+        formStatus.className = "success";
+  
+        contactForm.reset(); // Limpa o formulário
+        grecaptcha.reset(); // Reseta o reCAPTCHA
+      } catch (error) {
+        console.error("Erro ao enviar mensagem:", error);
+        formStatus.textContent = "Erro ao enviar a mensagem. Tente novamente.";
+        formStatus.className = "error";
+      }
+    });
+});
+  

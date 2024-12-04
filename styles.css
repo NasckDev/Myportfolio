@@ -40,6 +40,7 @@ section{
 .logo {
     font-size: 24px;
     color: white;
+    text-transform: uppercase;
     font-weight: bold;
 }
 .nav-links {
@@ -740,3 +741,193 @@ section{
     color: #f39c12;
     text-transform: uppercase;
 }
+/* Seção de Projetos */
+.projects-section {
+    padding: 60px 20px;
+    /* background-color: #f9f9f9; */
+    text-align: center;
+  }
+  
+  .projects-title {
+    font-size: 2.5rem;
+    color: white;
+    margin-bottom: 40px;
+  }
+  
+  /* Slideshow */
+  .projects-slideshow-container {
+    position: relative;
+    /* background-color: #0056b3; */
+    max-width: 90%; /* Margens ajustadas */
+    height: auto;
+    margin: 0 auto; /* Centraliza o slideshow */
+    overflow: hidden;
+    padding: 10px;
+  }
+  
+  .projects-slider-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    gap: 40px; /* Espaço entre os slides */
+  }
+  
+  .projects-card {
+    flex: 6 0 40%; 
+    padding: 20px;
+    background-color: rgba(0, 255, 255, 0);
+    border: 2px solid #313131f5;
+    box-shadow: -2px 2px 5px rgba(34, 34, 34, 0.6), 4px -4px 5px rgba(59, 59, 59, 0.1);
+  }
+  
+  .projects-image {
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  .projects-info {
+    margin-top: 15px;
+    text-align: left;
+  }
+  
+  .projects-info h3 {
+    font-size: 1.5rem;
+    color: white;
+  }
+  
+  .projects-info p {
+    font-size: 1rem;
+    color: #b1b1b1;
+    margin: 10px 0;
+  }
+  
+  .projects-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f39c12;
+    color: #121212;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .projects-link:hover {
+    background-color: #e67e22;
+  }
+  
+  /* Botões de Navegação */
+  .projects-prev-btn, .projects-next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #f39c12;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 2;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+  }
+  
+  .projects-prev-btn {
+    left: 40px;
+  }
+  
+  .projects-next-btn {
+    right: 20px;
+  }
+  
+  .projects-prev-btn:hover, .projects-next-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .projects-card {
+      flex: 0 0 90%; /* Ocupa mais espaço no mobile */
+      padding: 10px;
+    }
+    .projects-title {
+      font-size: 2rem;
+    }
+
+    section{
+        min-height: 50vh;
+    }
+  }
+  /* Seção de Contato */
+.contact-section {
+    padding: 60px 20px;
+    background-color: #1c1c1e;
+    color: #ffffff;
+    text-align: center;
+  }
+  
+  .section-title {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #ffffff;
+  }
+  
+  /* Formulário */
+  #contact-form {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 12px;
+    background-color: #333333;
+    border: 1px solid #555555;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 1rem;
+  }
+  
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #f39c12;
+  }
+  
+  textarea {
+    resize: vertical;
+    height: 100px;
+  }
+  
+  button {
+    background-color: #f39c12;
+    color: #ffffff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #f39c12;
+  }
+  
+  /* Status */
+  #form-status {
+    margin-top: 15px;
+    font-size: 1rem;
+  }
+  
+  #form-status.success {
+    color: #28a745;
+  }
+  
+  #form-status.error {
+    color: #dc3545;
+  }
+  
