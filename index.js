@@ -161,52 +161,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Ajustar slides ao redimensionar
     window.addEventListener('resize', () => showProjectSlide(currentSlide));
-});
 
-document.addEventListener("DOMContentLoaded", () => {
+    // Envio do Formulário com reCAPTCHA v3
     const contactForm = document.getElementById("contact-form");
     const formStatus = document.getElementById("form-status");
-  
-    // Inicializar EmailJS
-    emailjs.init("_JHHcmkRsNT6iUer5"); // Substitua pela sua Public Key do EmailJS
-  
+
     contactForm.addEventListener("submit", async (e) => {
-      e.preventDefault(); // Impede o envio padrão do formulário
-  
-      formStatus.textContent = "Validando...";
-  
-      // Validar reCAPTCHA
-      const recaptchaResponse = document.querySelector(".g-recaptcha-response").value;
-  
-      if (!recaptchaResponse) {
-        formStatus.textContent = "Por favor, confirme que você não é um robô.";
-        formStatus.className = "error";
-        return;
-      }
-  
-      // Dados do formulário
-      const formData = {
-        name: contactForm.name.value,
-        email: contactForm.email.value,
-        message: contactForm.message.value,
-        "g-recaptcha-response": recaptchaResponse,
-      };
-  
-      try {
-        formStatus.textContent = "Enviando mensagem...";
-  
-        await emailjs.send("service_gxqkx1a", "template_6aia1al", formData);
-  
-        formStatus.textContent = "Mensagem enviada com sucesso!";
-        formStatus.className = "success";
-  
-        contactForm.reset(); // Limpa o formulário
-        grecaptcha.reset(); // Reseta o reCAPTCHA
-      } catch (error) {
-        console.error("Erro ao enviar mensagem:", error);
-        formStatus.textContent = "Erro ao enviar a mensagem. Tente novamente.";
-        formStatus.className = "error";
-      }
+        e.preventDefault(); // Impede o envio padrão do formulário
+
+        formStatus.textContent = "Validando...";
+
+        // Executa o reCAPTCHA v3 para gerar o token
+        grecaptcha.ready(async function () {
+            try {
+                const token = await grecaptcha.execute("6LfshJIqAAAAAAxcR2_xR0M_IplicgIkQ55R1Knz", { action: "submit" });
+                document.getElementById("g-recaptcha-response").value = token; // Preenche o campo oculto com o token
+
+                // Dados do formulário
+                const formData = {
+                    name: contactForm.name.value,
+                    email: contactForm.email.value,
+                    message: contactForm.message.value,
+                    "g-recaptcha-response": token, 
+                };
+
+                // Enviar os dados para o EmailJS
+                await emailjs.send("service_gxqkx1a", "template_6aia1al", formData, "_JHHcmkRsNT6iUer5");
+
+                formStatus.textContent = "Mensagem enviada com sucesso!";
+                formStatus.className = "success";
+
+                contactForm.reset(); // Limpa o formulário
+                grecaptcha.reset(); // Reseta o reCAPTCHA
+            } catch (error) {
+                console.error("Erro ao enviar mensagem:", error);
+                formStatus.textContent = "Erro ao enviar a mensagem. Tente novamente.";
+                formStatus.className = "error";
+            }
+        });
     });
 });
-  

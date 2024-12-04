@@ -11,6 +11,8 @@
     <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
      <!-- Script do EmailJS -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfshJIqAAAAAAxcR2_xR0M_IplicgIkQ55R1Knz"></script>
+
 
     <link rel="icon" type="image/x-icon" href="img/icon.png">
 
@@ -262,7 +264,8 @@
         <textarea name="message" placeholder="Sua Mensagem" required></textarea>
       </div>
       <!-- Google reCAPTCHA -->
-      <div class="g-recaptcha" data-sitekey="6LfshJIqAAAAAAxcR2_xR0M_IplicgIkQ55R1Knz"></div>
+      <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+
       <button type="submit">Enviar</button>
       <p id="form-status"></p>
     </form>
