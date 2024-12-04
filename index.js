@@ -1,10 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Slideshow Automático
     let slideIndex = 0;
-
     function showSlides() {
         let slides = document.getElementsByClassName("slide");
-
         // Esconde todas as imagens
         for (let i = 0; i < slides.length; i++) {
             slides[i].style.display = "none";
@@ -15,15 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
             slideIndex = 1;
         }
         slides[slideIndex - 1].style.display = "block"; // Mostra a imagem atual
-
         setTimeout(showSlides, 3000); // Muda a imagem a cada 3 segundos
     }
-
     showSlides(); // Inicia o slideshow
 
     // Efeito de Movimento do Mouse no Fundo (Parallax)
     const homeSection = document.querySelector('.home');
-
     if (homeSection) {
         homeSection.addEventListener('mousemove', function (e) {
             const moveX = (e.clientX - window.innerWidth / 2) / 10;
@@ -34,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Animação de Skills (Círculo de Progresso)
     const skills = document.querySelectorAll('.skill');
-
     skills.forEach(skill => {
         const percentage = skill.getAttribute('data-percentage');
         const progressCircle = skill.querySelector('.progress-circle');
@@ -66,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener('scroll', () => {
         const scrollPos = window.scrollY;
-
         sections.forEach((section) => {
             const sectionTop = section.offsetTop - 80; // Compensa altura da navbar
             const sectionHeight = section.offsetHeight;
@@ -87,7 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             const targetId = e.target.getAttribute('href').substring(1);
             const targetSection = document.getElementById(targetId);
-
             // Fechar o menu se estiver no modo mobile
             if (window.innerWidth <= 768) {
                 navLinksContainer.classList.remove('active');
@@ -103,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Toggle de Menu para dispositivos móveis
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinksContainer = document.querySelector('.nav-links'); // Para alternar visibilidade dos links
-
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
             navLinksContainer.classList.toggle('active'); // Abre/fecha o menu
@@ -125,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-    
+
     // Slideshow de Projetos
     const projectsWrapper = document.querySelector('.projects-slider-wrapper');
     const nextBtn = document.querySelector('.projects-next-btn');
@@ -163,44 +154,33 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener('resize', () => showProjectSlide(currentSlide));
 
     // Envio do Formulário com reCAPTCHA v3
-    const contactForm = document.getElementById("contact-form");
-    const formStatus = document.getElementById("form-status");
+    const btn = document.getElementById('button');
+    const contactForm = document.getElementById('contact-form');
+    const formStatus = document.getElementById('form-status');
 
     // Inicialização do EmailJS com sua chave pública
-    emailjs.init("rimSORpDHmYTS76zE"); // Substitua pela chave pública nova
+    emailjs.init("rimSORpDHmYTS76zE"); // Substitua com a chave pública
 
-    contactForm.addEventListener("submit", async (e) => {
+    contactForm.addEventListener('submit', function (e) {
         e.preventDefault(); // Impede o envio padrão do formulário
 
-        formStatus.textContent = "Validando...";
+        btn.value = 'Sending...';
 
         // Executa o reCAPTCHA v3 para gerar o token
-        grecaptcha.ready(async function () {
-            try {
-                const token = await grecaptcha.execute("6LfshJIqAAAAAAxcR2_xR0M_IplicgIkQ55R1Knz", { action: "submit" });
-                document.getElementById("g-recaptcha-response").value = token; 
+        grecaptcha.ready(function () {
+            grecaptcha.execute("6LfshJIqAAAAAAxcR2_xR0M_IplicgIkQ55R1Knz", { action: "submit" }).then(function (token) {
+                document.getElementById("g-recaptcha-response").value = token;
 
-                // Dados do formulário
-                const formData = {
-                    name: contactForm.name.value,
-                    email: contactForm.email.value,
-                    message: contactForm.message.value,
-                    "g-recaptcha-response": token, 
-                };
-
-                // Enviar os dados para o EmailJS
-                await emailjs.send("service_gxqkx1a", "template_6aia1al", formData);
-
-                formStatus.textContent = "Mensagem enviada com sucesso!";
-                formStatus.className = "success";
-
-                contactForm.reset(); // Limpa o formulário
-                grecaptcha.reset(); // Reseta o reCAPTCHA
-            } catch (error) {
-                console.error("Erro ao enviar mensagem:", error);
-                formStatus.textContent = "Erro ao enviar a mensagem. Tente novamente.";
-                formStatus.className = "error";
-            }
+                // Enviar os dados do formulário para o EmailJS
+                emailjs.sendForm('default_service', 'template_6aia1al', contactForm)
+                    .then(() => {
+                        btn.value = 'Send Email';
+                        alert('Sent!');
+                    }, (err) => {
+                        btn.value = 'Send Email';
+                        alert(JSON.stringify(err));
+                    });
+            });
         });
     });
 });
