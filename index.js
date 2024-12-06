@@ -201,3 +201,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+document.addEventListener("DOMContentLoaded", () => {
+    // Função para ajustar a altura da caixa de texto
+    const textarea = document.getElementById('message');
+    textarea.addEventListener('input', function () {
+        this.style.height = 'auto';  // Reseta a altura
+        this.style.height = (this.scrollHeight) + 'px';  // Ajusta para a altura do conteúdo
+    });
+});
