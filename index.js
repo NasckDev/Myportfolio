@@ -155,24 +155,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Envio do Formulário com reCAPTCHA v3
     const btn = document.getElementById('button');
-    const contactForm = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
 
-
-    // Monta a mensagem a ser enviada, com os valores dos campos
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const message = document.getElementById('message').value;
-
-
-    contactForm  = `Olá Alexandre Diogo, a pessoa ${name} com o e-mail ${email} enviou a seguinte mensagem:\n\n${message}`;
     // Inicialização do EmailJS com sua chave pública
     emailjs.init("rimSORpDHmYTS76zE"); // Substitua com a chave pública
 
-    contactForm.addEventListener('submit', function (e) {
+    // Ouvinte para o envio do formulário
+    document.getElementById('contact-form').addEventListener('submit', function (e) {
         e.preventDefault(); // Impede o envio padrão do formulário
 
-        btn.value = 'Sending...';
+        btn.value = 'Enviando...';
+
+        // Obtém os dados do formulário
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message').value;
+
+        // Monta a mensagem a ser enviada
+        const messageContent = `Olá Alexandre Diogo, a pessoa ${name} com o e-mail ${email} enviou a seguinte mensagem:\n\n${message}`;
 
         // Executa o reCAPTCHA v3 para gerar o token
         grecaptcha.ready(function () {
@@ -180,19 +180,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("g-recaptcha-response").value = token;
 
                 // Enviar os dados do formulário para o EmailJS
-                emailjs.sendForm('default_service', 'template_6aia1al', contactForm)
-                    .then(() => {
-                        btn.value = 'Enviar';
-                        formStatus.style.display = 'block';
-                        formStatus.textContent = 'Mensagem enviada com sucesso!';
-                        formStatus.classList.add('success');
-                        contactForm.reset(); // Limpa o formulário após o envio
-                    }, (err) => {
-                        btn.value = 'Enviar';
-                        formStatus.style.display = 'block';
-                        formStatus.textContent = 'Erro ao enviar a mensagem. Tente novamente.';
-                        formStatus.classList.add('error');
-                    });
+                emailjs.send('default_service', 'template_6aia1al', {
+                    name: name,
+                    email: email,
+                    message: messageContent
+                })
+                .then(() => {
+                    btn.value = 'Enviar';
+                    formStatus.style.display = 'block';
+                    formStatus.textContent = 'Mensagem enviada com sucesso!';
+                    formStatus.classList.add('success');
+                    document.getElementById('contact-form').reset(); // Limpa o formulário após o envio
+                }, (err) => {
+                    btn.value = 'Enviar';
+                    formStatus.style.display = 'block';
+                    formStatus.textContent = 'Erro ao enviar a mensagem. Tente novamente.';
+                    formStatus.classList.add('error');
+                });
             });
         });
     });
