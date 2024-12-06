@@ -158,6 +158,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const contactForm = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
 
+
+    // Monta a mensagem a ser enviada, com os valores dos campos
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+
+
+    contactForm  = `Olá Alexandre Diogo, a pessoa ${name} com o e-mail ${email} enviou a seguinte mensagem:\n\n${message}`;
     // Inicialização do EmailJS com sua chave pública
     emailjs.init("rimSORpDHmYTS76zE"); // Substitua com a chave pública
 
