@@ -781,6 +781,7 @@ section{
   
   .projects-image {
     width: 100%;
+    height: 300px;
     border-radius: 8px;
   }
   
@@ -791,6 +792,7 @@ section{
   
   .projects-info h3 {
     font-size: 1.5rem;
+    text-transform: uppercase;
     color: white;
   }
   
