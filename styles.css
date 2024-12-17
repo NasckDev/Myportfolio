@@ -327,6 +327,7 @@ p {
         font-size: 1.6rem;
         width: 90%;
     }
+   
 }
 
 /* Alinhar o título e o texto à esquerda */
@@ -718,6 +719,8 @@ circle {
         margin-left: 20px;
        
     }
+
+    
 }
 
 
@@ -783,8 +786,15 @@ section{
     width: 100%;
     height: 300px;
     border-radius: 8px;
+
   }
-  
+  @media (max-width: 480px) {
+    .projects-image {
+       
+        height: 180px;
+    
+      }
+  }
   .projects-info {
     margin-top: 15px;
     text-align: left;
