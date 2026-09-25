@@ -148,7 +148,7 @@ export function Hero() {
                 e.preventDefault();
                 openModal("cv");
               }}
-              className="flex h-[54px] items-center gap-2.5 rounded-full border border-line2 bg-glass px-6 text-[16px] font-semibold text-head no-underline hover:border-brand hover:text-head"
+              className="flex h-[56px] items-center gap-2.5 rounded-full border border-line2 bg-glass px-6 text-[16px] font-semibold text-head no-underline hover:border-brand hover:text-head"
               style={{ transition: MAGNETIC_T, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
             >
               Baixar currículo
@@ -159,7 +159,7 @@ export function Hero() {
               rel="noopener"
               aria-label="LinkedIn (abre em nova aba)"
               data-magnetic="1"
-              className="grid size-[54px] place-items-center rounded-full border border-line2 bg-glass text-head hover:border-brand hover:text-head"
+              className="grid size-[56px] place-items-center rounded-full border border-line2 bg-glass text-head hover:border-brand hover:text-head"
               style={{ transition: MAGNETIC_T }}
             >
               <LinkedinIcon size={20} />
@@ -170,7 +170,7 @@ export function Hero() {
               rel="noopener"
               aria-label="GitHub (abre em nova aba)"
               data-magnetic="1"
-              className="grid size-[54px] place-items-center rounded-full border border-line2 bg-glass text-head hover:border-brand hover:text-head"
+              className="grid size-[56px] place-items-center rounded-full border border-line2 bg-glass text-head hover:border-brand hover:text-head"
               style={{ transition: MAGNETIC_T }}
             >
               <GithubIcon size={20} />

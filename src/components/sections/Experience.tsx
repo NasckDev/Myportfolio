@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePortfolio } from "@/context/PortfolioContext";
 import { jobs } from "@/data/portfolio";
 import { live, onFrame } from "@/lib/live";
-import { loadThree } from "@/three/loadThree";
+import { loadThree, whenNear } from "@/three/loadThree";
 import { createXpScene } from "@/three/xpScene";
 import { Reveal } from "@/components/motion/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -24,20 +24,25 @@ function PinnedExperience() {
   const tiny = vp.vh < 620;
 
   useEffect(() => {
+    const mount = mountRef.current;
+    if (!mount) return;
     let dead = false;
     let scene: { dispose: () => void } | null = null;
-    loadThree()
-      .then((THREE) => {
-        if (dead || !mountRef.current) return;
-        try {
-          scene = createXpScene(THREE, mountRef.current, n);
-        } catch (e) {
-          console.warn(e);
-        }
-      })
-      .catch(() => {});
+    const stopWatching = whenNear(mount, () => {
+      loadThree()
+        .then((THREE) => {
+          if (dead) return;
+          try {
+            scene = createXpScene(THREE, mount, n);
+          } catch (e) {
+            console.warn(e);
+          }
+        })
+        .catch(() => {});
+    });
     return () => {
       dead = true;
+      stopWatching();
       scene?.dispose();
     };
   }, [n]);

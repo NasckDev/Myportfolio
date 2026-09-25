@@ -6,7 +6,7 @@ export const GITHUB_REPOS_URL = "https://github.com/NasckDev?tab=repositories";
 const base = import.meta.env.BASE_URL;
 export const CV_FULL_URL = `${base}curriculo-alexandre-diogo-nascimento.pdf`;
 export const CV_ATS_URL = `${base}curriculo-alexandre-diogo-nascimento-ats.pdf`;
-export const PORTRAIT_URL = `${base}assets/retrato-alexandre.png`;
+export const PORTRAIT_URL = `${base}assets/retrato-alexandre.webp`;
 
 export type CaseTag = "React" | "Angular" | "Dados" | "Design System" | "Acessibilidade";
 

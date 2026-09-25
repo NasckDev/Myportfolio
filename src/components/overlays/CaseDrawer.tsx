@@ -139,10 +139,10 @@ export function CaseDrawer() {
             <a href="#" onClick={soon("A página completa do estudo será publicada em breve")} className="flex h-12 items-center gap-2 rounded-full bg-btn px-5 font-semibold text-btn-text no-underline hover:bg-brand hover:text-white">
               Estudo completo →
             </a>
-            <a href="#" onClick={soon("Demo publicada em breve")} className="flex h-12 items-center rounded-full border border-line2 px-5 font-semibold text-head no-underline hover:text-head">
+            <a href="#" onClick={soon("Demo publicada em breve")} className="flex h-[50px] items-center rounded-full border border-line2 px-5 font-semibold text-head no-underline hover:text-head">
               Demo ↗
             </a>
-            <a href="#" onClick={soon("Repositório em construção · veja o perfil no GitHub")} className="flex h-12 items-center rounded-full border border-line2 px-5 font-semibold text-head no-underline hover:text-head">
+            <a href="#" onClick={soon("Repositório em construção · veja o perfil no GitHub")} className="flex h-[50px] items-center rounded-full border border-line2 px-5 font-semibold text-head no-underline hover:text-head">
               Repositório ↗
             </a>
             <button type="button" onClick={() => openCase(next)} className="ml-auto flex h-12 cursor-pointer items-center gap-2 rounded-full border-0 bg-transparent px-4 text-[15px] font-bold text-accent-text">

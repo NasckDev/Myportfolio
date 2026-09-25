@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePortfolio } from "@/context/PortfolioContext";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, MAIL_HREF } from "@/data/portfolio";
 import { live } from "@/lib/live";
-import { loadThree } from "@/three/loadThree";
+import { loadThree, whenNear } from "@/three/loadThree";
 import { createLogoScene } from "@/three/logoScene";
 import { Reveal } from "@/components/motion/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -31,20 +31,25 @@ export function Contact() {
   const [hover, setHover] = useState(false);
 
   useEffect(() => {
+    const mount = logoRef.current;
+    if (!mount) return;
     let dead = false;
     let scene: { dispose: () => void } | null = null;
-    loadThree()
-      .then((THREE) => {
-        if (dead || !logoRef.current) return;
-        try {
-          scene = createLogoScene(THREE, logoRef.current);
-        } catch {
-          /* WebGL indisponível: o ícone fica só com o gradiente */
-        }
-      })
-      .catch(() => {});
+    const stopWatching = whenNear(mount, () => {
+      loadThree()
+        .then((THREE) => {
+          if (dead) return;
+          try {
+            scene = createLogoScene(THREE, mount);
+          } catch {
+            /* WebGL indisponível: o ícone fica só com o gradiente */
+          }
+        })
+        .catch(() => {});
+    });
     return () => {
       dead = true;
+      stopWatching();
       scene?.dispose();
     };
   }, []);
@@ -80,7 +85,7 @@ export function Contact() {
         >
           <div className="flex flex-col justify-between gap-7">
             <div className="flex flex-col gap-[18px]">
-              <div className="size-[72px] shrink-0 overflow-hidden rounded-[20px]" style={{ background: "linear-gradient(160deg,#0A3C6E,#1783C1)", border: "1px solid rgba(23,131,193,.35)", boxShadow: "0 12px 24px -12px rgba(10,60,110,.5)" }}>
+              <div className="size-[74px] shrink-0 overflow-hidden rounded-[20px]" style={{ background: "linear-gradient(160deg,#0A3C6E,#1783C1)", border: "1px solid rgba(23,131,193,.35)", boxShadow: "0 12px 24px -12px rgba(10,60,110,.5)" }}>
                 <div ref={logoRef} aria-hidden="true" className="pointer-events-none size-full" />
               </div>
               <SectionLabel>06 — CONTATO</SectionLabel>
@@ -93,7 +98,7 @@ export function Contact() {
             </div>
             <div className="flex flex-col gap-[18px]">
               <div className="flex items-start gap-3 text-ink">
-                <span className="grid size-[34px] shrink-0 place-items-center rounded-[10px] border border-line bg-chip text-accent-text">
+                <span className="grid size-[36px] shrink-0 place-items-center rounded-[10px] border border-line bg-chip text-accent-text">
                   <PinIcon size={16} />
                 </span>
                 <div className="flex flex-col gap-2 pt-1.5">
@@ -108,7 +113,7 @@ export function Contact() {
                 </div>
               </div>
               <div className="flex items-start gap-3 text-ink">
-                <span className="grid size-[34px] shrink-0 place-items-center rounded-[10px] border border-line bg-chip text-accent-text">
+                <span className="grid size-[36px] shrink-0 place-items-center rounded-[10px] border border-line bg-chip text-accent-text">
                   <ClockIcon size={16} />
                 </span>
                 <div className="flex flex-col gap-1 pt-1.5">

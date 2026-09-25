@@ -12,7 +12,7 @@ export function About() {
       <div className="grid items-start gap-y-10" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,340px),1fr))", columnGap: "clamp(32px,5vw,72px)" }}>
         <div className="top-[110px] flex w-full max-w-[460px] flex-col gap-3.5" style={{ position: vp.w >= 900 ? "sticky" : "static" }}>
           <Reveal kind="clip" className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-bg2">
-            <ImageSlot src={PORTRAIT_URL} alt="Alexandre Diogo Nascimento" placeholder="Seu retrato" objectPosition="76% 30%" />
+            <ImageSlot src={PORTRAIT_URL} alt="Alexandre Diogo Nascimento" placeholder="Seu retrato" />
             <div className="glass-blur pointer-events-none absolute inset-x-3 bottom-3 flex items-center justify-between gap-2.5 rounded-[18px] border border-line bg-glass px-3.5 py-3">
               <span className="flex flex-col leading-[1.25]">
                 <span className="text-[15px] font-bold text-head">Alexandre Diogo Nascimento</span>
