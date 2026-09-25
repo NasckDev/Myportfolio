@@ -6,18 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Portfólio de Alexandre Diogo — Software Engineer especializado em interfaces digitais."
+      content="Portfólio de Alexandre Diogo Nascimento — Software Engineer · Frontend & Fullstack. Interfaces web rápidas, acessíveis e fáceis de manter."
     />
-    <meta name="theme-color" content="#f2f4f8" />
-    <title>Alenasck — Software Engineer</title>
+    <meta name="theme-color" content="#FAFBFD" />
+    <meta property="og:title" content="Alexandre Diogo Nascimento — Software Engineer" />
+    <meta property="og:description" content="Software Engineer · Frontend & Fullstack. React, TypeScript, Design Systems e acessibilidade." />
+    <meta property="og:type" content="website" />
+    <title>Alexandre Diogo Nascimento — Software Engineer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;500;600&display=swap"
     />
   </head>
   <body>
+    <script>
+      try {
+        var t = localStorage.getItem("adn4-theme");
+        document.body.dataset.theme = t === "dark" ? "dark" : "light";
+      } catch (e) {
+        document.body.dataset.theme = "light";
+      }
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

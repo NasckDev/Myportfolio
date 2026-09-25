@@ -1,88 +1,195 @@
-import { motion } from "framer-motion";
-import { ArrowDownRight, ArrowRight } from "lucide-react";
-import { HeroScrollAnimation } from "@/components/effects/HeroScrollAnimation";
-import { BlurFade } from "@/components/magic/BlurFade";
-import { ShimmerButton } from "@/components/magic/ShimmerButton";
+import { useEffect, useRef, type MouseEvent } from "react";
+import { usePortfolio } from "@/context/PortfolioContext";
+import { GITHUB_URL, LINKEDIN_URL } from "@/data/portfolio";
+import { live, onFrame } from "@/lib/live";
+import { loadThree } from "@/three/loadThree";
+import { createHeroScene, HERO_HINT_DEFAULT, type HeroScene } from "@/three/heroScene";
+import { Reveal } from "@/components/motion/Reveal";
+import { ArrowRightIcon, ChevronRightIcon, GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 
-const techs = ["React", "TypeScript", "Angular", "Design Systems"];
+const MAGNETIC_T = "transform .35s cubic-bezier(.2,.8,.2,1),background .2s,border-color .2s";
 
 export function Hero() {
+  const { vp, motion, heroReady, openModal, scrollToId } = usePortfolio();
+  const mountRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const hintRef = useRef<HTMLSpanElement>(null);
+  const scrollDotRef = useRef<HTMLSpanElement>(null);
+  const sceneRef = useRef<HeroScene | null>(null);
+  const isWide = vp.w >= 980;
+  const kbd = vp.mac ? "⌘K" : "Ctrl K";
+  const hasKeyboard = vp.fine && vp.w >= 860;
+
+  useEffect(() => {
+    let dead = false;
+    loadThree()
+      .then((THREE) => {
+        if (dead || !mountRef.current) return;
+        sceneRef.current = createHeroScene(THREE, mountRef.current, () => hintRef.current);
+        live.hero3dReady = true;
+      })
+      .catch(() => {
+        live.hero3dReady = true;
+      });
+    return () => {
+      dead = true;
+      sceneRef.current?.dispose();
+      sceneRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (heroReady) sceneRef.current?.restart();
+  }, [heroReady]);
+
+  useEffect(
+    () =>
+      onFrame((t) => {
+        const y = live.scrollY, motionOn = live.motion;
+        const hc = contentRef.current;
+        if (hc && y < innerHeight * 1.2 && motionOn) hc.style.transform = `translate3d(0,${y * 0.12}px,0)`;
+        else if (hc && !motionOn) hc.style.transform = "none";
+        if (scrollDotRef.current) scrollDotRef.current.style.transform = motionOn ? `translateY(${(Math.sin(t / 380) * 0.5 + 0.5) * 10}px)` : "none";
+        sceneRef.current?.tick(t / 1000);
+      }),
+    [],
+  );
+
+  const goCases = (e: MouseEvent) => {
+    e.preventDefault();
+    scrollToId("cases");
+  };
+
   return (
-    <section id="home" className="hero-grid relative min-h-[calc(100svh-84px)] overflow-hidden px-5 py-14 md:px-8 lg:py-20">
-      <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
-        <motion.div animate={{ x: [0, 55, 0], y: [0, -28, 0] }} transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[8%] right-[10%] size-72 rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="absolute -bottom-24 left-[18%] size-80 rounded-full bg-cyan-400/10 blur-3xl" />
-      </div>
-
-      <div className="relative mx-auto grid max-w-[1240px] items-start gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-6 xl:grid-cols-[0.7fr_1.3fr] xl:gap-0 2xl:max-w-[1480px] 2xl:grid-cols-[0.68fr_1.32fr]">
-        <div className="relative z-30 pt-4 lg:pt-12">
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-7 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/85 px-3 py-2 text-[11px] font-semibold text-blue-950 shadow-sm backdrop-blur">
-            <span className="relative flex size-2"><span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-70" /><span className="relative inline-flex size-2 rounded-full bg-emerald-500" /></span>
-            Disponível para novas oportunidades
-          </motion.div>
-
-          <h1 className="relative z-[60] overflow-visible pb-5 font-display text-[clamp(4.2rem,7.25vw,7.2rem)] font-bold tracking-[-0.088em] text-primary xl:w-[calc(100%+10rem)]">
-            {["Frontend", "Engineer"].map((word, index) => (
-              <motion.span key={word} initial={{ opacity: 0, y: 38, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.7, delay: 0.13 + index * 0.11, ease: [0.21, 0.47, 0.32, 0.98] }} className={index === 1 ? "relative z-[70] block overflow-visible pb-[0.13em] text-[0.88em] leading-[0.9] text-gradient" : "block leading-[0.86]"}>
-                {word}
-              </motion.span>
-            ))}
-          </h1>
-
-          <BlurFade delay={0.36} inView={false}>
-            <p className="mt-8 max-w-[17rem] text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
-              Desenvolvedor front-end com 6 anos de experiência construindo produtos web acessíveis, escaláveis e orientados a dados.
-            </p>
-          </BlurFade>
-
-          <BlurFade delay={0.48} inView={false}>
-            <div className="mt-8">
-              <ShimmerButton ariaLabel="Explorar projetos" className="rounded-full px-6 py-3.5 text-sm" onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}>
-                Explorar projetos
-                <span className="flex size-8 items-center justify-center rounded-full bg-white text-primary"><ArrowRight className="size-4" /></span>
-              </ShimmerButton>
-            </div>
-          </BlurFade>
-
-          <motion.a href="#projects" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} className="mt-10 inline-flex items-center gap-2 font-mono text-[9px] tracking-[0.18em] text-muted-foreground uppercase">
-            Scroll para explorar <ArrowDownRight className="size-4 text-accent" />
-          </motion.a>
+    <section id="topo" className="relative overflow-hidden bg-bg">
+      <div ref={mountRef} aria-hidden="true" className="absolute inset-x-0 bottom-0" style={{ top: isWide ? 0 : "auto", height: isWide ? "auto" : "min(92vw,440px)" }} />
+      {!isWide && motion && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-[18px] left-1/2 z-[2] flex max-w-[calc(100%-32px)] -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-line bg-glass px-3.5 py-2 shadow-card"
+          style={{ backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}
+        >
+          <span className="size-2 shrink-0 rounded-full" style={{ background: "#1783C1", boxShadow: "0 0 0 4px rgba(23,131,193,.18)" }} />
+          <span ref={hintRef} className="mono overflow-hidden text-ellipsis text-[12.5px] font-medium text-head">
+            {HERO_HINT_DEFAULT}
+          </span>
         </div>
-
-        <BlurFade delay={0.22} yOffset={35} inView={false} className="relative z-10">
-          <HeroScrollAnimation className="lg:mt-10 xl:-ml-40 xl:w-[calc(100%+10rem)] 2xl:-ml-48 2xl:w-[calc(100%+12rem)]">
-            <div className="relative">
-              <svg aria-hidden="true" width="0" height="0" className="absolute">
-                <defs>
-                  <clipPath id="hero-media-concave-clip" clipPathUnits="objectBoundingBox">
-                    <path d="M .17 0 H .94 Q 1 0 1 .09 V .91 Q 1 1 .94 1 H .06 Q 0 1 0 .91 V .50 H .02 C .075 .50 .11 .43 .11 .35 V .30 H .125 C .155 .30 .17 .25 .17 .18 Z" />
-                  </clipPath>
-                </defs>
-              </svg>
-              <div style={{ clipPath: "url(#hero-media-concave-clip)" }} className="hero-media-mask group relative min-h-[480px] overflow-hidden bg-primary shadow-[0_35px_90px_rgba(6,20,60,0.22)] lg:min-h-[540px] xl:min-h-[610px]">
-                <motion.video
-                  initial={{ clipPath: "inset(0 0 100% 0)", scale: 1.08 }}
-                  animate={{ clipPath: "inset(0 0 0% 0)", scale: 1 }}
-                  transition={{ duration: 1.05, delay: 0.3, ease: [0.76, 0, 0.24, 1] }}
-                  src={`${import.meta.env.BASE_URL}assets/hero-workspace-motion.mp4`}
-                  poster={`${import.meta.env.BASE_URL}assets/hero-workspace.png`}
-                  aria-label="Estação de trabalho de desenvolvimento com monitor exibindo código e uma interface"
-                  className="absolute inset-0 size-full object-cover transition-transform duration-1000 group-hover:scale-[1.025]"
-                  autoPlay
-                  playsInline
-                  muted
-                  preload="auto"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#06143c]/68 via-transparent to-blue-950/8" />
-
-                <div className="absolute inset-x-6 bottom-6 flex flex-wrap items-center gap-2 xl:left-44">
-                  {techs.map((item, index) => <motion.span key={item} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.82 + index * 0.08 }} className="rounded-full border border-white/15 bg-[#06143c]/35 px-3 py-2 text-[10px] font-semibold text-white backdrop-blur-md">{item}</motion.span>)}
-                </div>
-              </div>
-
-            </div>
-          </HeroScrollAnimation>
-        </BlurFade>
+      )}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ opacity: isWide ? 1 : 0, background: "linear-gradient(90deg,var(--bg) 0%,var(--bg) 28%,transparent 62%)" }} />
+      <div
+        aria-hidden="true"
+        className="dot-grid pointer-events-none absolute inset-0"
+        style={{ WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 30% 40%,#000 20%,transparent 75%)", maskImage: "radial-gradient(ellipse 70% 60% at 30% 40%,#000 20%,transparent 75%)" }}
+      />
+      <div
+        ref={contentRef}
+        className="pointer-events-none relative mx-auto box-border flex max-w-[1180px] flex-col justify-between gap-14"
+        style={{
+          padding: `clamp(116px,18vh,200px) clamp(20px,4vw,40px) ${isWide ? "64px" : "min(92vw,440px)"}`,
+          minHeight: isWide ? "min(100vh,900px)" : 0,
+        }}
+      >
+        <div className="flex max-w-[720px] flex-col gap-7">
+          <Reveal kind="blur" hero className="pointer-events-auto self-start">
+            <button
+              type="button"
+              onClick={() => openModal("avail")}
+              aria-haspopup="dialog"
+              className="flex max-w-full cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-full border border-line bg-glass py-[7px] pl-3 pr-2 font-medium text-ink transition-[border-color] duration-[250ms] hover:border-[#E0A21B]"
+              style={{ fontSize: "clamp(13px,3.4vw,14px)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
+            >
+              <span className="size-2.5 shrink-0 rounded-full" style={{ background: "#F5B82E", boxShadow: "0 0 0 4px rgba(245,184,46,.22)" }} />
+              Avaliando novas oportunidades
+              <span className="flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-chip px-[9px] py-[3px] text-[12.5px] font-semibold text-chip-text">
+                Ver detalhes
+                <ChevronRightIcon size={12} sw={2.5} />
+              </span>
+            </button>
+          </Reveal>
+          <h1 className="stretch-125 flex flex-wrap gap-x-[.25em] font-bold text-head" style={{ fontSize: "clamp(38px,7.6vw,92px)", lineHeight: 0.98, letterSpacing: "-.035em" }}>
+            <Reveal as="span" kind="word" hero delay={80} className="inline-block">
+              Alexandre
+            </Reveal>
+            <Reveal as="span" kind="word" hero delay={160} className="inline-block">
+              Diogo
+            </Reveal>
+            <Reveal
+              as="span"
+              kind="word"
+              hero
+              delay={240}
+              className="inline-block pb-[.06em] text-transparent"
+              style={{ background: "linear-gradient(90deg,var(--head),#1783C1)", WebkitBackgroundClip: "text", backgroundClip: "text" }}
+            >
+              Nascimento
+            </Reveal>
+          </h1>
+          <Reveal as="p" kind="blur" hero delay={340} className="mono flex flex-wrap items-center gap-2.5 font-medium text-muted" style={{ fontSize: "clamp(14px,1.3vw,16px)" }}>
+            <span className="font-semibold text-head">Software Engineer · Frontend &amp; Fullstack</span>
+          </Reveal>
+          <Reveal as="p" kind="blur" hero delay={420} className="max-w-[58ch]" style={{ fontSize: "clamp(17px,1.5vw,19px)", lineHeight: 1.65 }}>
+            Construo interfaces web rápidas, acessíveis e fáceis de manter. São 6 anos transformando regras de negócio complexas em produtos claros, na MindMiners, na EY e em projeto para a Vivo.
+          </Reveal>
+          <Reveal kind="blur" hero delay={500} className="pointer-events-auto flex flex-wrap items-center gap-3">
+            <a
+              href="#cases"
+              onClick={goCases}
+              data-magnetic="1"
+              className="flex h-[54px] items-center gap-2.5 rounded-full bg-btn px-[26px] text-[16px] font-bold text-btn-text no-underline hover:bg-brand hover:text-white"
+              style={{ transition: MAGNETIC_T, boxShadow: "0 12px 30px -12px rgba(23,131,193,.6)" }}
+            >
+              Ver projetos
+              <ArrowRightIcon size={18} sw={2.2} />
+            </a>
+            <a
+              href="#"
+              data-magnetic="1"
+              onClick={(e) => {
+                e.preventDefault();
+                openModal("cv");
+              }}
+              className="flex h-[54px] items-center gap-2.5 rounded-full border border-line2 bg-glass px-6 text-[16px] font-semibold text-head no-underline hover:border-brand hover:text-head"
+              style={{ transition: MAGNETIC_T, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
+            >
+              Baixar currículo
+            </a>
+            <a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener"
+              aria-label="LinkedIn (abre em nova aba)"
+              data-magnetic="1"
+              className="grid size-[54px] place-items-center rounded-full border border-line2 bg-glass text-head hover:border-brand hover:text-head"
+              style={{ transition: MAGNETIC_T }}
+            >
+              <LinkedinIcon size={20} />
+            </a>
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener"
+              aria-label="GitHub (abre em nova aba)"
+              data-magnetic="1"
+              className="grid size-[54px] place-items-center rounded-full border border-line2 bg-glass text-head hover:border-brand hover:text-head"
+              style={{ transition: MAGNETIC_T }}
+            >
+              <GithubIcon size={20} />
+            </a>
+          </Reveal>
+        </div>
+        <Reveal kind="blur" hero delay={620} className="mono flex flex-wrap items-center justify-between gap-4 text-[12.5px] text-muted">
+          <span className="flex items-center gap-2.5">
+            <span className="box-border flex h-[34px] w-[22px] justify-center rounded-full border-[1.5px] border-line2 pt-1.5">
+              <span ref={scrollDotRef} className="h-2 w-1 rounded" style={{ background: "#1783C1" }} />
+            </span>
+            Role para explorar
+          </span>
+          {hasKeyboard && (
+            <span>
+              Pressione <span className="rounded-[5px] border border-line2 px-1.5 py-0.5">{kbd}</span> para navegar por comandos
+            </span>
+          )}
+        </Reveal>
       </div>
     </section>
   );
