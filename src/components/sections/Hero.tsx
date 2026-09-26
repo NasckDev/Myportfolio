@@ -86,7 +86,7 @@ export function Hero() {
         className="pointer-events-none relative mx-auto box-border flex max-w-[1180px] flex-col justify-between gap-14"
         style={{
           padding: `clamp(116px,18vh,200px) clamp(20px,4vw,40px) ${isWide ? "64px" : "min(92vw,440px)"}`,
-          minHeight: isWide ? "min(100vh,900px)" : 0,
+          minHeight: isWide ? "min(calc(100vh / var(--zoom, 1)),900px)" : 0,
         }}
       >
         <div className="flex max-w-[720px] flex-col gap-7">

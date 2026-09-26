@@ -117,7 +117,7 @@ export function Modal() {
         aria-label={title}
         aria-hidden={!open}
         inert={!open}
-        className="fixed left-1/2 top-1/2 z-[141] box-border max-h-[calc(100vh-40px)] w-[min(560px,calc(100%-24px))] overflow-y-auto rounded-[26px] border border-line bg-surface"
+        className="fixed left-1/2 top-1/2 z-[141] box-border max-h-[calc(100vh/var(--zoom,1)-40px)] w-[min(560px,calc(100%-24px))] overflow-y-auto rounded-[26px] border border-line bg-surface"
         style={{
           boxShadow: "0 40px 90px -30px rgba(0,0,0,.55)",
           opacity: open ? 1 : 0,

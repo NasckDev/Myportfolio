@@ -84,8 +84,8 @@ function PinnedExperience() {
   };
 
   return (
-    <div ref={xpRef} className="relative" style={{ height: n * 95 + 100 + "vh" }}>
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <div ref={xpRef} className="relative" style={{ height: `calc(${n * 95 + 100}vh / var(--zoom, 1))` }}>
+      <div className="h-vp sticky top-0 overflow-hidden">
         <div ref={mountRef} aria-hidden="true" className="absolute inset-0" />
         <div
           aria-hidden="true"
