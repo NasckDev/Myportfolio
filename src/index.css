@@ -123,16 +123,22 @@ body[data-theme="dark"] {
   mix-blend-mode: normal;
 }
 
+/*
+ * TVs e monitores grandes recebem zoom (como no handoff). Com zoom no body, 100vh passa a
+ * ocupar zoom × a altura da janela, então alturas em vh dividem por --zoom (ver .h-vp).
+ */
+body { --zoom: 1; }
+
 @media (min-width: 1900px) {
-  body { zoom: 1.15; }
+  body { zoom: 1.15; --zoom: 1.15; }
 }
 
 @media (min-width: 2400px) {
-  body { zoom: 1.45; }
+  body { zoom: 1.45; --zoom: 1.45; }
 }
 
 @media (min-width: 3200px) {
-  body { zoom: 1.9; }
+  body { zoom: 1.9; --zoom: 1.9; }
 }
 
 @layer utilities {
@@ -167,6 +173,11 @@ body[data-theme="dark"] {
   .glass-blur {
     backdrop-filter: blur(16px) saturate(1.4);
     -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  }
+
+  /* Altura exata da janela, mesmo com o zoom de telas grandes. */
+  .h-vp {
+    height: calc(100vh / var(--zoom, 1));
   }
 
   .section-pad {
