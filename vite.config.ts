@@ -11,4 +11,6 @@ export default defineConfig({
     },
   },
   base: process.env.VITE_BASE_PATH || "/",
+  // three.js é carregado sob demanda (import dinâmico), por isso o chunk grande é esperado.
+  build: { chunkSizeWarningLimit: 750 },
 });

@@ -1,6 +1,8 @@
-# Alenasck Portfolio
+# Alexandre Diogo Nascimento — Portfólio
 
-Portfólio profissional de Alexandre Diogo Nascimento, desenvolvido com React, TypeScript, Vite, Tailwind CSS, Motion, GSAP e componentes acessíveis.
+Portfólio profissional (v3) de Alexandre Diogo Nascimento, Software Engineer · Frontend & Fullstack. Página única com topo 3D, habilidades pesquisáveis, projetos com gaveta de detalhes, trajetória em 3D, código aberto, sobre mim e contato. Tem tema claro/escuro, paleta de comandos (⌘K / Ctrl K), modais, toasts e respeita `prefers-reduced-motion`.
+
+Stack: React 19, TypeScript, Vite, Tailwind CSS 4 e three.js (carregado sob demanda). Contador de visitas e avaliações em Vercel Functions com Redis (Upstash).
 
 ## Executar localmente
 
@@ -11,47 +13,55 @@ npm install
 npm run dev
 ```
 
-Validação completa:
+Validação completa (testes das Functions + typecheck + build de produção):
 
 ```bash
 npm run verify
 ```
 
-O comando executa os testes da Vercel Function e gera o build de produção em `dist/`.
+No `npm run dev` não existem Vercel Functions, então o rodapé usa o comportamento local (contagem e voto guardados só no navegador).
+
+## Estrutura
+
+- `src/data/portfolio.ts`: todo o conteúdo (projetos, experiências, habilidades, repositórios, links). Para trocar um projeto, edite este arquivo; para adicionar a tela de um case, preencha o campo `image` com um caminho em `public/`.
+- `src/components/sections`: uma seção por arquivo (Hero, Skills, Cases, Experience, OpenSource, About, Contact).
+- `src/components/overlays`: gaveta de case, paleta de comandos, modais, toast.
+- `src/three`: cenas 3D (topo, trajetória, envelope do contato).
+- `api/visits.ts` e `api/votes.ts`: contador de visitas e avaliações.
+- `public/curriculo-alexandre-diogo-nascimento.pdf` (completo) e `public/curriculo-alexandre-diogo-nascimento-ats.pdf` (ATS).
 
 ## Deploy na Vercel
 
-O projeto usa `vercel.json` com:
+O `vercel.json` instala com `npm ci`, roda `npm run verify` e publica `dist/`. Conecte o repositório e mantenha `main` como Production Branch.
 
-- instalação reproduzível por `npm ci`;
-- testes automatizados antes do build;
-- build Vite em `dist/`;
-- Vercel Function em `api/visitors.ts`.
+### Contador de visitas e avaliações (curtir / não curtir)
 
-Conecte o repositório à Vercel e mantenha `main` como Production Branch. Cada push em `main` gera um deploy de produção; outras branches geram previews.
+As contagens ficam em um Redis da Upstash, compartilhadas entre todos os visitantes:
 
-### Web Analytics e contador de visitantes
+- **Visitas**: cada visitante conta uma vez a cada 12 horas.
+- **Avaliações**: cada visitante tem um voto, que pode trocar ou remover; o voto é lembrado pelo servidor.
+- O visitante é identificado por um hash anônimo de IP + user-agent (nada é guardado em texto puro), com limite de 20 votos a cada 10 minutos.
 
-1. Ative **Web Analytics** e **Speed Insights** no dashboard do projeto.
-2. Crie um Access Token da Vercel com acesso de leitura ao projeto.
-3. Em **Settings → Environment Variables**, configure somente para **Production**:
+Para ativar:
 
-| Variável | Valor |
-| --- | --- |
-| `VITE_ENABLE_PROD_ANALYTICS` | `true` |
-| `ANALYTICS_API_TOKEN` | Access Token da Vercel |
-| `ANALYTICS_PROJECT_ID` | ID iniciado por `prj_` |
-| `ANALYTICS_TEAM_ID` | ID iniciado por `team_`, somente se o projeto pertencer a um time |
+1. No projeto da Vercel, abra **Storage → Create Database → Upstash (Redis)** (plano gratuito) e conecte ao projeto. A integração cria `KV_REST_API_URL` e `KV_REST_API_TOKEN` automaticamente.
+2. Faça um novo deploy.
 
-4. Em **Settings → Environment Variables**, mantenha habilitada a exposição das System Environment Variables para que `VERCEL_ENV=production` esteja disponível na Function.
-5. Faça um novo deploy após configurar as variáveis.
+Também funciona com as variáveis `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN` de um banco criado direto na Upstash. Sem Redis configurado (ou no GitHub Pages), o rodapé continua funcionando no modo local.
 
-O token nunca é enviado ao navegador. O footer consulta apenas `/api/visitors`, que retorna os totais agregados da Web Analytics. Se Analytics estiver desabilitado, sem credenciais, fora de produção ou temporariamente indisponível, o footer exibe o estado seguro `Portfólio online`.
+### Web Analytics e Speed Insights (opcional)
+
+Ative no dashboard da Vercel e configure `VITE_ENABLE_PROD_ANALYTICS=true` no ambiente Production.
+
+### Feedback por e-mail (opcional)
+
+Com `VITE_WEB3FORMS_KEY` configurada, as sugestões do modal "O que posso melhorar?" chegam por e-mail via Web3Forms. Sem a chave, ficam salvas apenas no navegador do visitante.
 
 ## GitHub Pages
 
-O workflow `.github/workflows/static.yml` executa testes, gera o build com base `/Myportfolio/` e publica `dist/`. O contador fica automaticamente desabilitado no GitHub Pages porque as variáveis de produção da Vercel não existem nesse ambiente.
+O workflow `.github/workflows/static.yml` executa os testes, gera o build com base `/Myportfolio/` e publica `dist/`. Como o GitHub Pages não executa Functions, o rodapé usa o modo local.
 
-## Versão anterior
+## Versões anteriores
 
-A implementação anterior em HTML, CSS e JavaScript foi preservada em `v1/`.
+- v1 (HTML, CSS e JavaScript): preservada em `v1/`.
+- v2 (React com Motion/GSAP): disponível no histórico do Git.
