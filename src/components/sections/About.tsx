@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { usePortfolio } from "@/context/PortfolioContext";
-import { interests, PORTRAIT_URL, principles } from "@/data/portfolio";
+import { interests, PORTRAIT_URL, principles, profile } from "@/data/portfolio";
 import { Reveal } from "@/components/motion/Reveal";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -25,13 +25,13 @@ export function About() {
           <div className="flex flex-col gap-[18px]">
             <SectionLabel>05 — SOBRE MIM</SectionLabel>
             <Reveal as="h2" className="stretch-120 max-w-[22ch] font-bold text-head" style={{ fontSize: "clamp(28px,3.4vw,42px)", lineHeight: 1.12, letterSpacing: "-.025em" }}>
-              Trabalho entre engenharia, produto e design.
+              {profile.aboutTitle}
             </Reveal>
             <Reveal as="p" delay={60} className="max-w-[60ch]" style={{ fontSize: "clamp(16px,1.4vw,18px)", lineHeight: 1.7 }}>
-              Entendo a regra de negócio, modelo os estados da interface e entrego componentes que o time consegue manter. Gosto de trabalhar perto de Produto e Design, questionando requisitos e propondo caminhos mais simples.
+              {profile.about[0]}
             </Reveal>
             <Reveal as="p" delay={100} className="max-w-[60ch] text-muted" style={{ fontSize: "clamp(16px,1.4vw,18px)", lineHeight: 1.7 }}>
-              Meu foco hoje são interfaces complexas: Design Systems, produtos orientados a dados, acessibilidade e integrações com estados assíncronos. Prefiro provar com código e decisões documentadas do que com níveis autodeclarados.
+              {profile.about[1]}
             </Reveal>
           </div>
           <div className="flex flex-col gap-3.5">

@@ -2,8 +2,25 @@ export const EMAIL = "aleh.dnascimento@gmail.com";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/alexandre-diogo-nascimento";
 export const GITHUB_URL = "https://github.com/NasckDev";
 export const GITHUB_REPOS_URL = "https://github.com/NasckDev?tab=repositories";
+export const WEB_DESIGN_REPO_URL = "https://github.com/NasckDev/web-design";
 
-const base = import.meta.env.BASE_URL;
+/** Endereço oficial do portfólio (Vercel), usado em canonical, sitemap e na versão em texto para robôs. */
+export const SITE_URL = "https://nasck-myportifolio.vercel.app";
+
+// `?.` permite importar este arquivo fora do Vite (script de prerender em Node), onde import.meta.env não existe.
+const base = import.meta.env?.BASE_URL ?? "/";
+
+export const profile = {
+  name: "Alexandre Diogo Nascimento",
+  role: "Software Engineer · Frontend & Fullstack",
+  intro:
+    "Construo interfaces web rápidas, acessíveis e fáceis de manter. São 6 anos transformando regras de negócio complexas em produtos claros, na MindMiners, na EY e em projeto para a Vivo.",
+  aboutTitle: "Trabalho entre engenharia, produto e design.",
+  about: [
+    "Entendo a regra de negócio, modelo os estados da interface e entrego componentes que o time consegue manter. Gosto de trabalhar perto de Produto e Design, questionando requisitos e propondo caminhos mais simples.",
+    "Meu foco hoje são interfaces complexas: Design Systems, produtos orientados a dados, acessibilidade e integrações com estados assíncronos. Prefiro provar com código e decisões documentadas do que com níveis autodeclarados.",
+  ],
+};
 export const CV_FULL_URL = `${base}curriculo-alexandre-diogo-nascimento.pdf`;
 export const CV_ATS_URL = `${base}curriculo-alexandre-diogo-nascimento-ats.pdf`;
 export const PORTRAIT_URL = `${base}assets/retrato-alexandre.webp`;
@@ -77,6 +94,42 @@ export const cases: CaseStudy[] = [
   },
 ];
 
+export interface WebDesignPiece {
+  id: string;
+  name: string;
+  kind: string;
+  summary: string;
+  tools: string[];
+  /** Página publicada dentro de public/web-design/<id>/. */
+  url: string;
+  image: string;
+  /** Link para o código-fonte, quando estiver publicado. */
+  repo?: string;
+}
+
+export const webDesigns: WebDesignPiece[] = [
+  {
+    id: "bluebird",
+    name: "Bluebird",
+    kind: "Hero 3D · conceito",
+    summary: "Hero de um app que identifica pássaros pelo canto. O pássaro pousa em vídeo 3D, o nome surge atrás dele e a interface em vidro entra em seguida, com som opcional.",
+    tools: ["Vídeo 3D", "Glassmorphism", "Áudio", "Responsivo"],
+    url: `${base}web-design/bluebird/index.html`,
+    image: `${base}assets/web-design/bluebird.jpg`,
+    repo: `${WEB_DESIGN_REPO_URL}/tree/main/projetos/bluebird`,
+  },
+  {
+    id: "traco-construtora",
+    name: "Traço Construtora",
+    kind: "Redesign · estudo 3D",
+    summary: "Estudo de redesign para uma construtora, feito para explorar elementos 3D na web: o prédio é montado em wireframe ao vivo com three.js e o visitante navega pela planta.",
+    tools: ["three.js", "WebGL", "Redesign", "Estudo"],
+    url: `${base}web-design/traco-construtora/index.html`,
+    image: `${base}assets/web-design/traco-construtora.jpg`,
+    repo: `${WEB_DESIGN_REPO_URL}/tree/main/projetos/traco-construtora`,
+  },
+];
+
 export const caseFilters = ["Todos", "React", "Angular", "Dados", "Design System"] as const;
 export type CaseFilter = (typeof caseFilters)[number];
 
@@ -142,6 +195,7 @@ export const repos = [
   { slug: "nasckdev/nasck-ui", name: "Nasck UI", problem: "Sistema de interface acessível usado pelos outros projetos.", quality: "Storybook · axe · testes de interação", status: "Em construção", dot: "#FEBC2E" },
   { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "Vitest · Playwright + axe · CI", status: "Planejado", dot: "#6CC0EE" },
   { slug: "nasckdev/fiscotrack", name: "FiscoTrack", problem: "Evolução do minersCalculator: cálculo explicável e testável.", quality: "Casos table-driven · CI", status: "Em evolução", dot: "#FEBC2E" },
+  { slug: "nasckdev/web-design", name: "Web design", problem: "Estudos visuais com 3D e movimento, com código, prints e README.", quality: "Páginas ao vivo · prints · README", status: "Publicado", dot: "#28C840", href: WEB_DESIGN_REPO_URL },
   { slug: "nasckdev/myportfolio", name: "Myportfolio", problem: "Este portfólio, documentado como case de engenharia.", quality: "Lint · typecheck · E2E · Lighthouse CI", status: "Publicado", dot: "#28C840", href: "https://github.com/NasckDev/Myportfolio" },
 ] as { slug: string; name: string; problem: string; quality: string; status: string; dot: string; href?: string }[];
 

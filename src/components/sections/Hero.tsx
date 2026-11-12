@@ -1,6 +1,6 @@
 import { useEffect, useRef, type MouseEvent } from "react";
 import { usePortfolio } from "@/context/PortfolioContext";
-import { GITHUB_URL, LINKEDIN_URL } from "@/data/portfolio";
+import { GITHUB_URL, LINKEDIN_URL, profile } from "@/data/portfolio";
 import { live, onFrame } from "@/lib/live";
 import { loadThree } from "@/three/loadThree";
 import { createHeroScene, HERO_HINT_DEFAULT, type HeroScene } from "@/three/heroScene";
@@ -125,10 +125,10 @@ export function Hero() {
             </Reveal>
           </h1>
           <Reveal as="p" kind="blur" hero delay={340} className="mono flex flex-wrap items-center gap-2.5 font-medium text-muted" style={{ fontSize: "clamp(14px,1.3vw,16px)" }}>
-            <span className="font-semibold text-head">Software Engineer · Frontend &amp; Fullstack</span>
+            <span className="font-semibold text-head">{profile.role}</span>
           </Reveal>
           <Reveal as="p" kind="blur" hero delay={420} className="max-w-[58ch]" style={{ fontSize: "clamp(17px,1.5vw,19px)", lineHeight: 1.65 }}>
-            Construo interfaces web rápidas, acessíveis e fáceis de manter. São 6 anos transformando regras de negócio complexas em produtos claros, na MindMiners, na EY e em projeto para a Vivo.
+            {profile.intro}
           </Reveal>
           <Reveal kind="blur" hero delay={500} className="pointer-events-auto flex flex-wrap items-center gap-3">
             <a
