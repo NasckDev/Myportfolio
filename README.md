@@ -24,7 +24,9 @@ No `npm run dev` não existem Vercel Functions, então o rodapé usa o comportam
 ## Estrutura
 
 - `src/data/portfolio.ts`: todo o conteúdo (projetos, experiências, habilidades, repositórios, links). Para trocar um projeto, edite este arquivo; para adicionar a tela de um case, preencha o campo `image` com um caminho em `public/`.
-- `src/components/sections`: uma seção por arquivo (Hero, Skills, Cases, Experience, OpenSource, About, Contact).
+- `src/components/sections`: uma seção por arquivo (Hero, Skills, Cases, WebDesign, Experience, OpenSource, About, Contact).
+- `public/web-design/<projeto>/`: páginas de web design publicadas no portfólio (código-fonte, prints e READMEs em [NasckDev/web-design](https://github.com/NasckDev/web-design)). Para adicionar uma, copie a pasta para cá, a capa para `public/assets/web-design/` e crie um item em `webDesigns` no `src/data/portfolio.ts`.
+- `scripts/prerender.ts`: roda depois do build e gera uma versão em texto do conteúdo dentro do `index.html`, além de `robots.txt`, `sitemap.xml` e `llms.txt`, para que IAs e robôs que não executam JavaScript consigam ler o portfólio. O texto vem do mesmo `src/data/portfolio.ts`.
 - `src/components/overlays`: gaveta de case, paleta de comandos, modais, toast.
 - `src/three`: cenas 3D (topo, trajetória, envelope do contato).
 - `api/visits.ts` e `api/votes.ts`: contador de visitas e avaliações.
