@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Urbanist:wght@500;600;700&display=swap">
+  <style>
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { margin: 0; overflow-x: hidden; background: #f4f3ef; color: #151816; font-family: Manrope, system-ui, sans-serif; }
+    *, *::before, *::after { box-sizing: border-box; }
+    h1, h2, h3, h4, p { margin: 0; }
+    button, input, textarea { font-family: inherit; }
+    a { color: #151816; }
+    a:hover { color: #3d5a00; }
+    :focus { outline: none; }
+    :focus-visible { outline: 3px solid #9fc23a; outline-offset: 3px; }
+    ::selection { background: #d4ec5c; }
+    input[type=range] { accent-color: #151816; width: 100%; height: 32px; cursor: pointer; margin: 0; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</helmet>
+<div style="min-height:100vh; display:flex; flex-direction:column; background:#f4f3ef; color:#151816; font-family:Manrope, system-ui, sans-serif">
+<a href="#conteudo" style="position:absolute; left:8px; top:-80px; z-index:300; padding:12px 18px; border-radius:999px; background:#151816; color:#fff; font-weight:600; text-decoration:none" style-focus="top:8px">Pular para o conteúdo</a>
+
+<sc-if value="{{ intro }}" hint-placeholder-val="{{ false }}">
+  <div ref="{{ introRef }}" style="position:fixed; inset:0; z-index:200; background:#1b201d; color:#fff; display:grid; place-items:center">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:22px; text-align:center; padding:24px">
+      <svg width="120" height="120" viewBox="0 0 32 32" fill="none" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" style="stroke:#d4ec5c" aria-hidden="true"><g ref="{{ introLogoRef }}"><path d="M2 29H30"></path><path d="M7 29V9L16 4L25 9V29"></path><path d="M7 14H25"></path><path d="M7 19H25"></path><path d="M7 24H25"></path><path d="M16 4V29"></path></g></svg>
+      <div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(64px,10vw,128px); letter-spacing:-0.04em; line-height:0.9">traço</div>
+      <div style="font-size:clamp(16px,1.6vw,20px); color:#c9cec6">Seu apartamento, do desenho às chaves</div>
+      <div ref="{{ introCountRef }}" style="font-family:Urbanist, sans-serif; font-weight:600; font-size:16px; letter-spacing:0.2em; color:#d4ec5c">000 %</div>
+    </div>
+    <button type="button" onClick="{{ skipIntro }}" style="position:absolute; right:24px; bottom:24px; min-height:48px; padding:10px 22px; border-radius:999px; border:1px solid rgba(255,255,255,.3); background:transparent; color:#fff; font-size:16px; font-weight:600; cursor:pointer" style-hover="background:rgba(255,255,255,.08)">Pular introdução</button>
+  </div>
+</sc-if>
+
+<header data-hc="1" style="position:sticky; top:0; z-index:60; padding:10px clamp(10px,2.5vw,32px) 0">
+  <div style="max-width:1440px; margin:0 auto; display:flex; align-items:center; gap:clamp(6px,1.4vw,20px); padding:8px 8px 8px 16px; min-height:68px; background:rgba(255,255,255,.92); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-radius:999px; box-shadow:0 8px 30px rgba(21,24,22,.08); position:relative">
+    <a href="#inicio" onClick="{{ goHome }}" aria-label="Traço Construtora, página inicial" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:#151816; margin-right:auto">
+      <span style="width:42px; height:42px; border-radius:12px; background:#d4ec5c; display:grid; place-items:center; flex:none"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke:#151816" aria-hidden="true"><g ref="{{ logoRef }}"><path d="M2 29H30"></path><path d="M7 29V9L16 4L25 9V29"></path><path d="M7 14H25"></path><path d="M7 19H25"></path><path d="M7 24H25"></path><path d="M16 4V29"></path></g></svg></span>
+      <span style="display:flex; flex-direction:column; line-height:1"><span style="font-family:Urbanist, sans-serif; font-weight:700; font-size:26px; letter-spacing:-0.03em">traço</span><span style="font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#4d524e">construtora</span></span>
+    </a>
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <nav aria-label="Principal" style="display:flex; gap:2px">
+        <button type="button" onClick="{{ navEmps }}" style="min-height:44px; padding:8px 16px; border-radius:999px; border:0; background:transparent; font-size:16px; font-weight:600; color:#151816; cursor:pointer" style-hover="background:#f1efe9">Empreendimentos</button>
+        <button type="button" onClick="{{ navHow }}" style="min-height:44px; padding:8px 16px; border-radius:999px; border:0; background:transparent; font-size:16px; font-weight:600; color:#151816; cursor:pointer" style-hover="background:#f1efe9">Como comprar</button>
+        <button type="button" onClick="{{ navContact }}" style="min-height:44px; padding:8px 16px; border-radius:999px; border:0; background:transparent; font-size:16px; font-weight:600; color:#151816; cursor:pointer" style-hover="background:#f1efe9">Atendimento</button>
+      </nav>
+      <a href="tel:08000004040" style="font-size:15px; font-weight:600; text-decoration:none; white-space:nowrap; color:#151816">0800 000 4040</a>
+    </sc-if>
+    <div style="display:flex; align-items:center; gap:6px">
+      <button type="button" onClick="{{ toggleA11y }}" aria-label="Opções de acessibilidade" aria-expanded="{{ a11yOpen }}" style="width:46px; height:46px; border-radius:50%; border:1px solid rgba(21,24,22,.12); background:#fff; display:grid; place-items:center; cursor:pointer; color:#151816" style-hover="background:#f1efe9">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="16" cy="4" r="1"></circle><path d="m18 19 1-7-6 1"></path><path d="m5 8 3-3 5.5 3-2.36 3.5"></path><path d="M4.24 14.5a5 5 0 0 0 6.88 6"></path><path d="M13.76 17.5a5 5 0 0 0-6.88-6"></path></svg>
+      </button>
+      <button type="button" onClick="{{ openWish }}" aria-label="{{ wishAria }}" style="position:relative; width:46px; height:46px; border-radius:50%; border:1px solid rgba(21,24,22,.12); background:#fff; display:grid; place-items:center; cursor:pointer; color:#151816" style-hover="background:#f1efe9">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+        <sc-if value="{{ hasWish }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute; top:-3px; right:-3px; min-width:20px; height:20px; padding:0 5px; border-radius:999px; background:#d4ec5c; color:#151816; font:700 11px/20px Manrope, sans-serif; text-align:center">{{ wishCount }}</span></sc-if>
+      </button>
+      <button type="button" onClick="{{ openPret }}" aria-label="{{ pretAria }}" style="position:relative; width:46px; height:46px; border-radius:50%; border:1px solid rgba(21,24,22,.12); background:#fff; display:grid; place-items:center; cursor:pointer; color:#151816" style-hover="background:#f1efe9">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg>
+        <sc-if value="{{ hasPret }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute; top:-3px; right:-3px; min-width:20px; height:20px; padding:0 5px; border-radius:999px; background:#d4ec5c; color:#151816; font:700 11px/20px Manrope, sans-serif; text-align:center">{{ pretCount }}</span></sc-if>
+      </button>
+      <button type="button" onClick="{{ openCart }}" aria-label="{{ cartAria }}" style="display:flex; align-items:center; gap:10px; min-height:50px; padding:4px 6px 4px 18px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:16px; font-weight:600; cursor:pointer" style-hover="background:#2a2f2c">
+        <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}"><span>Carrinho</span></sc-if>
+        <span style="min-width:40px; height:40px; padding:0 8px; border-radius:999px; background:#d4ec5c; color:#151816; display:flex; align-items:center; justify-content:center; gap:4px; font-weight:700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg><sc-if value="{{ hasCart }}" hint-placeholder-val="{{ false }}"><span>{{ cartCount }}</span></sc-if></span>
+      </button>
+      <sc-if value="{{ notWide }}" hint-placeholder-val="{{ false }}">
+        <button type="button" onClick="{{ toggleMenu }}" aria-label="Abrir menu" aria-expanded="{{ menuOpen }}" style="width:46px; height:46px; border-radius:50%; border:1px solid rgba(21,24,22,.12); background:#fff; display:grid; place-items:center; cursor:pointer; color:#151816">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>
+        </button>
+      </sc-if>
+    </div>
+    <div aria-hidden="true" style="position:absolute; left:28px; right:28px; bottom:0; height:3px; overflow:hidden; border-radius:999px"><div ref="{{ progRef }}" style="height:3px; width:0; background:#d4ec5c; border-radius:999px"></div></div>
+  </div>
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav aria-label="Menu" style="max-width:1440px; margin:8px auto 0; padding:10px; background:#fff; border-radius:24px; box-shadow:0 12px 36px rgba(21,24,22,.12); display:flex; flex-direction:column; gap:2px">
+      <button type="button" onClick="{{ navEmps }}" style="text-align:left; min-height:54px; padding:10px 16px; border-radius:16px; border:0; background:transparent; font-size:19px; font-weight:600; color:#151816; cursor:pointer">Empreendimentos</button>
+      <button type="button" onClick="{{ navHow }}" style="text-align:left; min-height:54px; padding:10px 16px; border-radius:16px; border:0; background:transparent; font-size:19px; font-weight:600; color:#151816; cursor:pointer">Como comprar</button>
+      <button type="button" onClick="{{ navContact }}" style="text-align:left; min-height:54px; padding:10px 16px; border-radius:16px; border:0; background:transparent; font-size:19px; font-weight:600; color:#151816; cursor:pointer">Atendimento · 0800 000 4040</button>
+      <button type="button" onClick="{{ togglePresent }}" style="text-align:left; min-height:54px; padding:10px 16px; border-radius:16px; border:0; background:#f1efe9; font-size:19px; font-weight:600; color:#151816; cursor:pointer">{{ presentLabel }}</button>
+    </nav>
+  </sc-if>
+</header>
+
+<sc-if value="{{ a11yOpen }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-label="Acessibilidade" style="position:fixed; top:92px; right:clamp(10px,2.5vw,32px); z-index:70; width:min(390px, calc(100% - 20px)); background:#fff; border-radius:28px; box-shadow:0 24px 60px rgba(21,24,22,.18); padding:24px; display:flex; flex-direction:column; gap:18px">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px">
+      <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:26px; letter-spacing:-0.02em">Acessibilidade</h3>
+      <button type="button" onClick="{{ closeA11y }}" aria-label="Fechar" style="width:44px; height:44px; border-radius:50%; border:0; background:#f1efe9; display:grid; place-items:center; cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div style="font-size:15px; font-weight:600; color:#4d524e">Tamanho do texto e dos botões</div>
+      <div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ sizeOpts }}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="min-height:46px; padding:8px 16px; border-radius:999px; border:1px solid {{ o.bd }}; background:{{ o.bg }}; color:{{ o.fg }}; font-size:16px; font-weight:600; cursor:pointer">{{ o.label }}</button></sc-for></div>
+    </div>
+    <button type="button" role="switch" aria-checked="{{ contrastOn }}" onClick="{{ toggleContrast }}" style="display:flex; align-items:center; gap:14px; background:transparent; border:0; padding:0; cursor:pointer; font-size:17px; font-weight:600; color:#151816; min-height:46px; text-align:left">
+      <span style="width:50px; height:30px; flex:none; border-radius:999px; background:{{ swContrast.bg }}; position:relative; transition:background .2s"><span style="position:absolute; top:4px; left:{{ swContrast.knob }}; width:22px; height:22px; border-radius:50%; background:{{ swContrast.knobBg }}; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></span>Alto contraste
+    </button>
+    <button type="button" role="switch" aria-checked="{{ reduceOn }}" onClick="{{ toggleReduce }}" style="display:flex; align-items:center; gap:14px; background:transparent; border:0; padding:0; cursor:pointer; font-size:17px; font-weight:600; color:#151816; min-height:46px; text-align:left">
+      <span style="width:50px; height:30px; flex:none; border-radius:999px; background:{{ swReduce.bg }}; position:relative; transition:background .2s"><span style="position:absolute; top:4px; left:{{ swReduce.knob }}; width:22px; height:22px; border-radius:50%; background:{{ swReduce.knobBg }}; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></span>Reduzir animações
+    </button>
+    <button type="button" onClick="{{ togglePresent }}" style="display:flex; align-items:center; gap:12px; min-height:54px; padding:8px 8px 8px 20px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:16px; font-weight:600; cursor:pointer; justify-content:space-between">{{ presentLabel }}<span style="width:40px; height:40px; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h20"></path><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"></path><path d="m7 21 5-5 5 5"></path></svg></span></button>
+    <p style="font-size:14px; line-height:1.5; color:#4d524e">Tudo funciona pelo teclado: Tab navega entre os botões e as setas giram a maquete. O modo apresentação amplia a tela para telões e inicia o tour guiado.</p>
+  </div>
+</sc-if>
+
+<main id="conteudo" data-hc="1" style="flex:1">
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <section id="inicio" aria-labelledby="hero-title" style="max-width:1440px; margin:0 auto; padding:14px clamp(10px,2.5vw,32px) 0; display:flex; flex-wrap:wrap; gap:14px">
+    <figure onPointerMove="{{ heroMove }}" onPointerLeave="{{ heroLeave }}" style="flex:1.25 1 520px; position:relative; margin:0; min-height:clamp(440px,74vh,800px); border-radius:32px; overflow:hidden; background:linear-gradient(180deg,#bccfdc 0%,#e3e0d7 64%,#ebe7df 100%)">
+      <div ref="{{ heroRef }}" aria-hidden="true" style="position:absolute; inset:0"></div>
+      <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none">
+        <div ref="{{ crossVRef }}" style="position:absolute; top:0; bottom:0; left:50%; width:1px; background:rgba(21,24,22,.35); opacity:0; transition:opacity .3s"></div>
+        <div ref="{{ crossHRef }}" style="position:absolute; left:0; right:0; top:50%; height:1px; background:rgba(21,24,22,.35); opacity:0; transition:opacity .3s"></div>
+      </div>
+      <figcaption style="position:absolute; left:18px; top:18px; display:flex; gap:8px; flex-wrap:wrap; align-items:center">
+        <span style="padding:8px 14px; border-radius:999px; background:rgba(255,255,255,.9); font-size:14px; font-weight:600">Residencial Traço · visualização 3D ao vivo</span>
+        <span ref="{{ coordRef }}" aria-hidden="true" style="padding:8px 14px; border-radius:999px; background:rgba(21,24,22,.8); color:#d4ec5c; font:600 13px Urbanist, sans-serif; letter-spacing:.08em">X 0000 · Y 0000</span>
+      </figcaption>
+      <div style="position:absolute; left:16px; right:16px; bottom:16px; display:flex; align-items:center; gap:10px 16px; flex-wrap:wrap; padding:10px 10px 10px 22px; border-radius:999px; background:rgba(255,255,255,.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:0 10px 30px rgba(21,24,22,.12)">
+        <label for="hero-range" style="font-family:Urbanist, sans-serif; font-weight:700; font-size:18px; white-space:nowrap">Do traço à realidade</label>
+        <div style="flex:1 1 180px; display:flex; align-items:center; gap:10px">
+          <span aria-hidden="true" style="font-size:13px; font-weight:600; color:#4d524e">Desenho</span>
+          <input id="hero-range" type="range" min="0" max="100" ref="{{ heroRangeRef }}" onChange="{{ heroScrub }}" aria-label="Do traço à realidade. Arraste para transformar o desenho em prédio.">
+          <span aria-hidden="true" style="font-size:13px; font-weight:600; color:#4d524e">Prédio</span>
+        </div>
+        <button type="button" onClick="{{ heroReplay }}" aria-label="Desenhar de novo" style="width:46px; height:46px; border-radius:50%; border:0; background:#151816; color:#d4ec5c; display:grid; place-items:center; cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button>
+      </div>
+    </figure>
+    <div style="flex:1 1 400px; display:flex; flex-direction:column; justify-content:space-between; gap:32px; padding:clamp(28px,4vw,56px); border-radius:32px; background:#ebe8e0">
+      <div style="display:flex; flex-direction:column; gap:24px">
+        <span style="align-self:flex-start; padding:7px 14px; border-radius:999px; border:1px solid rgba(21,24,22,.18); font-size:14px; font-weight:600">Lançamentos 2026 em 5 estados</span>
+        <h1 id="hero-title" style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(46px,5.6vw,88px); line-height:0.98; letter-spacing:-0.035em; text-wrap:balance">Entre no seu apartamento antes dele existir.</h1>
+        <p style="font-size:clamp(17px,1.35vw,20px); line-height:1.55; color:#4d524e; max-width:520px; text-wrap:pretty">Explore o empreendimento em 3D, caminhe pela sua planta e escolha a unidade. Quando decidir, um corretor continua a conversa com você.</p>
+        <button type="button" onClick="{{ goSearch }}" style="align-self:flex-start; display:inline-flex; align-items:center; gap:14px; min-height:60px; padding:8px 8px 8px 26px; border-radius:999px; border:0; background:#fff; color:#151816; font-size:17px; font-weight:700; cursor:pointer; box-shadow:0 6px 20px rgba(21,24,22,.08)" style-hover="box-shadow:0 10px 28px rgba(21,24,22,.16)">Encontrar meu apartamento<span style="width:44px; height:44px; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></span></button>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap">
+        <div style="display:flex; align-items:center; gap:14px">
+          <span style="position:relative; font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(52px,5vw,76px); line-height:1; letter-spacing:-0.04em; padding:0 4px"><span aria-hidden="true" style="position:absolute; left:-10px; top:50%; width:1.05em; height:1.05em; transform:translateY(-50%); border-radius:50%; background:#d4ec5c; z-index:0"></span><span style="position:relative">{{ ST.units }}</span></span>
+          <span style="font-size:16px; font-weight:600; line-height:1.3; max-width:150px">apartamentos para visitar em 3D</span>
+        </div>
+        <button type="button" onClick="{{ openFeatured }}" style="display:inline-flex; align-items:center; gap:12px; min-height:56px; padding:6px 22px 6px 6px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:16px; font-weight:700; cursor:pointer" style-hover="background:#2a2f2c"><span style="width:44px; height:44px; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="#151816" aria-hidden="true"><polygon points="7 4 20 12 7 20 7 4"></polygon></svg></span>Tour 3D de um empreendimento</button>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="dif-title" style="max-width:1440px; margin:0 auto; padding:clamp(56px,7vw,96px) clamp(10px,2.5vw,32px) 0">
+    <div data-reveal="1" style="display:flex; flex-wrap:wrap; gap:16px 48px; align-items:flex-end; justify-content:space-between; margin-bottom:32px">
+      <span style="padding:7px 14px; border-radius:999px; border:1px solid rgba(21,24,22,.18); font-size:14px; font-weight:600">Por que a Traço</span>
+      <h2 id="dif-title" style="flex:1 1 520px; max-width:820px; font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(34px,4vw,60px); line-height:1.02; letter-spacing:-0.03em">Você escolhe o apartamento vendo cada detalhe, não só a planta impressa.</h2>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap:16px">
+      <article data-reveal="1" style="position:relative; min-height:360px; padding:28px; border-radius:28px; background:#1b201d; color:#fff; display:flex; flex-direction:column; justify-content:space-between; gap:24px">
+        <div style="display:flex; justify-content:space-between; font-size:14px; color:#9da39b; border-bottom:1px solid rgba(255,255,255,.14); padding-bottom:14px"><span>01</span><span>Visita 3D</span></div>
+        <div style="display:flex; flex-direction:column; gap:12px"><h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:32px; letter-spacing:-0.02em; line-height:1.05">Cada prédio, andar por andar</h3><p style="font-size:17px; line-height:1.55; color:#c9cec6">Gire a maquete, corte o prédio no seu andar e caminhe pela planta como se já estivesse lá.</p></div>
+        <button type="button" onClick="{{ openFeatured }}" aria-label="Explorar um empreendimento em 3D" style="position:absolute; right:18px; bottom:18px; width:52px; height:52px; border-radius:50%; border:0; background:#d4ec5c; display:grid; place-items:center; cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </article>
+      <article data-reveal="1" style="position:relative; min-height:360px; border-radius:28px; background:#d4ec5c; color:#151816; display:flex; flex-direction:column; overflow:hidden">
+        <div style="padding:28px 28px 0; display:flex; flex-direction:column; gap:12px">
+          <div style="display:flex; justify-content:space-between; font-size:14px; border-bottom:1px solid rgba(21,24,22,.2); padding-bottom:14px"><span>02</span><span>Compra online</span></div>
+          <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:32px; letter-spacing:-0.02em; line-height:1.05">Proposta sem fila nem papelada</h3>
+          <p style="font-size:17px; line-height:1.55; max-width:400px">Coloque a unidade no carrinho, simule o financiamento e envie. O corretor finaliza com você.</p>
+        </div>
+        <div style="flex:1; min-height:120px; margin-top:16px; position:relative">
+          <sc-if value="{{ TH.ok }}" hint-placeholder-val="{{ false }}"><img src="{{ TH.b }}" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%; -webkit-mask-image:linear-gradient(180deg, transparent 0%, #000 35%); mask-image:linear-gradient(180deg, transparent 0%, #000 35%)"></sc-if>
+        </div>
+        <button type="button" onClick="{{ openCart }}" aria-label="Abrir carrinho" style="position:absolute; right:18px; bottom:18px; width:52px; height:52px; border-radius:50%; border:0; background:#151816; display:grid; place-items:center; cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4ec5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </article>
+      <article data-reveal="1" style="position:relative; min-height:360px; border-radius:28px; background:#2a2f2c; color:#fff; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end">
+        <sc-if value="{{ TH.ok }}" hint-placeholder-val="{{ false }}"><img src="{{ TH.a }}" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover"></sc-if>
+        <div aria-hidden="true" style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(21,24,22,.05) 20%, rgba(21,24,22,.85) 100%)"></div>
+        <div style="position:absolute; left:28px; right:28px; top:28px; display:flex; justify-content:space-between; font-size:14px; border-bottom:1px solid rgba(255,255,255,.3); padding-bottom:14px"><span>03</span><span>Listas</span></div>
+        <div style="position:relative; padding:28px 90px 28px 28px; display:flex; flex-direction:column; gap:12px"><h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:32px; letter-spacing:-0.02em; line-height:1.05">Desejos e pretensões</h3><p style="font-size:17px; line-height:1.55; color:#e7ebe4">Guarde unidades, receba avisos da obra e diga ao consultor sobre o que quer conversar.</p></div>
+        <button type="button" onClick="{{ openWish }}" aria-label="Abrir lista de desejos" style="position:absolute; right:18px; bottom:18px; width:52px; height:52px; border-radius:50%; border:0; background:#d4ec5c; display:grid; place-items:center; cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></button>
+      </article>
+    </div>
+  </section>
+
+  <div aria-hidden="true" style="overflow:hidden; padding:40px 0 8px">
+    <div ref="{{ marqRef }}" style="display:flex; gap:14px; width:max-content; will-change:transform">
+      <span style="padding:16px 30px; border-radius:999px; background:#fff; font-family:Urbanist, sans-serif; font-weight:600; font-size:24px; font-style:italic; white-space:nowrap">Lançamentos</span>
+      <sc-if value="{{ TH.ok }}" hint-placeholder-val="{{ false }}"><img src="{{ TH.c }}" alt="" style="width:120px; height:64px; border-radius:999px; object-fit:cover"></sc-if>
+      <span style="padding:16px 30px; border-radius:999px; background:#fff; font-family:Urbanist, sans-serif; font-weight:600; font-size:24px; font-style:italic; white-space:nowrap">Pronto para morar</span>
+      <sc-if value="{{ TH.ok }}" hint-placeholder-val="{{ false }}"><img src="{{ TH.d }}" alt="" style="width:120px; height:64px; border-radius:999px; object-fit:cover"></sc-if>
+      <span style="padding:16px 30px; border-radius:999px; background:#fff; font-family:Urbanist, sans-serif; font-weight:600; font-size:24px; font-style:italic; white-space:nowrap">Minha Casa Minha Vida</span>
+      <sc-if value="{{ TH.ok }}" hint-placeholder-val="{{ false }}"><img src="{{ TH.a }}" alt="" style="width:120px; height:64px; border-radius:999px; object-fit:cover"></sc-if>
+      <span style="padding:16px 30px; border-radius:999px; background:#fff; font-family:Urbanist, sans-serif; font-weight:600; font-size:24px; font-style:italic; white-space:nowrap">Entrada facilitada</span>
+      <sc-if value="{{ TH.ok }}" hint-placeholder-val="{{ false }}"><img src="{{ TH.b }}" alt="" style="width:120px; height:64px; border-radius:999px; object-fit:cover"></sc-if>
+      <span style="padding:16px 30px; border-radius:999px; background:#d4ec5c; font-family:Urbanist, sans-serif; font-weight:600; font-size:24px; font-style:italic; white-space:nowrap">Visita 3D em todos</span>
+      <span style="padding:16px 30px; border-radius:999px; background:#fff; font-family:Urbanist, sans-serif; font-weight:600; font-size:24px; font-style:italic; white-space:nowrap">Lançamentos</span>
+      <sc-if value="{{ TH.ok }}" hint-placeholder-val="{{ false }}"><img src="{{ TH.c }}" alt="" style="width:120px; height:64px; border-radius:999px; object-fit:cover"></sc-if>
+      <span style="padding:16px 30px; border-radius:999px; background:#fff; font-family:Urbanist, sans-serif; font-weight:600; font-size:24px; font-style:italic; white-space:nowrap">Pronto para morar</span>
+      <sc-if value="{{ TH.ok }}" hint-placeholder-val="{{ false }}"><img src="{{ TH.d }}" alt="" style="width:120px; height:64px; border-radius:999px; object-fit:cover"></sc-if>
+      <span style="padding:16px 30px; border-radius:999px; background:#fff; font-family:Urbanist, sans-serif; font-weight:600; font-size:24px; font-style:italic; white-space:nowrap">Minha Casa Minha Vida</span>
+      <sc-if value="{{ TH.ok }}" hint-placeholder-val="{{ false }}"><img src="{{ TH.a }}" alt="" style="width:120px; height:64px; border-radius:999px; object-fit:cover"></sc-if>
+      <span style="padding:16px 30px; border-radius:999px; background:#fff; font-family:Urbanist, sans-serif; font-weight:600; font-size:24px; font-style:italic; white-space:nowrap">Entrada facilitada</span>
+      <sc-if value="{{ TH.ok }}" hint-placeholder-val="{{ false }}"><img src="{{ TH.b }}" alt="" style="width:120px; height:64px; border-radius:999px; object-fit:cover"></sc-if>
+      <span style="padding:16px 30px; border-radius:999px; background:#d4ec5c; font-family:Urbanist, sans-serif; font-weight:600; font-size:24px; font-style:italic; white-space:nowrap">Visita 3D em todos</span>
+    </div>
+  </div>
+  <section id="empreendimentos" aria-labelledby="emps-title" style="max-width:1440px; margin:0 auto; padding:clamp(48px,6vw,80px) clamp(10px,2.5vw,32px) 0">
+    <div style="border-radius:36px; background:#ebe8e0; padding:clamp(20px,3.5vw,48px)">
+      <div data-reveal="1" style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:16px; margin-bottom:28px">
+        <h2 id="emps-title" style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(34px,4vw,60px); line-height:1; letter-spacing:-0.03em">Catálogo de<br>empreendimentos</h2>
+        <p aria-live="polite" style="font-size:18px; font-weight:600; color:#4d524e">{{ resultsLabel }}</p>
+      </div>
+      <div data-reveal="1" role="group" aria-label="Filtros" style="padding:clamp(18px,2.4vw,28px); border-radius:28px; background:#fff; display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap:22px 36px; margin-bottom:28px">
+        <div style="display:flex; flex-direction:column; gap:10px">
+          <div style="font-weight:700; font-size:16px">Região</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ regiaoOpts }}" as="o" hint-placeholder-count="4"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="min-height:46px; padding:8px 16px; border-radius:999px; border:1px solid {{ o.bd }}; background:{{ o.bg }}; color:{{ o.fg }}; font-size:15px; font-weight:600; cursor:pointer">{{ o.label }}</button></sc-for></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px">
+          <div style="font-weight:700; font-size:16px">Tamanho</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ tamanhoOpts }}" as="o" hint-placeholder-count="4"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="min-height:46px; padding:8px 16px; border-radius:999px; border:1px solid {{ o.bd }}; background:{{ o.bg }}; color:{{ o.fg }}; font-size:15px; font-weight:600; cursor:pointer">{{ o.label }}</button></sc-for></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px">
+          <div style="font-weight:700; font-size:16px">Dormitórios</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ dormOpts }}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="min-height:46px; padding:8px 16px; border-radius:999px; border:1px solid {{ o.bd }}; background:{{ o.bg }}; color:{{ o.fg }}; font-size:15px; font-weight:600; cursor:pointer">{{ o.label }}</button></sc-for></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px">
+          <label for="max-price" style="font-weight:700; font-size:16px; display:flex; justify-content:space-between; gap:12px">Preço <span style="font-weight:600; color:#3d5a00">{{ maxPriceLabel }}</span></label>
+          <input id="max-price" type="range" min="200000" max="800000" step="10000" value="{{ maxPrice }}" onChange="{{ setMaxPrice }}">
+          <div style="display:flex; justify-content:space-between; font-size:13px; color:#4d524e"><span>R$ 200 mil</span><span>R$ 800 mil ou mais</span></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px; grid-column:1 / -1">
+          <div style="font-weight:700; font-size:16px">Oportunidades</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center">
+            <sc-for list="{{ oppOpts }}" as="o" hint-placeholder-count="6"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="min-height:46px; padding:8px 16px; border-radius:999px; border:1px solid {{ o.bd }}; background:{{ o.bg }}; color:{{ o.fg }}; font-size:15px; font-weight:600; cursor:pointer">{{ o.label }}</button></sc-for>
+            <button type="button" onClick="{{ clearFilters }}" style="min-height:46px; padding:8px 16px; border-radius:999px; border:0; background:transparent; font-size:15px; font-weight:700; text-decoration:underline; text-underline-offset:4px; cursor:pointer; margin-left:auto; color:#151816">Limpar filtros</button>
+          </div>
+        </div>
+      </div>
+      <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:40px; border-radius:28px; background:#fff; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px">
+          <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:28px">Nenhum empreendimento com esses filtros</h3>
+          <p style="font-size:17px; color:#4d524e">Tente ampliar a faixa de preço ou escolher outra região.</p>
+          <button type="button" onClick="{{ clearFilters }}" style="min-height:50px; padding:10px 22px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:16px; font-weight:700; cursor:pointer">Limpar filtros</button>
+        </div>
+      </sc-if>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap:18px">
+        <sc-for list="{{ emps }}" as="e" hint-placeholder-count="6">
+          <article data-reveal="1" style="background:#fff; border-radius:28px; overflow:hidden; display:flex; flex-direction:column">
+            <div style="position:relative; aspect-ratio:4 / 3; overflow:hidden; background:linear-gradient(180deg,#c3d2dc,#ebe7df)">
+              <button type="button" onClick="{{ e.open }}" aria-label="{{ e.openAria }}" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:transparent; cursor:pointer; display:block">
+                <sc-if value="{{ e.hasThumb }}" hint-placeholder-val="{{ false }}"><img src="{{ e.thumb }}" alt="{{ e.alt }}" style="width:100%; height:100%; object-fit:cover; transition:transform .9s cubic-bezier(.2,.7,.2,1)" style-hover="transform:scale(1.06)"></sc-if>
+                <sc-if value="{{ e.noThumb }}" hint-placeholder-val="{{ true }}"><span style="position:absolute; inset:0; display:grid; place-items:center; font-weight:600; font-size:15px; color:#4d524e">Gerando maquete 3D…</span></sc-if>
+              </button>
+              <div aria-hidden="true" style="position:absolute; inset:auto 0 0 0; height:55%; background:linear-gradient(180deg, transparent, rgba(21,24,22,.78)); pointer-events:none"></div>
+              <div style="position:absolute; left:14px; top:14px; display:flex; gap:6px; flex-wrap:wrap; pointer-events:none; max-width:calc(100% - 80px)"><span style="padding:6px 12px; border-radius:999px; background:#d4ec5c; color:#151816; font-size:13px; font-weight:700">{{ e.status }}</span><sc-for list="{{ e.opps }}" as="o" hint-placeholder-count="1"><span style="padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.92); color:#151816; font-size:13px; font-weight:600">{{ o.label }}</span></sc-for></div>
+              <button type="button" onClick="{{ e.toggleWish }}" aria-label="{{ e.wishAria }}" style="position:absolute; right:12px; top:12px; width:46px; height:46px; border-radius:50%; border:0; background:#fff; color:#151816; display:grid; place-items:center; cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="{{ e.heart }}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+              <div style="position:absolute; left:18px; right:18px; bottom:16px; color:#fff; pointer-events:none"><h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:28px; line-height:1.05; letter-spacing:-0.02em">{{ e.name }}</h3><div style="font-size:15px; margin-top:4px; color:#e7ebe4">a partir de <strong style="color:#d4ec5c">{{ e.price }}</strong></div></div>
+            </div>
+            <div style="padding:18px 18px 20px; display:flex; flex-direction:column; gap:12px; flex:1">
+              <div style="display:flex; align-items:center; gap:6px; font-size:15px; font-weight:600; color:#4d524e"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>{{ e.local }}</div>
+              <p style="font-size:16px; line-height:1.5">{{ e.tagline }}</p>
+              <div style="display:flex; gap:6px; flex-wrap:wrap"><span style="padding:6px 12px; border-radius:999px; background:#f1efe9; font-size:14px; font-weight:600">{{ e.dorms }}</span><span style="padding:6px 12px; border-radius:999px; background:#f1efe9; font-size:14px; font-weight:600">{{ e.area }}</span><span style="padding:6px 12px; border-radius:999px; background:#f1efe9; font-size:14px; font-weight:600">{{ e.entrega }}</span></div>
+              <div style="font-size:14px; font-weight:700; color:#3d5a00">{{ e.avail }}</div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:auto">
+                <button type="button" onClick="{{ e.open }}" style="flex:1 1 200px; display:inline-flex; align-items:center; justify-content:space-between; gap:12px; min-height:54px; padding:6px 6px 6px 20px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:16px; font-weight:700; cursor:pointer" style-hover="background:#2a2f2c">Explorar em 3D<span style="width:42px; height:42px; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></span></button>
+                <button type="button" onClick="{{ e.togglePret }}" style="min-height:54px; padding:8px 18px; border-radius:999px; border:1px solid rgba(21,24,22,.16); background:{{ e.pretBg }}; color:{{ e.pretFg }}; font-size:15px; font-weight:700; cursor:pointer">{{ e.pretLabel }}</button>
+              </div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Números" style="max-width:1440px; margin:0 auto; padding:clamp(48px,6vw,80px) clamp(10px,2.5vw,32px) 0">
+    <div data-reveal="1" style="position:relative; overflow:hidden; border-radius:36px; background:#1b201d; color:#fff; padding:clamp(28px,4vw,56px)">
+      <sc-if value="{{ TH.ok }}" hint-placeholder-val="{{ false }}"><img src="{{ TH.d }}" alt="" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.22; filter:grayscale(1)"></sc-if>
+      <div style="position:relative; display:flex; flex-direction:column; gap:40px">
+        <h2 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(30px,3.4vw,48px); letter-spacing:-0.03em; line-height:1.05; max-width:640px">Tudo o que está à venda pode ser visitado agora, de casa.</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap:28px">
+          <div style="display:flex; gap:16px; padding-top:40px"><span aria-hidden="true" style="width:2px; background:linear-gradient(#d4ec5c, transparent); border-radius:2px"></span><div><div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(52px,5vw,80px); line-height:1; letter-spacing:-0.04em">{{ ST.units }}</div><div style="font-size:16px; color:#c9cec6; margin-top:8px">apartamentos modelados em 3D</div></div></div>
+          <div style="display:flex; gap:16px"><span aria-hidden="true" style="width:2px; background:linear-gradient(#d4ec5c, transparent); border-radius:2px"></span><div><div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(52px,5vw,80px); line-height:1; letter-spacing:-0.04em; color:#d4ec5c">{{ ST.avail }}</div><div style="font-size:16px; color:#c9cec6; margin-top:8px">unidades disponíveis hoje</div></div></div>
+          <div style="display:flex; gap:16px; padding-top:56px"><span aria-hidden="true" style="width:2px; background:linear-gradient(#d4ec5c, transparent); border-radius:2px"></span><div><div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(52px,5vw,80px); line-height:1; letter-spacing:-0.04em">{{ ST.emps }}</div><div style="font-size:16px; color:#c9cec6; margin-top:8px">empreendimentos</div></div></div>
+          <div style="display:flex; gap:16px; padding-top:20px"><span aria-hidden="true" style="width:2px; background:linear-gradient(#d4ec5c, transparent); border-radius:2px"></span><div><div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(52px,5vw,80px); line-height:1; letter-spacing:-0.04em">{{ ST.ufs }}</div><div style="font-size:16px; color:#c9cec6; margin-top:8px">estados</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="como-funciona" aria-labelledby="how-title" style="max-width:1440px; margin:0 auto; padding:clamp(56px,7vw,96px) clamp(10px,2.5vw,32px) 0">
+    <h2 id="how-title" data-reveal="1" style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(34px,4vw,60px); letter-spacing:-0.03em; line-height:1; margin-bottom:32px">Quatro passos até a sua chave</h2>
+    <ol style="list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap:16px">
+      <li data-reveal="1" style="padding:26px; border-radius:28px; background:#fff; display:flex; flex-direction:column; gap:14px"><span style="font-family:Urbanist, sans-serif; font-weight:600; font-size:44px; color:#b9b4aa; letter-spacing:-0.02em">[1]</span><h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:24px">Explore em 3D</h3><p style="font-size:16px; line-height:1.55; color:#4d524e">Gire a maquete, visite a área de lazer e corte o prédio andar por andar.</p></li>
+      <li data-reveal="1" style="padding:26px; border-radius:28px; background:#fff; display:flex; flex-direction:column; gap:14px"><span style="font-family:Urbanist, sans-serif; font-weight:600; font-size:44px; color:#b9b4aa; letter-spacing:-0.02em">[2]</span><h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:24px">Escolha a unidade</h3><p style="font-size:16px; line-height:1.55; color:#4d524e">As unidades disponíveis aparecem em verde-limão. Compare andar, sol, vista e preço.</p></li>
+      <li data-reveal="1" style="padding:26px; border-radius:28px; background:#fff; display:flex; flex-direction:column; gap:14px"><span style="font-family:Urbanist, sans-serif; font-weight:600; font-size:44px; color:#b9b4aa; letter-spacing:-0.02em">[3]</span><h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:24px">Caminhe pela planta</h3><p style="font-size:16px; line-height:1.55; color:#4d524e">Veja as paredes subirem a partir do desenho e passeie pelos cômodos em primeira pessoa.</p></li>
+      <li data-reveal="1" style="padding:26px; border-radius:28px; background:#d4ec5c; display:flex; flex-direction:column; gap:14px"><span style="font-family:Urbanist, sans-serif; font-weight:600; font-size:44px; color:#5f6d22; letter-spacing:-0.02em">[4]</span><h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:24px">Envie ao corretor</h3><p style="font-size:16px; line-height:1.55">Coloque a unidade no carrinho e envie. Um corretor recebe sua escolha e prepara a proposta.</p></li>
+    </ol>
+    <h3 data-reveal="1" style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(28px,3vw,40px); letter-spacing:-0.02em; margin:56px 0 20px">Formas de pagamento</h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap:16px">
+      <article data-reveal="1" style="position:relative; min-height:220px; padding:24px 24px 80px; border-radius:28px; background:#fff; display:flex; flex-direction:column; gap:10px"><h4 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:22px">Financiamento bancário</h4><p style="font-size:16px; line-height:1.55; color:#4d524e">Trabalhamos com os principais bancos. O corretor compara as taxas com você.</p><button type="button" onClick="{{ openPret }}" aria-label="Conversar sobre financiamento" style="position:absolute; right:16px; bottom:16px; width:48px; height:48px; border-radius:50%; border:0; background:#151816; display:grid; place-items:center; cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4ec5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></button></article>
+      <article data-reveal="1" style="position:relative; min-height:220px; padding:24px 24px 80px; border-radius:28px; background:#1b201d; color:#fff; display:flex; flex-direction:column; gap:10px"><h4 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:22px">FGTS</h4><p style="font-size:16px; line-height:1.55; color:#c9cec6">Use o saldo do FGTS na entrada ou para amortizar as parcelas.</p><button type="button" onClick="{{ openPret }}" aria-label="Conversar sobre FGTS" style="position:absolute; right:16px; bottom:16px; width:48px; height:48px; border-radius:50%; border:0; background:#d4ec5c; display:grid; place-items:center; cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></button></article>
+      <article data-reveal="1" style="position:relative; min-height:220px; padding:24px 24px 80px; border-radius:28px; background:#fff; display:flex; flex-direction:column; gap:10px"><h4 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:22px">Minha Casa Minha Vida</h4><p style="font-size:16px; line-height:1.55; color:#4d524e">Empreendimentos selecionados se enquadram no programa, com subsídio do governo.</p><button type="button" onClick="{{ openPret }}" aria-label="Conversar sobre Minha Casa Minha Vida" style="position:absolute; right:16px; bottom:16px; width:48px; height:48px; border-radius:50%; border:0; background:#151816; display:grid; place-items:center; cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4ec5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></button></article>
+      <article data-reveal="1" style="position:relative; min-height:220px; padding:24px 24px 80px; border-radius:28px; background:#1b201d; color:#fff; display:flex; flex-direction:column; gap:10px"><h4 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:22px">Entrada facilitada</h4><p style="font-size:16px; line-height:1.55; color:#c9cec6">Parcele a entrada durante a obra, em valores que cabem no orçamento.</p><button type="button" onClick="{{ openPret }}" aria-label="Conversar sobre entrada facilitada" style="position:absolute; right:16px; bottom:16px; width:48px; height:48px; border-radius:50%; border:0; background:#d4ec5c; display:grid; place-items:center; cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></button></article>
+    </div>
+  </section>
+</sc-if>
+<sc-if value="{{ isEmp }}" hint-placeholder-val="{{ false }}">
+  <section aria-labelledby="emp-title" style="max-width:1440px; margin:0 auto; padding:14px clamp(10px,2.5vw,32px) 0">
+    <div style="border-radius:32px; background:#ebe8e0; padding:clamp(20px,3vw,40px); display:flex; flex-direction:column; gap:20px">
+      <button type="button" onClick="{{ goHome }}" style="align-self:flex-start; display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:6px 16px 6px 8px; border-radius:999px; border:0; background:#fff; font-size:15px; font-weight:700; color:#151816; cursor:pointer"><span style="width:32px; height:32px; border-radius:50%; background:#f1efe9; display:grid; place-items:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg></span>Todos os empreendimentos</button>
+      <div style="display:flex; flex-wrap:wrap; gap:24px 48px; align-items:flex-end; justify-content:space-between">
+        <div style="flex:1 1 460px; display:flex; flex-direction:column; gap:12px">
+          <div style="display:flex; gap:6px; flex-wrap:wrap"><span style="padding:7px 14px; border-radius:999px; background:#d4ec5c; font-size:14px; font-weight:700">{{ E.status }}</span><sc-for list="{{ E.opps }}" as="o" hint-placeholder-count="1"><span style="padding:7px 14px; border-radius:999px; background:#fff; font-size:14px; font-weight:600">{{ o.label }}</span></sc-for></div>
+          <h1 id="emp-title" style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(42px,5.4vw,84px); line-height:.95; letter-spacing:-0.035em">{{ E.name }}</h1>
+          <p style="font-size:18px; font-weight:600; display:flex; align-items:center; gap:8px; color:#4d524e"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>{{ E.local }}</p>
+          <p style="font-size:19px; line-height:1.5; max-width:640px">{{ E.tagline }}</p>
+        </div>
+        <div style="flex:0 1 380px; padding:24px; border-radius:28px; background:#fff; display:flex; flex-direction:column; gap:8px">
+          <div style="font-size:15px; font-weight:600; color:#4d524e">Unidades disponíveis a partir de</div>
+          <div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(36px,3.4vw,48px); line-height:1; letter-spacing:-0.03em">{{ E.price }}</div>
+          <div style="font-size:15px; font-weight:700; color:#3d5a00">{{ E.avail }}</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
+            <button type="button" onClick="{{ E.toggleWish }}" style="display:inline-flex; align-items:center; gap:8px; min-height:50px; padding:8px 18px; border-radius:999px; border:1px solid rgba(21,24,22,.16); background:#fff; font-size:15px; font-weight:700; color:#151816; cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="{{ E.heart }}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>{{ E.wishLabel }}</button>
+            <button type="button" onClick="{{ E.togglePret }}" style="min-height:50px; padding:8px 18px; border-radius:999px; border:1px solid rgba(21,24,22,.16); background:{{ E.pretBg }}; color:{{ E.pretFg }}; font-size:15px; font-weight:700; cursor:pointer">{{ E.pretLabel }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Experiência 3D do empreendimento" style="max-width:1440px; margin:0 auto; padding:14px clamp(10px,2.5vw,32px) 0">
+    <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:flex-start">
+      <div ref="{{ siteWrapRef }}" style="flex:999 1 560px; min-width:0; overflow:hidden; border-radius:{{ SX.radius }}; position:{{ SX.position }}; inset:{{ SX.inset }}; z-index:{{ SX.z }}; height:{{ SX.height }}; background:{{ SX.bg }}; transition:background .6s">
+        <div ref="{{ siteRef }}" style="position:absolute; inset:0"></div>
+        <div ref="{{ tipRef }}" aria-hidden="true" style="position:absolute; display:none; pointer-events:none; z-index:3; padding:12px 14px; border-radius:16px; background:#fff; box-shadow:0 12px 32px rgba(21,24,22,.18); font-size:14px; line-height:1.45; max-width:250px"></div>
+        <div style="position:absolute; left:14px; right:14px; top:14px; display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; pointer-events:none; z-index:2">
+          <div role="group" aria-label="Iluminação" style="display:flex; gap:2px; padding:4px; border-radius:999px; background:rgba(255,255,255,.94); pointer-events:auto; box-shadow:0 6px 20px rgba(21,24,22,.1)">
+            <button type="button" aria-pressed="{{ dayPressed }}" onClick="{{ setDay }}" style="display:flex; align-items:center; gap:6px; min-height:42px; padding:6px 16px; border-radius:999px; border:0; background:{{ dayBg }}; color:{{ dayFg }}; font-size:15px; font-weight:700; cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>Dia</button>
+            <button type="button" aria-pressed="{{ nightPressed }}" onClick="{{ setNight }}" style="display:flex; align-items:center; gap:6px; min-height:42px; padding:6px 16px; border-radius:999px; border:0; background:{{ nightBg }}; color:{{ nightFg }}; font-size:15px; font-weight:700; cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>Noite</button>
+          </div>
+          <div style="display:flex; gap:6px; pointer-events:auto">
+            <button type="button" onClick="{{ toggleTour }}" style="display:flex; align-items:center; gap:10px; min-height:50px; padding:4px 18px 4px 4px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:15px; font-weight:700; cursor:pointer; box-shadow:0 6px 20px rgba(21,24,22,.2)">
+              <span style="width:42px; height:42px; border-radius:50%; background:#d4ec5c; display:grid; place-items:center">
+                <sc-if value="{{ tourIcon }}" hint-placeholder-val="{{ true }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="#151816" aria-hidden="true"><polygon points="7 4 20 12 7 20 7 4"></polygon></svg></sc-if>
+                <sc-if value="{{ tourIconStop }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="#151816" aria-hidden="true"><rect x="5" y="4" width="5" height="16" rx="1"></rect><rect x="14" y="4" width="5" height="16" rx="1"></rect></svg></sc-if>
+              </span>{{ tourBtn }}
+            </button>
+            <button type="button" onClick="{{ toggleMax }}" aria-label="{{ maxLabel }}" style="width:50px; height:50px; border-radius:50%; border:0; background:rgba(255,255,255,.94); display:grid; place-items:center; cursor:pointer; box-shadow:0 6px 20px rgba(21,24,22,.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M21 8V5a2 2 0 0 0-2-2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg></button>
+          </div>
+        </div>
+        <sc-if value="{{ touring }}" hint-placeholder-val="{{ false }}">
+          <div aria-live="polite" style="position:absolute; left:50%; top:78px; transform:translateX(-50%); z-index:2; padding:10px 20px; border-radius:999px; background:#d4ec5c; color:#151816; font-family:Urbanist, sans-serif; font-weight:700; font-size:20px; white-space:nowrap; pointer-events:none; box-shadow:0 8px 24px rgba(21,24,22,.18)">{{ tourLabel }}</div>
+        </sc-if>
+        <sc-if value="{{ showHint }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute; left:14px; top:76px; z-index:2; padding:9px 14px; border-radius:999px; background:rgba(21,24,22,.82); color:#fff; font-size:14px; font-weight:600; pointer-events:none; max-width:calc(100% - 28px)">{{ hintText }}</div>
+        </sc-if>
+        <div style="position:absolute; left:14px; right:14px; bottom:14px; display:flex; justify-content:space-between; align-items:flex-end; gap:8px; flex-wrap:wrap; pointer-events:none; z-index:2">
+          <div style="display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap">
+            <div style="display:flex; flex-direction:column; gap:2px; padding:4px; border-radius:999px; background:rgba(255,255,255,.94); pointer-events:auto; box-shadow:0 6px 20px rgba(21,24,22,.1)">
+              <button type="button" onClick="{{ zoomIn }}" aria-label="Aproximar" style="width:42px; height:42px; border-radius:50%; border:0; background:transparent; display:grid; place-items:center; cursor:pointer" style-hover="background:#f1efe9"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button>
+              <button type="button" onClick="{{ zoomOut }}" aria-label="Afastar" style="width:42px; height:42px; border-radius:50%; border:0; background:transparent; display:grid; place-items:center; cursor:pointer" style-hover="background:#f1efe9"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+              <button type="button" onClick="{{ resetView }}" aria-label="Voltar à visão geral" style="width:42px; height:42px; border-radius:50%; border:0; background:transparent; display:grid; place-items:center; cursor:pointer" style-hover="background:#f1efe9"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button>
+            </div>
+            <div aria-label="Legenda" style="display:flex; gap:14px; flex-wrap:wrap; padding:10px 16px; border-radius:999px; background:rgba(255,255,255,.94); font-size:14px; font-weight:600; pointer-events:auto; box-shadow:0 6px 20px rgba(21,24,22,.1)">
+              <span style="display:flex; align-items:center; gap:6px"><span style="width:14px; height:14px; border-radius:4px; background:#d4ec5c; border:1px solid #b9d23f"></span>Disponível</span>
+              <span style="display:flex; align-items:center; gap:6px"><span style="width:14px; height:14px; border-radius:4px; background:#b9b4aa"></span>Reservado</span>
+              <span style="display:flex; align-items:center; gap:6px"><span style="width:14px; height:14px; border-radius:4px; background:#46525a"></span>Vendido</span>
+            </div>
+          </div>
+          <div style="flex:1 1 260px; max-width:420px; pointer-events:auto; padding:12px 18px; border-radius:22px; background:rgba(255,255,255,.95); display:flex; flex-direction:column; gap:4px; box-shadow:0 6px 20px rgba(21,24,22,.1)">
+            <label for="cut-range" style="display:flex; justify-content:space-between; gap:12px; font-size:15px"><span style="font-family:Urbanist, sans-serif; font-weight:700; font-size:17px">Corte por andar</span><span style="font-weight:700; color:#3d5a00">{{ cutLabel }}</span></label>
+            <input id="cut-range" type="range" min="0" max="{{ maxFloors }}" step="1" value="{{ cut }}" onChange="{{ setCut }}">
+          </div>
+        </div>
+      </div>
+
+      <aside aria-label="Painel da unidade" style="flex:1 1 340px; display:flex; flex-direction:column; gap:14px; min-width:0">
+        <div style="padding:24px; border-radius:28px; background:#1b201d; color:#fff; display:flex; flex-direction:column; gap:16px">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px">
+            <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:24px">Sua jornada</h3>
+            <span style="padding:6px 12px; border-radius:999px; background:#d4ec5c; color:#151816; font-size:13px; font-weight:700">{{ level }}</span>
+          </div>
+          <div role="progressbar" aria-label="Missões concluídas" aria-valuetext="{{ missionsLabel }}" style="height:10px; border-radius:999px; background:rgba(255,255,255,.12); position:relative; overflow:hidden"><div style="position:absolute; left:0; top:0; bottom:0; width:{{ missionPct }}; background:#d4ec5c; border-radius:999px; transition:width .7s cubic-bezier(.2,.7,.2,1)"></div></div>
+          <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px">
+            <sc-for list="{{ missions }}" as="m" hint-placeholder-count="6">
+              <li style="display:flex; align-items:center; gap:12px; font-size:16px">
+                <sc-if value="{{ m.done }}" hint-placeholder-val="{{ false }}"><span aria-label="Concluída" style="width:26px; height:26px; flex:none; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span></sc-if>
+                <sc-if value="{{ m.todo }}" hint-placeholder-val="{{ true }}"><span aria-label="Pendente" style="width:26px; height:26px; flex:none; border-radius:50%; border:1.5px solid rgba(255,255,255,.35)"></span></sc-if>
+                <span style="text-decoration:{{ m.deco }}; color:#e7ebe4">{{ m.label }}</span>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ allDone }}" hint-placeholder-val="{{ false }}"><p style="padding:12px 14px; border-radius:16px; background:rgba(212,236,92,.14); color:#e9f5b0; font-size:15px; line-height:1.5">Jornada completa. Ao enviar uma proposta, o corretor saberá que você já conhece o projeto por dentro.</p></sc-if>
+        </div>
+
+        <div style="padding:20px; border-radius:28px; background:#fff; display:flex; flex-direction:column; gap:12px">
+          <div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:18px">Destacar na maquete</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ planChips }}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="min-height:44px; padding:8px 14px; border-radius:999px; border:1px solid {{ o.bd }}; background:{{ o.bg }}; color:{{ o.fg }}; font-size:14px; font-weight:600; cursor:pointer">{{ o.label }}</button></sc-for></div>
+          <button type="button" role="switch" aria-checked="{{ onlyAvail }}" onClick="{{ toggleOnlyAvail }}" style="display:flex; align-items:center; gap:14px; background:transparent; border:0; padding:0; cursor:pointer; font-size:16px; font-weight:600; color:#151816; min-height:44px; text-align:left">
+            <span style="width:50px; height:30px; flex:none; border-radius:999px; background:{{ swAvail.bg }}; position:relative; transition:background .2s"><span style="position:absolute; top:4px; left:{{ swAvail.knob }}; width:22px; height:22px; border-radius:50%; background:{{ swAvail.knobBg }}; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></span>Somente disponíveis
+          </button>
+        </div>
+
+        <sc-if value="{{ noSel }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:24px; border-radius:28px; border:2px dashed #cfcac0; display:flex; flex-direction:column; gap:10px">
+            <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:24px">Escolha uma unidade</h3>
+            <p style="font-size:16px; line-height:1.55; color:#4d524e">Toque em um apartamento verde-limão na maquete, use o corte por andar para ver os números, ou abra a lista de unidades abaixo.</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:24px; border-radius:28px; background:#fff; display:flex; flex-direction:column; gap:14px; box-shadow:0 12px 36px rgba(21,24,22,.08)">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap"><span style="font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4d524e">Unidade selecionada</span><span style="padding:6px 12px; border-radius:999px; background:{{ U.statusBg }}; font-size:13px; font-weight:700">{{ U.status }}</span></div>
+            <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:32px; line-height:1; letter-spacing:-0.02em">{{ U.title }}</h3>
+            <dl style="margin:0; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px">
+              <sc-for list="{{ U.specs }}" as="sp" hint-placeholder-count="6"><div style="padding:10px 12px; border-radius:16px; background:#f4f3ef"><dt style="font-size:13px; color:#4d524e">{{ sp.k }}</dt><dd style="margin:0; font-size:15px; font-weight:700">{{ sp.v }}</dd></div></sc-for>
+            </dl>
+            <div><div style="font-size:14px; font-weight:600; color:#4d524e">Valor da unidade</div><div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:38px; line-height:1.05; letter-spacing:-0.03em">{{ U.price }}</div></div>
+            <sc-if value="{{ U.unavail }}" hint-placeholder-val="{{ false }}"><p style="font-size:15px; line-height:1.5; padding:12px 14px; border-radius:16px; background:#f1efe9">{{ U.unavailMsg }}</p></sc-if>
+            <button type="button" onClick="{{ U.openPlan }}" style="display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:58px; padding:6px 6px 6px 22px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:17px; font-weight:700; cursor:pointer" style-hover="background:#2a2f2c">Ver planta em 3D<span style="width:46px; height:46px; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></span></button>
+            <sc-if value="{{ U.avail }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ U.toggleCart }}" style="display:flex; align-items:center; justify-content:center; gap:10px; min-height:56px; padding:8px 20px; border-radius:999px; border:1px solid {{ U.cartBd }}; background:{{ U.cartBg }}; color:#151816; font-size:17px; font-weight:700; cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>{{ U.cartLabel }}</button></sc-if>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
+              <button type="button" onClick="{{ U.toggleWish }}" style="display:flex; align-items:center; justify-content:center; gap:8px; min-height:50px; border-radius:999px; border:1px solid rgba(21,24,22,.16); background:#fff; font-size:15px; font-weight:700; color:#151816; cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{ U.heart }}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>{{ U.wishLabel }}</button>
+              <button type="button" onClick="{{ U.togglePret }}" style="min-height:50px; border-radius:999px; border:1px solid rgba(21,24,22,.16); background:{{ U.pretBg }}; color:{{ U.pretFg }}; font-size:15px; font-weight:700; cursor:pointer">{{ U.pretLabel }}</button>
+            </div>
+          </div>
+        </sc-if>
+      </aside>
+    </div>
+
+    <div style="margin-top:14px">
+      <button type="button" onClick="{{ toggleTable }}" aria-expanded="{{ showTable }}" style="display:inline-flex; align-items:center; gap:10px; min-height:50px; padding:8px 20px; border-radius:999px; border:1px solid rgba(21,24,22,.16); background:#fff; font-size:16px; font-weight:700; color:#151816; cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path></svg>{{ tableBtn }}</button>
+    </div>
+    <sc-if value="{{ showTable }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:14px; padding:8px 0 14px; border-radius:28px; background:#fff">
+        <p style="padding:14px 22px; font-size:15px; color:#4d524e">{{ tableCaption }}</p>
+        <div style="overflow-x:auto">
+          <div role="table" aria-label="Unidades" style="min-width:900px; font-size:16px">
+            <div role="row" style="display:grid; grid-template-columns:70px 80px 80px 150px 140px 150px 120px 1fr; gap:8px; padding:10px 22px; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#4d524e; border-bottom:1px solid rgba(21,24,22,.1)">
+              <span role="columnheader">Torre</span><span role="columnheader">Apto</span><span role="columnheader">Andar</span><span role="columnheader">Planta</span><span role="columnheader">Insolação</span><span role="columnheader">Preço</span><span role="columnheader">Situação</span><span role="columnheader"></span>
+            </div>
+            <sc-for list="{{ tableRows }}" as="r" hint-placeholder-count="6">
+              <div role="row" style="display:grid; grid-template-columns:70px 80px 80px 150px 140px 150px 120px 1fr; gap:8px; align-items:center; padding:6px 22px; border-bottom:1px solid rgba(21,24,22,.07); background:{{ r.bg }}">
+                <span role="cell">{{ r.tower }}</span><span role="cell" style="font-weight:700">{{ r.num }}</span><span role="cell">{{ r.floor }}</span><span role="cell">{{ r.plan }}</span><span role="cell">{{ r.sun }}</span><span role="cell" style="font-weight:700">{{ r.price }}</span><span role="cell">{{ r.status }}</span>
+                <span role="cell" style="text-align:right"><button type="button" onClick="{{ r.select }}" aria-label="{{ r.aria }}" style="min-height:42px; padding:6px 16px; border-radius:999px; border:1px solid rgba(21,24,22,.16); background:#fff; font-size:14px; font-weight:700; color:#151816; cursor:pointer">{{ r.btn }}</button></span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{ tableMore }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 22px 0"><button type="button" onClick="{{ showMore }}" style="min-height:46px; padding:8px 18px; border-radius:999px; border:0; background:#f1efe9; font-size:15px; font-weight:700; cursor:pointer">Mostrar mais unidades</button></div></sc-if>
+      </div>
+    </sc-if>
+  </section>
+
+  <section aria-labelledby="plantas-title" style="max-width:1440px; margin:0 auto; padding:clamp(48px,6vw,80px) clamp(10px,2.5vw,32px) 0">
+    <h2 id="plantas-title" data-reveal="1" style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(34px,4vw,56px); letter-spacing:-0.03em; line-height:1; margin-bottom:24px">Plantas</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap:16px">
+      <sc-for list="{{ planCards }}" as="p" hint-placeholder-count="2">
+        <article data-reveal="1" style="padding:22px; border-radius:28px; background:#fff; display:flex; flex-direction:column; gap:18px">
+          <div style="padding:18px; border-radius:20px; background:#f4f3ef">
+            <div aria-hidden="true" style="position:relative; width:100%; aspect-ratio:{{ p.draw.aspect }}">
+              <sc-for list="{{ p.draw.rooms }}" as="r" hint-placeholder-count="6">
+                <div style="position:absolute; left:{{ r.l }}; top:{{ r.t }}; width:{{ r.w }}; height:{{ r.h }}; background:{{ r.fill }}; border:{{ r.border }}; display:flex; align-items:center; justify-content:center; text-align:center; padding:2px; font-size:12px; font-weight:600; line-height:1.15; color:#151816; overflow:hidden"><sc-if value="{{ r.showLabel }}" hint-placeholder-val="{{ true }}"><span>{{ r.name }}<br><span style="font-weight:500; color:#4d524e">{{ r.area }}</span></span></sc-if></div>
+              </sc-for>
+              <sc-for list="{{ p.draw.gaps }}" as="g" hint-placeholder-count="6"><div style="position:absolute; left:{{ g.l }}; top:{{ g.t }}; width:{{ g.w }}; height:{{ g.h }}; background:{{ g.bg }}"></div></sc-for>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap">
+            <div><h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:28px; line-height:1">{{ p.title }}</h3><div style="font-size:16px; margin-top:6px; color:#4d524e">{{ p.sub }} · {{ p.baths }}</div></div>
+            <span style="padding:8px 14px; border-radius:999px; background:#d4ec5c; font-family:Urbanist, sans-serif; font-weight:700; font-size:18px">{{ p.area }}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; border-top:1px solid rgba(21,24,22,.1); padding-top:16px">
+            <div><div style="font-size:17px; font-weight:700">{{ p.from }}</div><div style="font-size:14px; font-weight:600; color:#3d5a00">{{ p.avail }}</div></div>
+            <button type="button" onClick="{{ p.open }}" style="display:inline-flex; align-items:center; gap:10px; min-height:52px; padding:5px 5px 5px 20px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:16px; font-weight:700; cursor:pointer">Ver em 3D<span style="width:42px; height:42px; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></span></button>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+  </section>
+
+  <section aria-label="Informações do empreendimento" style="max-width:1440px; margin:0 auto; padding:clamp(48px,6vw,80px) clamp(10px,2.5vw,32px) 0">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap:16px">
+      <div data-reveal="1" style="padding:26px; border-radius:28px; background:#fff; display:flex; flex-direction:column; gap:16px">
+        <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:28px">Ficha técnica</h3>
+        <dl style="margin:0; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px">
+          <sc-for list="{{ E.ficha }}" as="x" hint-placeholder-count="8"><div style="padding:12px 14px; border-radius:16px; background:#f4f3ef"><dt style="font-size:14px; color:#4d524e">{{ x.k }}</dt><dd style="margin:0; font-size:16px; font-weight:700">{{ x.v }}</dd></div></sc-for>
+        </dl>
+      </div>
+      <div data-reveal="1" style="padding:26px; border-radius:28px; background:#1b201d; color:#fff; display:flex; flex-direction:column; gap:18px">
+        <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:28px">Andamento da obra</h3>
+        <div style="display:flex; flex-direction:column; gap:16px">
+          <sc-for list="{{ E.obra }}" as="o" hint-placeholder-count="4">
+            <div style="display:flex; flex-direction:column; gap:8px"><div style="display:flex; justify-content:space-between; font-size:17px; color:#e7ebe4"><span>{{ o.label }}</span><span style="font-weight:700; color:#d4ec5c">{{ o.pct }}</span></div><div style="height:10px; border-radius:999px; background:rgba(255,255,255,.12); position:relative; overflow:hidden"><div style="position:absolute; left:0; top:0; bottom:0; width:{{ o.pct }}; background:#d4ec5c; border-radius:999px"></div></div></div>
+          </sc-for>
+        </div>
+        <button type="button" onClick="{{ E.obraWatch }}" style="align-self:flex-start; display:inline-flex; align-items:center; gap:10px; min-height:50px; padding:8px 20px; border-radius:999px; border:0; background:#d4ec5c; color:#151816; font-size:15px; font-weight:700; cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>Avise-me sobre a evolução da obra</button>
+      </div>
+      <div data-reveal="1" style="padding:26px; border-radius:28px; background:#ebe8e0; display:flex; flex-direction:column; gap:16px">
+        <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:28px">Lazer</h3>
+        <ul style="list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:8px">
+          <sc-for list="{{ E.lazer }}" as="l" hint-placeholder-count="6"><li style="display:flex; align-items:center; gap:8px; padding:10px 16px; border-radius:999px; background:#fff; font-size:16px; font-weight:600"><span aria-hidden="true" style="width:8px; height:8px; border-radius:50%; background:#9fc23a"></span>{{ l.label }}</li></sc-for>
+        </ul>
+      </div>
+      <div data-reveal="1" style="padding:26px; border-radius:28px; background:#fff; display:flex; flex-direction:column; gap:14px">
+        <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:28px">Localização</h3>
+        <p style="font-size:17px; font-weight:600; display:flex; gap:8px; align-items:flex-start"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:2px" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>{{ E.endereco }}</p>
+        <div style="display:flex; flex-direction:column">
+          <sc-for list="{{ E.perto }}" as="x" hint-placeholder-count="4"><div style="display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid rgba(21,24,22,.08); font-size:17px"><span>{{ x.k }}</span><span style="font-weight:700; white-space:nowrap">{{ x.v }}</span></div></sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Próximo passo" style="max-width:1440px; margin:0 auto; padding:clamp(48px,6vw,80px) clamp(10px,2.5vw,32px) 0">
+    <div style="border-radius:36px; background:#d4ec5c; padding:clamp(28px,4vw,56px); display:flex; flex-wrap:wrap; gap:24px 48px; align-items:center; justify-content:space-between">
+      <div style="flex:1 1 420px"><h2 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(32px,3.6vw,52px); line-height:1; letter-spacing:-0.03em; margin-bottom:12px">Gostou de alguma unidade?</h2><p style="font-size:19px; line-height:1.5; max-width:620px">Coloque no carrinho e envie. O corretor {{ E.corretor }} recebe sua escolha, suas pretensões e prepara a proposta.</p></div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <button type="button" onClick="{{ openCart }}" style="display:inline-flex; align-items:center; gap:12px; min-height:60px; padding:6px 6px 6px 24px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:17px; font-weight:700; cursor:pointer">Ver carrinho<span style="width:48px; height:48px; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></span></button>
+        <button type="button" onClick="{{ openPret }}" style="min-height:60px; padding:8px 24px; border-radius:999px; border:1.5px solid #151816; background:transparent; color:#151816; font-size:17px; font-weight:700; cursor:pointer">Minhas pretensões</button>
+      </div>
+    </div>
+  </section>
+</sc-if>
+</main>
+<footer id="atendimento" style="max-width:1440px; width:100%; margin:0 auto; padding:clamp(48px,6vw,80px) clamp(10px,2.5vw,32px) 14px">
+  <div style="border-radius:36px; background:#1b201d; color:#fff; padding:clamp(28px,4vw,56px); display:flex; flex-direction:column; gap:48px">
+    <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:flex-end; justify-content:space-between">
+      <h2 style="flex:1 1 460px; font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(36px,4.6vw,72px); line-height:.98; letter-spacing:-0.035em">Seu próximo endereço começa por uma visita 3D.</h2>
+      <button type="button" onClick="{{ goSearch }}" style="display:inline-flex; align-items:center; gap:12px; min-height:60px; padding:6px 6px 6px 24px; border-radius:999px; border:0; background:#d4ec5c; color:#151816; font-size:17px; font-weight:700; cursor:pointer">Ver empreendimentos<span style="width:48px; height:48px; border-radius:50%; background:#151816; display:grid; place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4ec5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M7 7h10v10"></path></svg></span></button>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap:32px; border-top:1px solid rgba(255,255,255,.14); padding-top:32px">
+      <div style="display:flex; flex-direction:column; gap:10px"><div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:30px; letter-spacing:-0.03em">traço</div><p style="font-size:16px; line-height:1.55; color:#c9cec6; max-width:320px">Construtora e incorporadora. Do primeiro desenho à entrega das chaves.</p></div>
+      <div style="display:flex; flex-direction:column; gap:8px"><div style="font-weight:700; font-size:16px; color:#d4ec5c">Atendimento</div><a href="tel:08000004040" style="font-family:Urbanist, sans-serif; font-weight:700; font-size:26px; text-decoration:none; color:#fff">0800 000 4040</a><span style="font-size:16px; color:#c9cec6">Segunda a sábado, das 8h às 20h</span><a href="mailto:atendimento@traco.example" style="font-size:16px; color:#fff">atendimento@traco.example</a></div>
+      <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-start"><div style="font-weight:700; font-size:16px; color:#d4ec5c; margin-bottom:4px">Suas listas</div>
+        <button type="button" onClick="{{ openCart }}" style="min-height:40px; padding:0; border:0; background:transparent; color:#fff; font-size:16px; font-weight:600; cursor:pointer">Carrinho ({{ cartCount }})</button>
+        <button type="button" onClick="{{ openWish }}" style="min-height:40px; padding:0; border:0; background:transparent; color:#fff; font-size:16px; font-weight:600; cursor:pointer">Lista de desejos ({{ wishCount }})</button>
+        <button type="button" onClick="{{ openPret }}" style="min-height:40px; padding:0; border:0; background:transparent; color:#fff; font-size:16px; font-weight:600; cursor:pointer">Pretensões ({{ pretCount }})</button>
+      </div>
+    </div>
+    <p style="font-size:14px; color:#9da39b">Empreendimentos, maquetes, plantas, valores e simulações são fictícios, criados para demonstração.</p>
+  </div>
+</footer>
+
+<sc-if value="{{ planOpen }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-modal="true" aria-labelledby="plan-title" style="position:fixed; inset:0; z-index:80; background:#f4f3ef; display:flex; flex-direction:column">
+    <div style="display:flex; align-items:center; gap:12px 20px; padding:12px clamp(12px,2vw,24px); flex-wrap:wrap">
+      <div style="flex:1 1 240px; min-width:0"><div style="font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#4d524e">{{ PM.emp }} · {{ PM.unit.title }}</div><h2 id="plan-title" style="font-family:Urbanist, sans-serif; font-weight:700; font-size:clamp(24px,2.4vw,34px); line-height:1.05; letter-spacing:-0.02em">{{ PM.title }} <span style="font-family:Manrope, sans-serif; font-weight:500; font-size:17px; color:#4d524e">{{ PM.sub }}</span></h2></div>
+      <div role="group" aria-label="Modo de visualização" style="display:flex; gap:2px; padding:4px; border-radius:999px; background:#fff">
+        <sc-for list="{{ PM.modes }}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="min-height:46px; padding:8px 18px; border-radius:999px; border:0; background:{{ o.bg }}; color:{{ o.fg }}; font-size:15px; font-weight:700; cursor:pointer">{{ o.label }}</button></sc-for>
+      </div>
+      <button type="button" onClick="{{ closePlan }}" aria-label="Fechar planta" style="display:flex; align-items:center; gap:8px; min-height:50px; padding:6px 18px 6px 6px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:15px; font-weight:700; cursor:pointer"><span style="width:38px; height:38px; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></span>Fechar</button>
+    </div>
+    <div style="flex:1; min-height:0; display:flex; flex-wrap:{{ planWrap }}; gap:12px; padding:0 12px 12px; overflow:auto">
+      <div style="flex:999 1 520px; min-height:min(62vh, 640px); position:relative; min-width:0; border-radius:28px; overflow:hidden; background:linear-gradient(180deg,#d3dde3 0%,#ebe7df 100%)">
+        <div ref="{{ planRef }}" style="position:absolute; inset:0"></div>
+        <sc-if value="{{ PM.isWalk }}" hint-placeholder-val="{{ false }}">
+          <div aria-live="polite" style="position:absolute; left:14px; top:14px; padding:10px 18px; border-radius:999px; background:#151816; color:#fff; font-family:Urbanist, sans-serif; font-weight:700; font-size:19px; pointer-events:none">Você está em: <span style="color:#d4ec5c">{{ PM.roomName }}</span></div>
+          <div aria-hidden="true" style="position:absolute; right:14px; top:14px; width:min(210px, 34%); padding:12px; border-radius:20px; background:rgba(255,255,255,.94); box-shadow:0 8px 24px rgba(21,24,22,.12); pointer-events:none">
+            <div style="position:relative; width:100%; aspect-ratio:{{ PM.draw.aspect }}">
+              <sc-for list="{{ PM.draw.rooms }}" as="r" hint-placeholder-count="6"><div style="position:absolute; left:{{ r.l }}; top:{{ r.t }}; width:{{ r.w }}; height:{{ r.h }}; background:{{ r.fill }}; border:{{ r.border }}"></div></sc-for>
+              <div ref="{{ dotRef }}" style="position:absolute; left:10%; top:50%; width:18px; height:18px; transform:translate(-50%,-50%)"><div style="position:absolute; left:3px; top:3px; width:12px; height:12px; background:#d4ec5c; border:2px solid #151816; border-radius:50%"></div><div style="position:absolute; left:8px; top:-9px; width:2px; height:12px; background:#151816; border-radius:2px"></div></div>
+            </div>
+          </div>
+          <div style="position:absolute; left:50%; bottom:18px; transform:translateX(-50%); display:grid; grid-template-columns:repeat(3, 62px); grid-template-rows:repeat(2, 62px); gap:8px">
+            <span></span>
+            <button type="button" aria-label="Andar para frente" onPointerDown="{{ mF.down }}" onPointerUp="{{ mF.up }}" onPointerLeave="{{ mF.up }}" onPointerCancel="{{ mF.up }}" style="width:62px; height:62px; border-radius:50%; border:0; background:#151816; color:#d4ec5c; display:grid; place-items:center; cursor:pointer; touch-action:none; box-shadow:0 6px 18px rgba(21,24,22,.25)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button>
+            <span></span>
+            <button type="button" aria-label="Virar para a esquerda" onPointerDown="{{ mL.down }}" onPointerUp="{{ mL.up }}" onPointerLeave="{{ mL.up }}" onPointerCancel="{{ mL.up }}" style="width:62px; height:62px; border-radius:50%; border:0; background:rgba(255,255,255,.95); color:#151816; display:grid; place-items:center; cursor:pointer; touch-action:none; box-shadow:0 6px 18px rgba(21,24,22,.15)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button>
+            <button type="button" aria-label="Andar para trás" onPointerDown="{{ mB.down }}" onPointerUp="{{ mB.up }}" onPointerLeave="{{ mB.up }}" onPointerCancel="{{ mB.up }}" style="width:62px; height:62px; border-radius:50%; border:0; background:#151816; color:#d4ec5c; display:grid; place-items:center; cursor:pointer; touch-action:none; box-shadow:0 6px 18px rgba(21,24,22,.25)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+            <button type="button" aria-label="Virar para a direita" onPointerDown="{{ mR.down }}" onPointerUp="{{ mR.up }}" onPointerLeave="{{ mR.up }}" onPointerCancel="{{ mR.up }}" style="width:62px; height:62px; border-radius:50%; border:0; background:rgba(255,255,255,.95); color:#151816; display:grid; place-items:center; cursor:pointer; touch-action:none; box-shadow:0 6px 18px rgba(21,24,22,.15)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg></button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ PM.notWalk }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute; left:14px; bottom:14px; display:flex; flex-direction:column; gap:2px; padding:4px; border-radius:999px; background:rgba(255,255,255,.94); box-shadow:0 6px 20px rgba(21,24,22,.1)">
+            <button type="button" onClick="{{ planZoomIn }}" aria-label="Aproximar" style="width:42px; height:42px; border-radius:50%; border:0; background:transparent; display:grid; place-items:center; cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button>
+            <button type="button" onClick="{{ planZoomOut }}" aria-label="Afastar" style="width:42px; height:42px; border-radius:50%; border:0; background:transparent; display:grid; place-items:center; cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+          </div>
+        </sc-if>
+      </div>
+      <aside aria-label="Controles da planta" style="flex:1 1 340px; max-width:{{ planAsideMax }}; display:flex; flex-direction:column; gap:12px; overflow:auto; min-width:0">
+        <div style="padding:20px; border-radius:24px; background:#fff; display:flex; flex-direction:column; gap:18px">
+          <div style="display:flex; flex-direction:column; gap:6px">
+            <label for="plan-t" style="display:flex; justify-content:space-between; gap:12px"><span style="font-family:Urbanist, sans-serif; font-weight:700; font-size:19px">Do traço à realidade</span><span style="padding:3px 10px; border-radius:999px; background:#d4ec5c; font-size:13px; font-weight:700">{{ PM.tLabel }}</span></label>
+            <input id="plan-t" type="range" min="0" max="100" value="{{ PM.tPct }}" onChange="{{ setPlanT }}">
+            <div style="display:flex; justify-content:space-between; font-size:13px; color:#4d524e"><span>Desenho</span><span>Paredes e móveis</span></div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px">
+            <label for="plan-h" style="display:flex; justify-content:space-between; gap:12px"><span style="font-family:Urbanist, sans-serif; font-weight:700; font-size:19px">Luz do sol</span><span style="font-size:15px; font-weight:700">{{ PM.hourLabel }}</span></label>
+            <input id="plan-h" type="range" min="6" max="18" step="1" value="{{ PM.hour }}" onChange="{{ setHour }}">
+            <div style="display:flex; justify-content:space-between; font-size:13px; color:#4d524e"><span>6h</span><span>12h</span><span>18h</span></div>
+          </div>
+          <button type="button" role="switch" aria-checked="{{ furnished }}" onClick="{{ toggleFurn }}" style="display:flex; align-items:center; gap:14px; background:transparent; border:0; padding:0; cursor:pointer; font-size:16px; font-weight:600; color:#151816; min-height:44px; text-align:left">
+            <span style="width:50px; height:30px; flex:none; border-radius:999px; background:{{ PM.sw.bg }}; position:relative; transition:background .2s"><span style="position:absolute; top:4px; left:{{ PM.sw.knob }}; width:22px; height:22px; border-radius:50%; background:{{ PM.sw.knobBg }}; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></span>Mostrar móveis
+          </button>
+        </div>
+        <div style="padding:20px; border-radius:24px; background:#fff; display:flex; flex-direction:column; gap:10px">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px"><span style="font-family:Urbanist, sans-serif; font-weight:700; font-size:19px">Cômodos</span><sc-if value="{{ PM.isWalk }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px; font-weight:700; color:#3d5a00">{{ PM.visitedLabel }}</span></sc-if></div>
+          <sc-if value="{{ PM.isWalk }}" hint-placeholder-val="{{ false }}"><div style="height:8px; border-radius:999px; background:#ebe8e0; position:relative; overflow:hidden"><div style="position:absolute; left:0; top:0; bottom:0; width:{{ PM.visitPct }}; background:#9fc23a; border-radius:999px; transition:width .4s"></div></div></sc-if>
+          <div style="display:flex; flex-direction:column; gap:4px">
+            <sc-for list="{{ PM.rooms }}" as="r" hint-placeholder-count="7">
+              <button type="button" onClick="{{ r.focus }}" style="display:flex; align-items:center; gap:10px; width:100%; min-height:48px; padding:6px 14px; border-radius:14px; background:{{ r.bg }}; border:0; cursor:pointer; font-size:16px; font-weight:600; color:#151816; text-align:left" style-hover="background:#f4f3ef">
+                <sc-if value="{{ r.visited }}" hint-placeholder-val="{{ false }}"><span aria-label="visitado" style="width:22px; height:22px; flex:none; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span></sc-if>
+                <span style="flex:1">{{ r.name }}</span><span style="font-weight:500; color:#4d524e">{{ r.area }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ PM.isWalk }}" hint-placeholder-val="{{ false }}"><p style="font-size:14px; line-height:1.5; color:#4d524e">Teclado: W e S ou setas para andar, Q e E ou setas laterais para virar. Arraste a tela para olhar em volta.</p></sc-if>
+        </div>
+        <div style="padding:20px; border-radius:24px; background:#1b201d; color:#fff; display:flex; flex-direction:column; gap:12px">
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap"><strong style="font-family:Urbanist, sans-serif; font-weight:700; font-size:22px">{{ PM.unit.title }}</strong><span style="padding:5px 12px; border-radius:999px; background:{{ PM.unit.statusBg }}; color:#151816; font-size:13px; font-weight:700">{{ PM.unit.status }}</span></div>
+          <div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:34px; line-height:1; letter-spacing:-0.03em">{{ PM.unit.price }}</div>
+          <sc-if value="{{ PM.unit.avail }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ PM.unit.toggleCart }}" style="min-height:54px; border-radius:999px; border:1px solid {{ PM.unit.cartBd }}; background:{{ PM.unit.cartBg }}; color:#151816; font-size:16px; font-weight:700; cursor:pointer">{{ PM.unit.cartLabel }}</button></sc-if>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
+            <button type="button" onClick="{{ PM.unit.toggleWish }}" style="min-height:48px; border-radius:999px; border:1px solid rgba(255,255,255,.25); background:transparent; color:#fff; font-size:15px; font-weight:700; cursor:pointer">{{ PM.unit.wishLabel }}</button>
+            <button type="button" onClick="{{ PM.unit.togglePret }}" style="min-height:48px; border-radius:999px; border:1px solid rgba(255,255,255,.25); background:transparent; color:#fff; font-size:15px; font-weight:700; cursor:pointer">{{ PM.unit.pretLabel }}</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ drawer }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeDrawer }}" aria-hidden="true" style="position:fixed; inset:0; z-index:89; background:rgba(21,24,22,.45)"></div>
+  <aside role="dialog" aria-modal="true" aria-label="Suas listas" style="position:fixed; top:10px; right:10px; bottom:10px; width:min(500px, calc(100% - 20px)); z-index:90; background:#f4f3ef; border-radius:32px; box-shadow:0 30px 80px rgba(21,24,22,.3); display:flex; flex-direction:column; overflow:hidden">
+    <div style="display:flex; align-items:center; gap:8px; padding:14px">
+      <div role="tablist" style="display:flex; flex:1; gap:2px; padding:4px; border-radius:999px; background:#fff; flex-wrap:wrap">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><button type="button" role="tab" aria-selected="{{ t.pressed }}" onClick="{{ t.onClick }}" style="flex:1 1 auto; min-height:44px; padding:6px 12px; border-radius:999px; border:0; background:{{ t.bg }}; color:{{ t.fg }}; font-size:14px; font-weight:700; cursor:pointer">{{ t.label }}</button></sc-for>
+      </div>
+      <button type="button" onClick="{{ closeDrawer }}" aria-label="Fechar" style="width:50px; height:50px; flex:none; border-radius:50%; border:0; background:#151816; display:grid; place-items:center; cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4ec5c" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+    </div>
+    <div style="flex:1; overflow:auto; padding:6px 18px 22px; display:flex; flex-direction:column; gap:14px">
+      <sc-if value="{{ tabCart }}" hint-placeholder-val="{{ true }}">
+        <sc-if value="{{ stCart }}" hint-placeholder-val="{{ true }}">
+          <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:30px; letter-spacing:-0.02em">Carrinho</h3>
+          <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ true }}">
+            <p style="font-size:17px; line-height:1.55; color:#4d524e">Seu carrinho está vazio. Escolha uma unidade na maquete 3D e toque em “Adicionar ao carrinho”.</p>
+            <button type="button" onClick="{{ browse }}" style="align-self:flex-start; min-height:54px; padding:8px 22px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:16px; font-weight:700; cursor:pointer">Ver empreendimentos</button>
+          </sc-if>
+          <sc-for list="{{ cartItems }}" as="it" hint-placeholder-count="1">
+            <div style="padding:18px; border-radius:24px; background:#fff; display:flex; flex-direction:column; gap:8px">
+              <div style="font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#4d524e">{{ it.emp }}</div>
+              <div style="display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap"><strong style="font-family:Urbanist, sans-serif; font-weight:700; font-size:22px">{{ it.title }}</strong><strong style="font-size:18px">{{ it.price }}</strong></div>
+              <div style="font-size:15px; color:#4d524e">{{ it.specs }}</div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap"><button type="button" onClick="{{ it.openPlan }}" style="min-height:44px; padding:6px 16px; border-radius:999px; border:1px solid rgba(21,24,22,.16); background:#fff; font-size:14px; font-weight:700; cursor:pointer">Ver planta 3D</button><button type="button" onClick="{{ it.remove }}" aria-label="{{ it.removeAria }}" style="min-height:44px; padding:6px 16px; border-radius:999px; border:0; background:transparent; font-size:14px; font-weight:700; text-decoration:underline; text-underline-offset:3px; cursor:pointer">Remover</button></div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ cartFull }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:20px; border-radius:24px; background:#1b201d; color:#fff; display:flex; flex-direction:column; gap:14px">
+              <div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:20px">Simulação de financiamento</div>
+              <div style="display:flex; flex-direction:column; gap:6px"><label for="entrada" style="display:flex; justify-content:space-between; font-size:16px">Entrada <strong style="color:#d4ec5c">{{ entradaLabel }}</strong></label><input id="entrada" type="range" min="10" max="50" step="5" value="{{ entrada }}" onChange="{{ setEntrada }}" style="accent-color:#d4ec5c"></div>
+              <div style="display:flex; flex-direction:column; gap:8px"><span style="font-size:16px">Prazo</span><div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ prazoOpts }}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="min-height:44px; padding:6px 16px; border-radius:999px; border:1px solid rgba(255,255,255,.25); background:{{ o.fg }}; color:{{ o.bg }}; font-size:14px; font-weight:700; cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+              <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; border-top:1px solid rgba(255,255,255,.14); padding-top:14px"><span style="font-size:15px; color:#c9cec6">Parcela estimada {{ prazoLabel }}</span><strong style="font-family:Urbanist, sans-serif; font-weight:700; font-size:30px; color:#d4ec5c">{{ parcela }}</strong></div>
+              <p style="font-size:13px; line-height:1.5; color:#9da39b">Simulação ilustrativa com taxa de 0,85% ao mês. Taxas e condições finais são definidas com o corretor e o banco.</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:baseline; font-size:17px; font-weight:600; padding:0 4px"><span>Total das unidades</span><strong style="font-family:Urbanist, sans-serif; font-weight:700; font-size:28px">{{ total }}</strong></div>
+            <button type="button" onClick="{{ toForm }}" style="display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:62px; padding:6px 6px 6px 24px; border-radius:999px; border:0; background:#d4ec5c; color:#151816; font-size:18px; font-weight:700; cursor:pointer">Continuar para a proposta<span style="width:50px; height:50px; border-radius:50%; background:#151816; display:grid; place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4ec5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span></button>
+          </sc-if>
+        </sc-if>
+        <sc-if value="{{ stForm }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ toCart }}" style="align-self:flex-start; min-height:44px; padding:6px 16px; border-radius:999px; border:0; background:#fff; font-size:15px; font-weight:700; cursor:pointer">← Voltar ao carrinho</button>
+          <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:28px; letter-spacing:-0.02em">Seus dados para o corretor</h3>
+          <p style="font-size:16px; line-height:1.55; color:#4d524e">O corretor recebe as unidades do carrinho, suas pretensões e a simulação. Nenhum pagamento é feito agora.</p>
+          <div style="padding:18px; border-radius:24px; background:#fff; display:flex; flex-direction:column; gap:14px">
+            <div><label for="f-nome" style="display:block; font-size:15px; font-weight:700; margin-bottom:6px">Nome completo</label><input id="f-nome" value="{{ c.nome }}" onChange="{{ setNome }}" autocomplete="name" style="width:100%; min-height:52px; padding:10px 16px; border-radius:14px; border:1px solid rgba(21,24,22,.18); background:#f4f3ef; font-size:17px; color:#151816"><sc-if value="{{ hasErNome }}" hint-placeholder-val="{{ false }}"><div role="alert" style="color:#9b2c1d; font-size:14px; margin-top:6px; font-weight:600">{{ er.nome }}</div></sc-if></div>
+            <div><label for="f-tel" style="display:block; font-size:15px; font-weight:700; margin-bottom:6px">Telefone ou WhatsApp</label><input id="f-tel" type="tel" inputmode="tel" value="{{ c.tel }}" onChange="{{ setTel }}" autocomplete="tel" placeholder="(11) 98765-4321" style="width:100%; min-height:52px; padding:10px 16px; border-radius:14px; border:1px solid rgba(21,24,22,.18); background:#f4f3ef; font-size:17px; color:#151816"><sc-if value="{{ hasErTel }}" hint-placeholder-val="{{ false }}"><div role="alert" style="color:#9b2c1d; font-size:14px; margin-top:6px; font-weight:600">{{ er.tel }}</div></sc-if></div>
+            <div><label for="f-email" style="display:block; font-size:15px; font-weight:700; margin-bottom:6px">E-mail (opcional)</label><input id="f-email" type="email" value="{{ c.email }}" onChange="{{ setEmail }}" autocomplete="email" style="width:100%; min-height:52px; padding:10px 16px; border-radius:14px; border:1px solid rgba(21,24,22,.18); background:#f4f3ef; font-size:17px; color:#151816"><sc-if value="{{ hasErEmail }}" hint-placeholder-val="{{ false }}"><div role="alert" style="color:#9b2c1d; font-size:14px; margin-top:6px; font-weight:600">{{ er.email }}</div></sc-if></div>
+            <div style="display:flex; flex-direction:column; gap:8px"><span style="font-size:15px; font-weight:700">Como prefere ser contatado</span><div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ canalOpts }}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="min-height:44px; padding:6px 16px; border-radius:999px; border:1px solid {{ o.bd }}; background:{{ o.bg }}; color:{{ o.fg }}; font-size:14px; font-weight:700; cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+            <div style="display:flex; flex-direction:column; gap:8px"><span style="font-size:15px; font-weight:700">Melhor horário</span><div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ horarioOpts }}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="min-height:44px; padding:6px 16px; border-radius:999px; border:1px solid {{ o.bd }}; background:{{ o.bg }}; color:{{ o.fg }}; font-size:14px; font-weight:700; cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+            <button type="button" role="switch" aria-checked="{{ fgtsOn }}" onClick="{{ toggleFgts }}" style="display:flex; align-items:center; gap:14px; background:transparent; border:0; padding:0; cursor:pointer; font-size:16px; font-weight:600; color:#151816; min-height:44px; text-align:left">
+              <span style="width:50px; height:30px; flex:none; border-radius:999px; background:{{ swFgts.bg }}; position:relative; transition:background .2s"><span style="position:absolute; top:4px; left:{{ swFgts.knob }}; width:22px; height:22px; border-radius:50%; background:{{ swFgts.knobBg }}; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></span>Quero usar o FGTS
+            </button>
+          </div>
+          <button type="button" onClick="{{ submitCart }}" style="display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:62px; padding:6px 6px 6px 24px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:18px; font-weight:700; cursor:pointer">Enviar ao corretor<span style="width:50px; height:50px; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span></button>
+        </sc-if>
+        <sc-if value="{{ stDone }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:24px; border-radius:28px; background:#d4ec5c; display:flex; flex-direction:column; gap:14px">
+            <div style="width:60px; height:60px; border-radius:50%; background:#151816; display:grid; place-items:center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#d4ec5c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></div>
+            <h3 role="status" style="font-family:Urbanist, sans-serif; font-weight:700; font-size:32px; letter-spacing:-0.02em">Proposta enviada</h3>
+            <p style="font-size:17px; line-height:1.5">{{ sent.corretores }} vai falar com você por {{ sent.canal }}, no período da {{ sent.horario }}. Guarde o protocolo:</p>
+            <div style="font-family:Urbanist, sans-serif; font-weight:700; font-size:30px; letter-spacing:.04em; padding:12px 18px; border-radius:16px; background:#fff">{{ sent.protocolo }}</div>
+          </div>
+          <sc-for list="{{ sent.units }}" as="it" hint-placeholder-count="1"><div style="display:flex; justify-content:space-between; gap:10px; padding:14px 16px; border-radius:18px; background:#fff; font-size:16px"><span><strong>{{ it.title }}</strong><br><span style="color:#4d524e">{{ it.emp }}</span></span><strong>{{ it.price }}</strong></div></sc-for>
+          <button type="button" onClick="{{ finishDone }}" style="min-height:56px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:17px; font-weight:700; cursor:pointer">Concluir</button>
+        </sc-if>
+      </sc-if>
+
+      <sc-if value="{{ tabWish }}" hint-placeholder-val="{{ false }}">
+        <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:30px; letter-spacing:-0.02em">Lista de desejos</h3>
+        <p style="font-size:16px; line-height:1.5; color:#4d524e">Escolha sobre o que quer ser avisado em cada item.</p>
+        <sc-if value="{{ wishEmpty }}" hint-placeholder-val="{{ true }}"><p style="font-size:17px; line-height:1.5; padding:20px; border-radius:24px; border:2px dashed #cfcac0">Nada aqui ainda. Toque no coração de um empreendimento ou de uma unidade.</p></sc-if>
+        <sc-for list="{{ wishItems }}" as="w" hint-placeholder-count="1">
+          <div style="padding:18px; border-radius:24px; background:#fff; display:flex; flex-direction:column; gap:12px">
+            <div><strong style="font-family:Urbanist, sans-serif; font-weight:700; font-size:22px">{{ w.name }}</strong><div style="font-size:15px; color:#4d524e; margin-top:2px">{{ w.sub }}</div></div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ w.notify }}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex; align-items:center; gap:6px; min-height:42px; padding:6px 14px; border-radius:999px; border:1px solid {{ o.bd }}; background:{{ o.bg }}; color:{{ o.fg }}; font-size:14px; font-weight:700; cursor:pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>{{ o.label }}</button></sc-for></div>
+            <sc-if value="{{ w.hasSim }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; flex-direction:column; gap:6px; padding:12px; border-radius:18px; background:#f4f3ef">
+                <div style="font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#3d5a00">{{ w.simTitle }}</div>
+                <sc-for list="{{ w.sim }}" as="x" hint-placeholder-count="2"><button type="button" onClick="{{ x.go }}" style="display:flex; justify-content:space-between; gap:10px; width:100%; min-height:46px; padding:8px 12px; border-radius:12px; background:#fff; border:0; cursor:pointer; font-size:15px; font-weight:600; color:#151816; text-align:left"><span>{{ x.label }}</span><span style="font-weight:700; white-space:nowrap">{{ x.price }}</span></button></sc-for>
+              </div>
+            </sc-if>
+            <div style="display:flex; gap:8px; flex-wrap:wrap"><button type="button" onClick="{{ w.open }}" style="min-height:44px; padding:6px 18px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:14px; font-weight:700; cursor:pointer">Abrir</button><button type="button" onClick="{{ w.remove }}" style="min-height:44px; padding:6px 16px; border-radius:999px; border:0; background:transparent; font-size:14px; font-weight:700; text-decoration:underline; text-underline-offset:3px; cursor:pointer">Remover</button></div>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <sc-if value="{{ tabPret }}" hint-placeholder-val="{{ false }}">
+        <h3 style="font-family:Urbanist, sans-serif; font-weight:700; font-size:30px; letter-spacing:-0.02em">Lista de pretensões</h3>
+        <p style="font-size:16px; line-height:1.5; color:#4d524e">Marque os assuntos que quer conversar sobre cada item. O consultor recebe esta lista antes de entrar em contato.</p>
+        <sc-if value="{{ pretEmpty }}" hint-placeholder-val="{{ true }}"><p style="font-size:17px; line-height:1.5; padding:20px; border-radius:24px; border:2px dashed #cfcac0">Nada aqui ainda. Use o botão “Pretensão” em um empreendimento ou unidade.</p></sc-if>
+        <sc-for list="{{ pretItems }}" as="w" hint-placeholder-count="1">
+          <div style="padding:18px; border-radius:24px; background:#fff; display:flex; flex-direction:column; gap:12px">
+            <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start"><div><strong style="font-family:Urbanist, sans-serif; font-weight:700; font-size:22px">{{ w.name }}</strong><div style="font-size:15px; color:#4d524e; margin-top:2px">{{ w.sub }}</div></div><button type="button" onClick="{{ w.remove }}" style="min-height:40px; padding:4px 10px; border:0; background:transparent; font-size:14px; font-weight:700; text-decoration:underline; text-underline-offset:3px; cursor:pointer">Remover</button></div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap"><sc-for list="{{ w.topics }}" as="o" hint-placeholder-count="6"><button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="min-height:42px; padding:6px 14px; border-radius:999px; border:1px solid {{ o.bd }}; background:{{ o.bg }}; color:{{ o.fg }}; font-size:14px; font-weight:700; cursor:pointer">{{ o.label }}</button></sc-for></div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ pretFull }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:18px; border-radius:24px; background:#fff; display:flex; flex-direction:column; gap:14px">
+            <div><label for="p-note" style="display:block; font-size:15px; font-weight:700; margin-bottom:6px">Algo mais que o consultor precisa saber?</label><textarea id="p-note" value="{{ pretNote }}" onChange="{{ setPretNote }}" placeholder="Ex.: prefiro andar alto, tenho um cachorro, quero mudar até o fim de 2027" style="width:100%; min-height:100px; padding:12px 16px; border-radius:14px; border:1px solid rgba(21,24,22,.18); background:#f4f3ef; font-size:16px; color:#151816; resize:vertical"></textarea></div>
+            <div><label for="p-nome" style="display:block; font-size:15px; font-weight:700; margin-bottom:6px">Nome</label><input id="p-nome" value="{{ c.nome }}" onChange="{{ setNome }}" autocomplete="name" style="width:100%; min-height:52px; padding:10px 16px; border-radius:14px; border:1px solid rgba(21,24,22,.18); background:#f4f3ef; font-size:17px; color:#151816"><sc-if value="{{ hasErNome }}" hint-placeholder-val="{{ false }}"><div role="alert" style="color:#9b2c1d; font-size:14px; margin-top:6px; font-weight:600">{{ er.nome }}</div></sc-if></div>
+            <div><label for="p-tel" style="display:block; font-size:15px; font-weight:700; margin-bottom:6px">Telefone ou WhatsApp</label><input id="p-tel" type="tel" inputmode="tel" value="{{ c.tel }}" onChange="{{ setTel }}" autocomplete="tel" placeholder="(11) 98765-4321" style="width:100%; min-height:52px; padding:10px 16px; border-radius:14px; border:1px solid rgba(21,24,22,.18); background:#f4f3ef; font-size:17px; color:#151816"><sc-if value="{{ hasErTel }}" hint-placeholder-val="{{ false }}"><div role="alert" style="color:#9b2c1d; font-size:14px; margin-top:6px; font-weight:600">{{ er.tel }}</div></sc-if></div>
+          </div>
+          <sc-if value="{{ pretNotSent }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ submitPret }}" style="display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:62px; padding:6px 6px 6px 24px; border-radius:999px; border:0; background:#151816; color:#fff; font-size:18px; font-weight:700; cursor:pointer">Enviar ao consultor<span style="width:50px; height:50px; border-radius:50%; background:#d4ec5c; display:grid; place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#151816" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span></button></sc-if>
+          <sc-if value="{{ pretSent }}" hint-placeholder-val="{{ false }}"><p role="status" style="padding:16px 18px; border-radius:20px; background:#d4ec5c; font-size:16px; font-weight:600; line-height:1.5">Enviado. O consultor já sabe quais unidades e assuntos você quer conversar.</p></sc-if>
+        </sc-if>
+      </sc-if>
+    </div>
+  </aside>
+</sc-if>
+
+<div aria-live="polite" style="position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:120; pointer-events:none; width:max-content; max-width:calc(100% - 32px)">
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}"><div style="display:flex; align-items:center; gap:12px; padding:14px 22px 14px 16px; border-radius:999px; background:#151816; color:#fff; font-size:16px; font-weight:600; box-shadow:0 16px 40px rgba(21,24,22,.3)"><span aria-hidden="true" style="width:12px; height:12px; flex:none; border-radius:50%; background:#d4ec5c"></span>{{ toast }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showIntro&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;featured&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;vila-mariana&quot;,&quot;options&quot;:[&quot;vila-mariana&quot;,&quot;barigui&quot;,&quot;pampulha&quot;,&quot;boa-viagem&quot;,&quot;taquaral&quot;,&quot;itacorubi&quot;],&quot;tsType&quot;:&quot;string&quot;}}">
+const PLANS = {
+  A: { id: 'A', name: 'Planta A', title: '2 dormitórios', area: 48, dorms: 2, suites: 0, baths: 1,
+    rooms: [
+      { id: 'varanda', name: 'Varanda', type: 'varanda', x: 0, z: -1.2, w: 3, d: 1.2 },
+      { id: 'sala', name: 'Sala', type: 'sala', x: 0, z: 0, w: 4.6, d: 3.4 },
+      { id: 'cozinha', name: 'Cozinha e serviço', type: 'cozinha', x: 0, z: 3.4, w: 2.4, d: 2.6 },
+      { id: 'hall', name: 'Hall', type: 'hall', x: 2.4, z: 3.4, w: 2.2, d: 1.2 },
+      { id: 'banho', name: 'Banheiro', type: 'banho', x: 2.4, z: 4.6, w: 2.2, d: 1.4 },
+      { id: 'q1', name: 'Quarto casal', type: 'quarto', x: 4.6, z: 0, w: 3.4, d: 3.2 },
+      { id: 'q2', name: 'Quarto 2', type: 'quarto', x: 4.6, z: 3.2, w: 3.4, d: 2.8 }],
+    openings: [
+      { x: 0, z: 2.9, axis: 'z', w: 0.9, type: 'entry' }, { x: 1.5, z: 0, axis: 'x', w: 2.4, type: 'glass' },
+      { x: 1.2, z: 3.4, axis: 'x', w: 1.8, type: 'open' }, { x: 3.5, z: 3.4, axis: 'x', w: 0.9, type: 'open' },
+      { x: 3.5, z: 4.6, axis: 'x', w: 0.7, type: 'door' }, { x: 4.6, z: 2.6, axis: 'z', w: 0.8, type: 'door' },
+      { x: 4.6, z: 4.0, axis: 'z', w: 0.8, type: 'door' }, { x: 6.3, z: 0, axis: 'x', w: 1.4, type: 'window' },
+      { x: 8, z: 4.6, axis: 'z', w: 1.4, type: 'window' }, { x: 0, z: 4.7, axis: 'z', w: 1.0, type: 'window' },
+      { x: 3.5, z: 6, axis: 'x', w: 0.6, type: 'window', sill: 1.5 }],
+    furniture: [
+      { k: 'sofa', x: 0.75, z: 1.3, r: 90 }, { k: 'coffee', x: 1.85, z: 1.3, r: 90 }, { k: 'tv', x: 4.35, z: 1.3, r: -90 }, { k: 'dining', x: 2.9, z: 2.6 },
+      { k: 'kitchen', x: 0.39, z: 4.9, r: 90, len: 2.2 }, { k: 'fridge', x: 1.95, z: 5.55, r: 180 }, { k: 'washer', x: 1.2, z: 5.6, r: 180 },
+      { k: 'shower', x: 3.5, z: 5.5 }, { k: 'toilet', x: 4.25, z: 5.0, r: -90 },
+      { k: 'bedDouble', x: 6.88, z: 1.6, r: -90 }, { k: 'nightstand', x: 7.7, z: 0.55, r: -90 }, { k: 'nightstand', x: 7.7, z: 2.65, r: -90 }, { k: 'wardrobe', x: 4.93, z: 1.0, r: 90, w: 1.6 },
+      { k: 'bedSingle', x: 6.2, z: 5.45, r: 90 }, { k: 'desk', x: 7.6, z: 4.0, r: -90 }, { k: 'wardrobe', x: 6.3, z: 3.53, r: 0, w: 1.4 },
+      { k: 'bistro', x: 1.5, z: -0.6 }],
+    start: { x: 0.6, z: 2.9, yaw: -90 } },
+  B: { id: 'B', name: 'Planta B', title: '3 dormitórios, 1 suíte', area: 72, dorms: 3, suites: 1, baths: 2,
+    rooms: [
+      { id: 'varanda', name: 'Varanda gourmet', type: 'varanda', x: 0, z: -1.6, w: 4, d: 1.6 },
+      { id: 'sala', name: 'Sala', type: 'sala', x: 0, z: 0, w: 5, d: 4 },
+      { id: 'cozinha', name: 'Cozinha', type: 'cozinha', x: 0, z: 4, w: 2.6, d: 3.2 },
+      { id: 'hall', name: 'Hall', type: 'hall', x: 2.6, z: 4, w: 2.4, d: 1.6 },
+      { id: 'servico', name: 'Serviço', type: 'servico', x: 2.6, z: 5.6, w: 1.0, d: 1.6 },
+      { id: 'banho', name: 'Banheiro', type: 'banho', x: 3.6, z: 5.6, w: 1.4, d: 1.6 },
+      { id: 'suite', name: 'Suíte', type: 'quarto', x: 5, z: 0, w: 3.6, d: 3.6 },
+      { id: 'bsuite', name: 'Banho suíte', type: 'banho', x: 8.6, z: 0, w: 1.4, d: 2.0 },
+      { id: 'closet', name: 'Closet', type: 'closet', x: 8.6, z: 2.0, w: 1.4, d: 1.6 },
+      { id: 'corredor', name: 'Corredor', type: 'corredor', x: 5, z: 3.6, w: 5, d: 1.2 },
+      { id: 'q2', name: 'Quarto 2', type: 'quarto', x: 5, z: 4.8, w: 2.5, d: 2.4 },
+      { id: 'q3', name: 'Quarto 3', type: 'quarto', x: 7.5, z: 4.8, w: 2.5, d: 2.4 }],
+    openings: [
+      { x: 0, z: 3.4, axis: 'z', w: 0.9, type: 'entry' }, { x: 2.0, z: 0, axis: 'x', w: 3.2, type: 'glass' },
+      { x: 1.3, z: 4, axis: 'x', w: 2.0, type: 'open' }, { x: 3.8, z: 4, axis: 'x', w: 1.0, type: 'open' },
+      { x: 5, z: 4.4, axis: 'z', w: 0.7, type: 'open' }, { x: 2.6, z: 6.4, axis: 'z', w: 0.7, type: 'door' },
+      { x: 4.3, z: 5.6, axis: 'x', w: 0.7, type: 'door' }, { x: 6.0, z: 3.6, axis: 'x', w: 0.8, type: 'door' },
+      { x: 8.6, z: 1.0, axis: 'z', w: 0.7, type: 'door' }, { x: 8.6, z: 2.8, axis: 'z', w: 0.8, type: 'open' },
+      { x: 6.2, z: 4.8, axis: 'x', w: 0.8, type: 'door' }, { x: 8.7, z: 4.8, axis: 'x', w: 0.8, type: 'door' },
+      { x: 6.8, z: 0, axis: 'x', w: 1.8, type: 'window' }, { x: 6.25, z: 7.2, axis: 'x', w: 1.2, type: 'window' },
+      { x: 8.75, z: 7.2, axis: 'x', w: 1.2, type: 'window' }, { x: 0, z: 5.6, axis: 'z', w: 1.2, type: 'window' },
+      { x: 10, z: 1.0, axis: 'z', w: 0.6, type: 'window', sill: 1.5 }, { x: 4.3, z: 7.2, axis: 'x', w: 0.6, type: 'window', sill: 1.5 },
+      { x: 3.1, z: 7.2, axis: 'x', w: 0.6, type: 'window', sill: 1.5 }, { x: 10, z: 4.2, axis: 'z', w: 0.8, type: 'window' }],
+    furniture: [
+      { k: 'sofa', x: 0.75, z: 1.6, r: 90 }, { k: 'coffee', x: 1.85, z: 1.6, r: 90 }, { k: 'tv', x: 4.73, z: 1.6, r: -90 }, { k: 'dining', x: 3.2, z: 3.1 },
+      { k: 'bbq', x: 0.8, z: -1.25 }, { k: 'bistro', x: 2.7, z: -0.75 },
+      { k: 'kitchen', x: 0.39, z: 5.7, r: 90, len: 2.6 }, { k: 'fridge', x: 1.95, z: 6.78, r: 180 }, { k: 'washer', x: 3.1, z: 6.8, r: 180 },
+      { k: 'shower', x: 4.15, z: 6.7 }, { k: 'toilet', x: 4.62, z: 6.0, r: -90 },
+      { k: 'bedDouble', x: 6.1, z: 1.8, r: 90 }, { k: 'nightstand', x: 5.3, z: 0.75, r: 90 }, { k: 'nightstand', x: 5.3, z: 2.85, r: 90 }, { k: 'plant', x: 8.3, z: 0.35 },
+      { k: 'shower', x: 9.4, z: 0.55 }, { k: 'toilet', x: 9.58, z: 1.55, r: -90 }, { k: 'wardrobe', x: 9.62, z: 2.8, r: -90, w: 1.4 },
+      { k: 'bedSingle', x: 6.05, z: 6.65, r: 90 }, { k: 'desk', x: 7.12, z: 5.6, r: -90 },
+      { k: 'bedSingle', x: 8.92, z: 6.65, r: -90 }, { k: 'wardrobe', x: 7.83, z: 5.95, r: 90, w: 1.4 }],
+    start: { x: 0.6, z: 3.4, yaw: -90 } },
+  C: { id: 'C', name: 'Planta C', title: '1 dormitório + home office', area: 38, dorms: 1, suites: 0, baths: 1,
+    rooms: [
+      { id: 'varanda', name: 'Varanda', type: 'varanda', x: 0, z: -1.1, w: 2.6, d: 1.1 },
+      { id: 'sala', name: 'Sala', type: 'sala', x: 0, z: 0, w: 3.6, d: 3.8 },
+      { id: 'cozinha', name: 'Cozinha', type: 'cozinha', x: 0, z: 3.8, w: 2.2, d: 2.2 },
+      { id: 'hall', name: 'Hall', type: 'hall', x: 2.2, z: 3.8, w: 1.4, d: 0.6 },
+      { id: 'banho', name: 'Banheiro', type: 'banho', x: 2.2, z: 4.4, w: 1.4, d: 1.6 },
+      { id: 'quarto', name: 'Quarto', type: 'quarto', x: 3.6, z: 0, w: 2.8, d: 3.6 },
+      { id: 'office', name: 'Home office', type: 'office', x: 3.6, z: 3.6, w: 2.8, d: 2.4 }],
+    openings: [
+      { x: 0, z: 3.0, axis: 'z', w: 0.9, type: 'entry' }, { x: 1.3, z: 0, axis: 'x', w: 2.0, type: 'glass' },
+      { x: 1.1, z: 3.8, axis: 'x', w: 1.6, type: 'open' }, { x: 2.9, z: 3.8, axis: 'x', w: 0.8, type: 'open' },
+      { x: 2.9, z: 4.4, axis: 'x', w: 0.7, type: 'door' }, { x: 3.6, z: 2.8, axis: 'z', w: 0.8, type: 'door' },
+      { x: 4.4, z: 3.6, axis: 'x', w: 0.8, type: 'door' }, { x: 5.0, z: 0, axis: 'x', w: 1.4, type: 'window' },
+      { x: 6.4, z: 4.8, axis: 'z', w: 1.2, type: 'window' }, { x: 1.1, z: 6.0, axis: 'x', w: 1.0, type: 'window' },
+      { x: 2.9, z: 6.0, axis: 'x', w: 0.5, type: 'window', sill: 1.5 }],
+    furniture: [
+      { k: 'sofa', x: 0.75, z: 1.4, r: 90 }, { k: 'coffee', x: 1.8, z: 1.4, r: 90 }, { k: 'tv', x: 3.33, z: 1.4, r: -90 }, { k: 'bistro', x: 2.4, z: 3.0 },
+      { k: 'kitchen', x: 0.39, z: 4.9, r: 90, len: 2.0 }, { k: 'fridge', x: 1.75, z: 5.55, r: 180 },
+      { k: 'shower', x: 3.1, z: 5.5 }, { k: 'toilet', x: 2.58, z: 4.95, r: 90 },
+      { k: 'bedDouble', x: 5.3, z: 1.6, r: -90 }, { k: 'nightstand', x: 6.08, z: 0.5, r: -90 }, { k: 'nightstand', x: 6.08, z: 2.7, r: -90 }, { k: 'wardrobe', x: 3.93, z: 1.0, r: 90, w: 1.4 },
+      { k: 'desk', x: 6.02, z: 4.8, r: -90 }, { k: 'plant', x: 3.95, z: 5.65 },
+      { k: 'plant', x: 0.35, z: -0.6 }, { k: 'bistro', x: 1.6, z: -0.55 }],
+    start: { x: 0.6, z: 3.0, yaw: -90 } },
+};
+const EMPS = [
+  { id: 'vila-mariana', name: 'Traço Vila Mariana', bairro: 'Vila Mariana', cidade: 'São Paulo', uf: 'SP', regiao: 'Sudeste', status: 'Lançamento', opps: ['Lançamento', 'Entrada facilitada'],
+    towers: [{ name: 'A', floors: 16, cols: 4 }, { name: 'B', floors: 16, cols: 4 }], plans: ['A', 'B'], priceFrom: 489900, entrega: 'Dez 2028', soldRate: 0.32,
+    obra: [['Fundação', 40], ['Estrutura', 0], ['Alvenaria', 0], ['Acabamento', 0]], vagas: '1 ou 2 vagas', lazer: ['piscina', 'churrasqueira', 'fitness', 'playground', 'pet', 'bike'],
+    perto: [['Metrô Ana Rosa', '7 min a pé'], ['Parque Ibirapuera', '12 min de carro'], ['Hospital São Paulo', '9 min de carro'], ['Shopping Metrô Santa Cruz', '5 min de carro']],
+    endereco: 'Rua Domingos de Morais, 1800', corretor: 'Juliana Prado', tagline: 'Duas torres de 16 andares a 7 minutos a pé do metrô.' },
+  { id: 'barigui', name: 'Traço Parque Barigui', bairro: 'Bigorrilho', cidade: 'Curitiba', uf: 'PR', regiao: 'Sul', status: 'Em obras', opps: ['Em obras'],
+    towers: [{ name: 'A', floors: 12, cols: 3 }], plans: ['C', 'A'], priceFrom: 359900, entrega: 'Jun 2027', soldRate: 0.55,
+    obra: [['Fundação', 100], ['Estrutura', 70], ['Alvenaria', 45], ['Acabamento', 10]], vagas: '1 vaga', lazer: ['piscina', 'salao', 'fitness', 'playground'],
+    perto: [['Parque Barigui', '4 min a pé'], ['Shopping Barigui', '6 min de carro'], ['Estação tubo de ônibus', '5 min a pé'], ['Colégio Positivo', '8 min de carro']],
+    endereco: 'Rua Padre Anchieta, 2400', corretor: 'Rafael Moreira', tagline: 'Torre única de 12 andares ao lado do parque.' },
+  { id: 'pampulha', name: 'Traço Pampulha', bairro: 'Pampulha', cidade: 'Belo Horizonte', uf: 'MG', regiao: 'Sudeste', status: 'Pronto para morar', opps: ['Pronto para morar', 'Minha Casa Minha Vida', 'Últimas unidades'],
+    towers: [{ name: 'A', floors: 8, cols: 4 }, { name: 'B', floors: 8, cols: 4 }, { name: 'C', floors: 8, cols: 4 }], plans: ['C', 'A'], priceFrom: 239900, entrega: 'Pronto', soldRate: 0.82,
+    obra: [['Fundação', 100], ['Estrutura', 100], ['Alvenaria', 100], ['Acabamento', 100]], vagas: '1 vaga', lazer: ['piscina', 'quadra', 'playground', 'churrasqueira', 'pet', 'salao'],
+    perto: [['Lagoa da Pampulha', '6 min a pé'], ['UFMG', '10 min de carro'], ['Mineirão', '8 min de carro'], ['Estação Pampulha', '7 min a pé']],
+    endereco: 'Av. Otacílio Negrão de Lima, 5100', corretor: 'Carla Nogueira', tagline: 'Três torres prontas, com chaves na mão.' },
+  { id: 'boa-viagem', name: 'Traço Boa Viagem', bairro: 'Boa Viagem', cidade: 'Recife', uf: 'PE', regiao: 'Nordeste', status: 'Lançamento', opps: ['Lançamento'],
+    towers: [{ name: 'A', floors: 22, cols: 2 }], plans: ['B'], priceFrom: 689900, entrega: 'Mar 2029', soldRate: 0.2,
+    obra: [['Fundação', 15], ['Estrutura', 0], ['Alvenaria', 0], ['Acabamento', 0]], vagas: '2 vagas', lazer: ['piscina', 'fitness', 'salao', 'churrasqueira'],
+    perto: [['Praia de Boa Viagem', '3 min a pé'], ['Shopping Recife', '9 min de carro'], ['Aeroporto do Recife', '12 min de carro'], ['Parque Dona Lindu', '6 min a pé']],
+    endereco: 'Av. Conselheiro Aguiar, 3900', corretor: 'Marcos Albuquerque', tagline: '22 andares e 4 apartamentos por andar, a uma quadra do mar.' },
+  { id: 'taquaral', name: 'Traço Taquaral', bairro: 'Taquaral', cidade: 'Campinas', uf: 'SP', regiao: 'Sudeste', status: 'Em obras', opps: ['Em obras', 'Últimas unidades', 'Entrada facilitada'],
+    towers: [{ name: 'A', floors: 10, cols: 4 }, { name: 'B', floors: 10, cols: 4 }], plans: ['C', 'A', 'B'], priceFrom: 299900, entrega: 'Fev 2027', soldRate: 0.8,
+    obra: [['Fundação', 100], ['Estrutura', 100], ['Alvenaria', 80], ['Acabamento', 40]], vagas: '1 ou 2 vagas', lazer: ['piscina', 'quadra', 'playground', 'churrasqueira', 'fitness', 'pet'],
+    perto: [['Lagoa do Taquaral', '5 min a pé'], ['Shopping Iguatemi', '10 min de carro'], ['Unicamp', '15 min de carro'], ['Hospital Vera Cruz', '8 min de carro']],
+    endereco: 'Rua Dr. Ricardo, 900', corretor: 'Patrícia Lemos', tagline: 'Últimas unidades, com entrega no começo de 2027.' },
+  { id: 'itacorubi', name: 'Traço Itacorubi', bairro: 'Itacorubi', cidade: 'Florianópolis', uf: 'SC', regiao: 'Sul', status: 'Em obras', opps: ['Em obras', 'Minha Casa Minha Vida', 'Entrada facilitada'],
+    towers: [{ name: 'A', floors: 6, cols: 3 }, { name: 'B', floors: 6, cols: 3 }], plans: ['C', 'A'], priceFrom: 289900, entrega: 'Ago 2027', soldRate: 0.45,
+    obra: [['Fundação', 100], ['Estrutura', 40], ['Alvenaria', 10], ['Acabamento', 0]], vagas: '1 vaga', lazer: ['playground', 'churrasqueira', 'pet', 'bike', 'salao'],
+    perto: [['UDESC', '6 min a pé'], ['Shopping Iguatemi Florianópolis', '5 min de carro'], ['Beira-Mar Norte', '10 min de carro'], ['Parque Tecnológico', '8 min de carro']],
+    endereco: 'Rodovia Admar Gonzaga, 700', corretor: 'Bruno Kessler', tagline: 'Dois prédios de 6 andares perto da UDESC.' },
+];
+const AMEN_FULL = { piscina: 'Piscina adulto e infantil', quadra: 'Quadra poliesportiva', playground: 'Playground', churrasqueira: 'Espaço gourmet com churrasqueira', salao: 'Salão de festas', pet: 'Pet place', fitness: 'Academia', bike: 'Bicicletário' };
+const MISSIONS = [
+  { id: 'orbit', label: 'Gire a maquete' }, { id: 'lazer', label: 'Visite uma área de lazer' }, { id: 'andar', label: 'Corte o prédio em um andar' },
+  { id: 'unidade', label: 'Escolha uma unidade' }, { id: 'planta', label: 'Veja as paredes subirem na planta' }, { id: 'passeio', label: 'Caminhe por todos os cômodos' }];
+const LEVELS = ['Visitante', 'Explorador', 'Explorador', 'Vizinho', 'Vizinho', 'Quase morador', 'Morador'];
+const TOPICS = ['Financiamento', 'Uso do FGTS', 'Visita ao decorado', 'Negociar entrada', 'Prazo de entrega', 'Usar meu imóvel na troca'];
+const STATUS = { disponivel: 'Disponível', reservado: 'Reservado', vendido: 'Vendido' };
+const FILL = { varanda: '#e2ddd2', cozinha: '#e6ebec', banho: '#e6ebec', servico: '#e6ebec' };
+const brl = n => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+const m2 = n => n.toFixed(1).replace('.', ',').replace(',0', '') + ' m²';
+function rngJ(seed) { let s = (seed >>> 0) || 1; return () => { s ^= s << 13; s ^= s >>> 17; s ^= s << 5; return ((s >>> 0) % 100000) / 100000; }; }
+function hashJ(str) { let h = 2166136261; for (const c of str) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function genUnits(e) {
+  const r = rngJ(hashJ(e.id)), out = [], sz = e.plans, minA = Math.min(...sz.map(s => PLANS[s].area));
+  e.towers.forEach((t, ti) => {
+    const per = t.cols * 2;
+    for (let f = 1; f <= t.floors; f++) for (let p = 0; p < per; p++) {
+      const front = p < t.cols, xi = front ? p : (2 * t.cols - 1 - p), corner = xi === 0 || xi === t.cols - 1;
+      const plan = sz.length === 1 ? sz[0] : corner ? sz[sz.length - 1] : sz[(xi + f) % (sz.length - 1)];
+      const x = r(), status = x < e.soldRate ? 'vendido' : x < e.soldRate + 0.07 ? 'reservado' : 'disponivel';
+      const num = String(f * 100 + p + 1);
+      const price = Math.round(e.priceFrom * Math.pow(PLANS[plan].area / minA, 0.92) * (1 + (f - 1) * 0.007) * (front ? 1.02 : 1) / 100) * 100;
+      out.push({ id: `${e.id}-${t.name}-${num}`, empId: e.id, tower: t.name, towerIdx: ti, floor: f, pos: p, num, plan, status, price,
+        sun: front ? 'Sol da manhã' : 'Sol da tarde', vista: f >= Math.ceil(t.floors * 0.6) ? 'Vista livre' : front ? 'Vista para o lazer' : 'Vista para o bairro' });
+    }
+  });
+  return out;
+}
+const UNITS = {}, UNIT = {};
+EMPS.forEach(e => {
+  const us = UNITS[e.id] = genUnits(e); us.forEach(u => UNIT[u.id] = u);
+  const av = us.filter(u => u.status === 'disponivel');
+  e.avail = av.length; e.total = us.length; e.areas = e.plans.map(p => PLANS[p].area);
+  e.dorms = [...new Set(e.plans.map(p => PLANS[p].dorms))].sort();
+  e.minPrice = av.length ? Math.min(...av.map(u => u.price)) : e.priceFrom;
+  e.floors = Math.max(...e.towers.map(t => t.floors));
+});
+function planDraw(p) {
+  const R = p.rooms, x0 = Math.min(...R.map(r => r.x)), x1 = Math.max(...R.map(r => r.x + r.w)), z0 = Math.min(...R.map(r => r.z)), z1 = Math.max(...R.map(r => r.z + r.d));
+  const pad = 0.3, W = x1 - x0 + pad * 2, D = z1 - z0 + pad * 2, pc = v => v.toFixed(3) + '%';
+  const X = v => pc((v - x0 + pad) / W * 100), Z = v => pc((v - z0 + pad) / D * 100);
+  const rooms = R.map(r => ({ id: r.id, name: r.name, area: m2(r.w * r.d), l: X(r.x), t: Z(r.z), w: pc(r.w / W * 100), h: pc(r.d / D * 100), fill: FILL[r.type] || '#f3efe6',
+    border: r.type === 'varanda' ? '1.5px dashed #8a857b' : '2px solid #151816', showLabel: r.w * r.d >= 4 }));
+  const gaps = p.openings.map(o => { const th = 0.24, isX = o.axis === 'x'; return { l: X(isX ? o.x - o.w / 2 : o.x - th / 2), t: Z(isX ? o.z - th / 2 : o.z - o.w / 2), w: pc((isX ? o.w : th) / W * 100), h: pc((isX ? th : o.w) / D * 100), bg: (o.type === 'window' || o.type === 'glass') ? '#9fb4c4' : '#ffffff' }; });
+  return { aspect: `${W.toFixed(2)} / ${D.toFixed(2)}`, rooms, gaps, x0: x0 - pad, z0: z0 - pad, W, D };
+}
+const STATS = { emps: 0, units: 0, avail: 0, ufs: 0 };
+const DRAW = {}; Object.values(PLANS).forEach(p => DRAW[p.id] = planDraw(p));
+STATS.emps = EMPS.length; STATS.units = EMPS.reduce((a, e) => a + e.total, 0); STATS.avail = EMPS.reduce((a, e) => a + e.avail, 0); STATS.ufs = new Set(EMPS.map(e => e.uf)).size;
+const LS = 'traco-demo-v1';
+function loadSaved() { try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; } }
+const sw = on => ({ track: on ? '#151816' : '#d9d5cc', bg: on ? '#151816' : '#d9d5cc', knob: on ? '23px' : '3px', knobBg: on ? '#d4ec5c' : '#ffffff' });
+const chip = (label, on, onClick, extra) => ({ label, pressed: !!on, cls: on ? 'btn-primary' : 'btn-secondary', bg: on ? '#151816' : '#ffffff', fg: on ? '#ffffff' : '#151816', bd: on ? '#151816' : 'rgba(21,24,22,.16)', onClick, ...(extra || {}) });
+const SKY = 'linear-gradient(180deg,#c3d2dc 0%,#e4e1d8 62%,#ebe7df 100%)';
+
+class Component extends DCLogic {
+  state = (() => {
+    const sv = loadSaved(), rm = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let seen = false; try { seen = !!sessionStorage.getItem('traco-intro'); } catch (e) { }
+    const w = typeof window !== 'undefined' ? window.innerWidth : 1400;
+    return {
+      view: 'home', empId: null, intro: !seen && !rm, narrow: w < 980, wide: w >= 1240,
+      f: { regiao: 'Todas', tamanho: 'Todos', dorms: [], opps: [], maxPrice: 800000 },
+      thumbs: {}, drawer: false, tab: 'cart', a11yOpen: false, menuOpen: false,
+      cart: sv.cart || [], wish: sv.wish || [], pret: sv.pret || [],
+      contact: sv.contact || { nome: '', tel: '', email: '', canal: 'WhatsApp', horario: 'Manhã', fgts: false },
+      a11y: sv.a11y || { size: 0, contrast: false, reduce: rm }, present: false,
+      sel: null, uf: { plan: 'Todas', onlyAvail: false }, cut: 0, night: false, touring: false, tourLabel: '', interacted: false, wheelHint: false, siteMax: false,
+      showTable: false, tableLimit: 24, missions: {},
+      plan: null, planMode: 'maquete', planT: 1, planHour: 10, furnished: true, room: null, visited: [],
+      checkout: 'cart', entrada: 20, prazo: 360, errors: {}, sent: null, pretNote: sv.pretNote || '', pretSent: false, toast: null,
+    };
+  })();
+
+  engine() { return this._eP || (this._eP = import(new URL('./engine3d-v2.js', document.baseURI).href)); }
+  reduce() { return !!this.state.a11y.reduce; }
+  emp() { return EMPS.find(e => e.id === this.state.empId) || EMPS[0]; }
+  zoom() { return this.state.present ? 1.3 : [1, 1.15, 1.3][this.state.a11y.size] || 1; }
+
+  // refs
+  introRef = el => { this.introEl = el; };
+  introLogoRef = el => { this.introLogo = el; };
+  introCountRef = el => { this.introCount = el; };
+  logoRef = el => { this.logoEl = el; };
+  progRef = el => { this.progEl = el; };
+  crossVRef = el => { this.crossV = el; };
+  crossHRef = el => { this.crossH = el; };
+  coordRef = el => { this.coordEl = el; };
+  heroRangeRef = el => { this.heroRange = el; };
+  tipRef = el => { this.tipEl = el; };
+  marqRef = el => { this.marqEl = el; };
+  marq() { let x = 0, last = performance.now(); const step = now => { this.marqRaf = requestAnimationFrame(step); const dt = Math.min(now - last, 50); last = now; const el = this.marqEl; if (!el || this.reduce()) return; x -= dt * 0.045; const w = el.scrollWidth / 2; if (w > 0 && -x >= w) x += w; el.style.transform = 'translateX(' + x + 'px)'; }; this.marqRaf = requestAnimationFrame(step); }
+  dotRef = el => { this.dotEl = el; };
+  siteWrapRef = el => { this.siteWrap = el; };
+  heroRef = el => {
+    if (this.hero) { this.hero.dispose(); this.hero = null; }
+    this.heroEl = el; if (!el) return;
+    this.engine().then(E => {
+      if (this.heroEl !== el || this.hero) return;
+      this.hero = E.createHero(el, { reduceMotion: this.reduce(), onProgress: p => { if (this.heroRange && document.activeElement !== this.heroRange) this.heroRange.value = p; } });
+      if (!this.state.intro) this.hero.play();
+    }).catch(err => console.error('3D: ' + String((err && err.stack) || err)));
+  };
+  siteRef = el => {
+    if (this.site) { this.site.dispose(); this.site = null; }
+    this.siteEl = el; if (!el) return;
+    this.engine().then(E => { if (this.siteEl !== el || this.site) return; this.mountSite(E, el); }).catch(err => console.error('3D: ' + String((err && err.stack) || err)));
+  };
+  planRef = el => {
+    if (this.planV) { this.planV.dispose(); this.planV = null; }
+    this.planEl = el; if (!el) return;
+    this.engine().then(E => {
+      if (this.planEl !== el || this.planV || !this.state.plan) return;
+      const s = this.state, p = PLANS[s.plan.planId];
+      this.planV = E.createPlan(el, p, { reduceMotion: this.reduce(), onRoom: r => this.onRoom(r), onPlayer: (x, z, yaw) => this.onPlayer(x, z, yaw) });
+      this.planV.setMode(s.planMode); this.planV.setT(s.planT); this.planV.setHour(s.planHour); this.planV.setFurnished(s.furnished);
+    }).catch(err => console.error('3D: ' + String((err && err.stack) || err)));
+  };
+  mountSite(E, el) {
+    const emp = this.emp(), s = this.state; this.siteEmp = emp.id;
+    this.site = E.createSite(el, emp, UNITS[emp.id], {
+      reduceMotion: this.reduce(),
+      onSelect: u => this.selectUnit(u.id, true),
+      onHover: (u, x, y) => this.siteHover(u, x, y),
+      onHotspot: () => this.done('lazer'),
+      onInteract: k => { if (k === 'drag' || k === 'key') this.done('orbit'); if (!this.state.interacted) this.setState({ interacted: true }); },
+      onWheelHint: () => { if (this.state.wheelHint) return; this.setState({ wheelHint: true }); clearTimeout(this.whT); this.whT = setTimeout(() => this.setState({ wheelHint: false }), 2200); },
+      onTour: label => this.setState({ touring: !!label, tourLabel: label || '' }),
+    });
+    this.site.setFilter(this.unitMatch()); this.site.setNight(s.night); if (s.cut) this.site.setCut(s.cut); if (s.sel) this.site.select(s.sel, false); this.site.setFull(s.siteMax);
+    if (s.present) setTimeout(() => this.setTour(true), 1200);
+  }
+  unitMatch() { const uf = this.state.uf; return u => (uf.plan === 'Todas' || u.plan === uf.plan) && (!uf.onlyAvail || u.status === 'disponivel'); }
+  siteHover(u, x, y) {
+    const t = this.tipEl; if (!t) return;
+    if (!u) { t.style.display = 'none'; return; }
+    t.innerHTML = `<div style="font:700 16px/1.2 Urbanist,sans-serif">Torre ${u.tower} · Apto ${u.num}</div><div>Planta ${u.plan} · ${PLANS[u.plan].area} m² · ${u.floor}º andar</div><div style="font-weight:500;color:${u.status === 'disponivel' ? '#3d5a00' : '#55524c'}">${STATUS[u.status]}${u.status === 'disponivel' ? ' · ' + brl(u.price) : ''}</div>`;
+    const W = this.siteEl ? this.siteEl.clientWidth : 800;
+    t.style.display = 'block'; t.style.left = Math.max(8, Math.min(x + 16, W - 250)) + 'px'; t.style.top = (y + 18) + 'px';
+  }
+  onRoom(r) {
+    if (this.state.planMode !== 'passeio') return;
+    this.setState(s => { const v = s.visited.includes(r.id) ? s.visited : [...s.visited, r.id]; return { room: r.id, visited: v }; }, () => {
+      const p = PLANS[this.state.plan.planId]; if (p.rooms.every(x => this.state.visited.includes(x.id))) this.done('passeio');
+    });
+  }
+  onPlayer(x, z, yaw) {
+    const d = this.dotEl, s = this.state; if (!d || !s.plan) return; const D = DRAW[s.plan.planId];
+    d.style.left = ((x - D.x0) / D.W * 100) + '%'; d.style.top = ((z - D.z0) / D.D * 100) + '%'; d.style.transform = `translate(-50%,-50%) rotate(${-yaw * 180 / Math.PI}deg)`;
+  }
+
+  // lifecycle
+  componentDidMount() {
+    this.onResize = () => this.measure(); window.addEventListener('resize', this.onResize);
+    this.onScroll = () => { const p = this.progEl; if (!p) return; const h = document.documentElement.scrollHeight - window.innerHeight; p.style.width = (h > 0 ? window.scrollY / h * 100 : 0) + '%'; };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onKey = e => { if (e.key === 'Escape') this.escape(); }; window.addEventListener('keydown', this.onKey);
+    this.onFs = () => { if (!document.fullscreenElement && this.state.present) this.setState({ present: false }); };
+    document.addEventListener('fullscreenchange', this.onFs);
+    this._ps = this.state; this.applyA11y(); this.measure();
+    if (this.state.intro && (this.props.showIntro ?? true)) this.runIntro(); else { if (this.state.intro) this.setState({ intro: false }); this.drawLogo(); }
+    this.engine().then(E => EMPS.forEach((e, i) => setTimeout(() => { try { const url = E.renderThumb(e, UNITS[e.id]); this.setState(s => ({ thumbs: { ...s.thumbs, [e.id]: url } })); } catch (err) { console.error('3D: ' + String((err && err.stack) || err)); } }, 300 + i * 140))).catch(err => console.error('3D: ' + String((err && err.stack) || err)));
+    this.reveal(); this.marq();
+  }
+  componentWillUnmount() {
+    cancelAnimationFrame(this.marqRaf);
+    window.removeEventListener('resize', this.onResize); window.removeEventListener('scroll', this.onScroll); window.removeEventListener('keydown', this.onKey);
+    document.removeEventListener('fullscreenchange', this.onFs); cancelAnimationFrame(this.introRaf);
+    [this.hero, this.site, this.planV].forEach(x => x && x.dispose()); this.io && this.io.disconnect();
+    document.documentElement.style.zoom = ''; document.body.style.overflow = '';
+  }
+  componentDidUpdate() {
+    const s = this.state, ps = this._ps || s; this._ps = s;
+    if (ps === s) return;
+    if (ps.cart !== s.cart || ps.wish !== s.wish || ps.pret !== s.pret || ps.contact !== s.contact || ps.a11y !== s.a11y || ps.pretNote !== s.pretNote) {
+      try { localStorage.setItem(LS, JSON.stringify({ cart: s.cart, wish: s.wish, pret: s.pret, contact: s.contact, a11y: s.a11y, pretNote: s.pretNote })); } catch (e) { }
+    }
+    if (ps.a11y !== s.a11y || ps.present !== s.present) { this.applyA11y(); this.measure(); }
+    if (this.site) {
+      if (ps.empId !== s.empId && this.siteEl && this.siteEmp !== s.empId) { this.site.dispose(); this.site = null; this.engine().then(E => this.mountSite(E, this.siteEl)); }
+      else {
+        if (ps.uf !== s.uf) this.site.setFilter(this.unitMatch());
+        if (ps.night !== s.night) this.site.setNight(s.night);
+        if (ps.cut !== s.cut) this.site.setCut(s.cut || null);
+        if (ps.siteMax !== s.siteMax) this.site.setFull(s.siteMax);
+      }
+    }
+    if (this.planV) {
+      if (ps.planMode !== s.planMode) this.planV.setMode(s.planMode);
+      if (ps.planT !== s.planT || ps.planMode !== s.planMode) this.planV.setT(s.planT);
+      if (ps.planHour !== s.planHour) this.planV.setHour(s.planHour);
+      if (ps.furnished !== s.furnished) this.planV.setFurnished(s.furnished);
+    }
+    if (ps.drawer !== s.drawer || ps.plan !== s.plan || ps.siteMax !== s.siteMax) document.body.style.overflow = (s.drawer || s.plan || s.siteMax) ? 'hidden' : '';
+    if (ps.view !== s.view || ps.empId !== s.empId) this.reveal();
+  }
+  measure() { const w = window.innerWidth / this.zoom(), narrow = w < 980, wide = w >= 1240, compact = w < 760; if (narrow !== this.state.narrow || wide !== this.state.wide || compact !== this.state.compact) this.setState({ narrow, wide, compact }); }
+  applyA11y() {
+    const d = document.documentElement, a = this.state.a11y, z = this.zoom();
+    d.style.zoom = z === 1 ? '' : String(z);
+    document.querySelectorAll('[data-hc]').forEach(el => { el.style.filter = a.contrast ? 'contrast(1.3)' : ''; });
+    [this.hero, this.planV].forEach(x => x && x.setReduce && x.setReduce(!!a.reduce));
+  }
+  reveal() {
+    setTimeout(() => {
+      const hcOn = this.state.a11y.contrast; document.querySelectorAll('[data-hc]').forEach(el => { el.style.filter = hcOn ? 'contrast(1.3)' : ''; });
+      if (!this.io) this.io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'none'; this.io.unobserve(e.target); } }), { rootMargin: '0px 0px -6% 0px' });
+      document.querySelectorAll('[data-reveal]:not([data-rv])').forEach((el, i) => {
+        el.setAttribute('data-rv', '1'); if (this.reduce()) return;
+        const dl = (i % 4) * 80; el.style.opacity = '0'; el.style.transform = 'translateY(28px)';
+        el.style.transition = `opacity .7s ease ${dl}ms, transform .8s cubic-bezier(.2,.7,.2,1) ${dl}ms`; this.io.observe(el);
+      });
+    }, 60);
+  }
+  runIntro() {
+    const el = this.introEl; if (!el) { this.endIntro(); return; }
+    const paths = this.introLogo ? [...this.introLogo.querySelectorAll('path')] : [];
+    paths.forEach(p => { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.dataset.l = L; });
+    const t0 = performance.now(), D = 2000;
+    const step = now => {
+      if (!this.state.intro) return;
+      const t = Math.min(1, (now - t0) / D);
+      paths.forEach((p, i) => { const k = Math.min(1, Math.max(0, t * 1.4 - i * 0.07)); p.style.strokeDashoffset = p.dataset.l * (1 - k); });
+      if (this.introCount) this.introCount.textContent = String(Math.round(t * 100)).padStart(3, '0') + ' %';
+      if (t < 1) this.introRaf = requestAnimationFrame(step);
+      else { el.style.transition = 'transform .85s cubic-bezier(.7,0,.2,1)'; el.style.transform = 'translateY(-100%)'; this.introT = setTimeout(() => this.endIntro(), 860); }
+    };
+    this.introRaf = requestAnimationFrame(step);
+  }
+  endIntro() { clearTimeout(this.introT); cancelAnimationFrame(this.introRaf); try { sessionStorage.setItem('traco-intro', '1'); } catch (e) { } this.setState({ intro: false }); this.drawLogo(); this.hero && this.hero.play(); }
+  drawLogo() {
+    const g = this.logoEl; if (!g || this.reduce()) return;
+    [...g.querySelectorAll('path')].forEach((p, i) => { const L = p.getTotalLength(); p.style.transition = 'none'; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.getBoundingClientRect(); p.style.transition = `stroke-dashoffset 1s cubic-bezier(.6,0,.2,1) ${i * 120}ms`; p.style.strokeDashoffset = 0; });
+  }
+  escape() { const s = this.state; if (s.plan) this.closePlan(); else if (s.drawer) this.setState({ drawer: false }); else if (s.siteMax) this.setState({ siteMax: false }); else if (s.a11yOpen || s.menuOpen) this.setState({ a11yOpen: false, menuOpen: false }); }
+  toast(msg) { clearTimeout(this.toastT); this.setState({ toast: msg }); this.toastT = setTimeout(() => this.setState({ toast: null }), 3400); }
+  done(id) { if (this.state.missions[id]) return; const m = MISSIONS.find(x => x.id === id); this.setState(s => ({ missions: { ...s.missions, [id]: true } })); this.toast('Missão concluída: ' + m.label); }
+  scrollToId(id) {
+    const go = () => { const el = document.getElementById(id); if (!el) return; const y = el.getBoundingClientRect().top + window.scrollY - 80; window.scrollTo({ top: y, behavior: this.reduce() ? 'auto' : 'smooth' }); };
+    if (this.state.view !== 'home') { this.setState({ view: 'home', menuOpen: false }); setTimeout(go, 80); } else { this.setState({ menuOpen: false }); go(); }
+  }
+  openEmp(id) {
+    this.setState({ view: 'emp', empId: id, sel: null, cut: 0, night: false, uf: { plan: 'Todas', onlyAvail: false }, showTable: false, tableLimit: 24, touring: false, tourLabel: '', menuOpen: false, siteMax: false });
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }
+  goHome() { this.setState({ view: 'home', menuOpen: false, siteMax: false }); window.scrollTo({ top: 0, behavior: 'auto' }); }
+  selectUnit(id, fromEngine) { this.setState({ sel: id }); if (!fromEngine && this.site) this.site.select(id); this.done('unidade'); }
+  setTour(on) { if (!this.site) return; this.site.tour(on); this.setState({ touring: on }); }
+  openPlan(unitId) { const u = UNIT[unitId]; this.setState({ plan: { planId: u.plan, unitId, empId: u.empId }, planMode: 'maquete', planT: 1, room: null, visited: [], drawer: false }); this.done('planta'); }
+  openPlanType(p) { const us = UNITS[this.emp().id].filter(u => u.plan === p); const best = us.filter(u => u.status === 'disponivel').sort((a, b) => a.price - b.price)[0] || us[0]; this.openPlan(best.id); }
+  closePlan() { this.setState({ plan: null }); }
+  inList(list, kind, id) { return list.some(w => w.kind === kind && w.id === id); }
+  toggleWish(kind, id) {
+    const has = this.inList(this.state.wish, kind, id);
+    this.setState(s => ({ wish: has ? s.wish.filter(w => !(w.kind === kind && w.id === id)) : [...s.wish, { kind, id, notify: { obra: true, preco: true, similares: true } }] }));
+    this.toast(has ? 'Removido da lista de desejos.' : 'Na lista de desejos. Avisaremos sobre obra, preço e unidades parecidas.');
+  }
+  togglePret(kind, id) {
+    const has = this.inList(this.state.pret, kind, id);
+    this.setState(s => ({ pret: has ? s.pret.filter(w => !(w.kind === kind && w.id === id)) : [...s.pret, { kind, id, topics: [] }], pretSent: false }));
+    this.toast(has ? 'Removido das pretensões.' : 'Adicionado às pretensões. O consultor vai falar sobre ele com você.');
+  }
+  toggleCart(id) {
+    const has = this.state.cart.includes(id);
+    this.setState(s => ({ cart: has ? s.cart.filter(x => x !== id) : [...s.cart, id], checkout: 'cart' }));
+    this.toast(has ? 'Removido do carrinho.' : 'Unidade adicionada ao carrinho.');
+  }
+  setContact(k, v) { this.setState(s => ({ contact: { ...s.contact, [k]: v }, errors: { ...s.errors, [k]: null } })); }
+  maskTel(v) { const d = v.replace(/\D/g, '').slice(0, 11); if (d.length <= 2) return d; if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`; if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`; return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`; }
+  validate(needEmail) {
+    const c = this.state.contact, e = {};
+    if (c.nome.trim().length < 3) e.nome = 'Informe seu nome completo.';
+    if (c.tel.replace(/\D/g, '').length < 10) e.tel = 'Informe um telefone com DDD.';
+    if (c.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c.email)) e.email = 'Confira o e-mail digitado.';
+    this.setState({ errors: e }); return !Object.keys(e).length;
+  }
+  submitCart() {
+    if (!this.validate()) return;
+    const us = this.state.cart.map(id => UNIT[id]).filter(Boolean);
+    const cor = [...new Set(us.map(u => EMPS.find(e => e.id === u.empId).corretor))];
+    const sent = { protocolo: 'TRC-' + String(Math.floor(100000 + Math.random() * 899999)), units: us.map(u => this.unitLine(u)), corretores: cor.join(' e '), canal: this.state.contact.canal, horario: this.state.contact.horario.toLowerCase() };
+    this.setState({ sent, checkout: 'done', cart: [] });
+  }
+  submitPret() { if (!this.validate()) return; this.setState({ pretSent: true }); this.toast('Pretensões enviadas ao consultor.'); }
+  unitLine(u) { const e = EMPS.find(x => x.id === u.empId); return { title: `Torre ${u.tower} · Apto ${u.num}`, emp: e.name, specs: `Planta ${u.plan} · ${PLANS[u.plan].area} m² · ${u.floor}º andar`, price: brl(u.price) }; }
+
+  renderVals() {
+    const s = this.state, emp = this.emp(), narrow = s.narrow, wide = s.wide;
+    const set = o => this.setState(o);
+    const f = s.f, setF = o => this.setState(st => ({ f: { ...st.f, ...o } }));
+    const togArr = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : [...arr, v];
+    // filters
+    const sizeOk = e => f.tamanho === 'Todos' || e.areas.some(a => f.tamanho === 'Até 45 m²' ? a <= 45 : f.tamanho === '45 a 65 m²' ? a > 45 && a <= 65 : a > 65);
+    const list = EMPS.filter(e => (f.regiao === 'Todas' || e.regiao === f.regiao) && sizeOk(e) && (!f.dorms.length || e.dorms.some(d => f.dorms.includes(d))) && (!f.opps.length || e.opps.some(o => f.opps.includes(o))) && e.minPrice <= f.maxPrice);
+    const dormsLabel = e => e.dorms.join(' e ') + (e.dorms.length === 1 && e.dorms[0] === 1 ? ' dormitório' : ' dormitórios');
+    const areaLabel = e => { const a = [...e.areas].sort((x, y) => x - y); return a.length > 1 ? `${a[0]} a ${a[a.length - 1]} m²` : `${a[0]} m²`; };
+    const heart = on => on ? 'currentColor' : 'none';
+    const emps = list.map(e => {
+      const w = this.inList(s.wish, 'emp', e.id), p = this.inList(s.pret, 'emp', e.id);
+      return { id: e.id, name: e.name, local: `${e.bairro} · ${e.cidade}, ${e.uf}`, tagline: e.tagline, status: e.status, opps: e.opps.filter(o => o !== e.status).map(o => ({ label: o })),
+        dorms: dormsLabel(e), area: areaLabel(e), entrega: e.entrega === 'Pronto' ? 'Pronto para morar' : 'Entrega ' + e.entrega, price: brl(e.minPrice), avail: `${e.avail} de ${e.total} unidades disponíveis`,
+        thumb: s.thumbs[e.id], hasThumb: !!s.thumbs[e.id], noThumb: !s.thumbs[e.id], open: () => this.openEmp(e.id), openAria: `Explorar ${e.name} em 3D`,
+        heart: heart(w), wishAria: w ? `Remover ${e.name} da lista de desejos` : `Adicionar ${e.name} à lista de desejos`, toggleWish: () => this.toggleWish('emp', e.id),
+        pretLabel: p ? 'Nas pretensões' : 'Pretensão', pretCls: p ? 'btn-primary' : 'btn-secondary', pretBg: p ? '#151816' : '#ffffff', pretFg: p ? '#ffffff' : '#151816', togglePret: () => this.togglePret('emp', e.id), alt: `Maquete 3D do ${e.name}` };
+    });
+    const regiaoOpts = ['Todas', 'Sudeste', 'Sul', 'Nordeste'].map(v => chip(v, f.regiao === v, () => setF({ regiao: v })));
+    const tamanhoOpts = ['Todos', 'Até 45 m²', '45 a 65 m²', 'Acima de 65 m²'].map(v => chip(v, f.tamanho === v, () => setF({ tamanho: v })));
+    const dormOpts = [1, 2, 3].map(v => chip(v === 1 ? '1 dormitório' : v + ' dormitórios', f.dorms.includes(v), () => setF({ dorms: togArr(f.dorms, v) })));
+    const oppOpts = ['Lançamento', 'Em obras', 'Pronto para morar', 'Últimas unidades', 'Entrada facilitada', 'Minha Casa Minha Vida'].map(v => chip(v, f.opps.includes(v), () => setF({ opps: togArr(f.opps, v) })));
+    // emp view
+    const us = UNITS[emp.id], match = this.unitMatch();
+    const ew = this.inList(s.wish, 'emp', emp.id), ep = this.inList(s.pret, 'emp', emp.id);
+    const E = {
+      name: emp.name, local: `${emp.bairro} · ${emp.cidade}, ${emp.uf}`, endereco: `${emp.endereco} — ${emp.bairro}, ${emp.cidade}/${emp.uf}`, tagline: emp.tagline, status: emp.status,
+      opps: emp.opps.filter(o => o !== emp.status).map(o => ({ label: o })), price: brl(emp.minPrice), avail: `${emp.avail} de ${emp.total} unidades disponíveis`,
+      heart: heart(ew), wishLabel: ew ? 'Na lista de desejos' : 'Lista de desejos', toggleWish: () => this.toggleWish('emp', emp.id),
+      pretLabel: ep ? 'Nas pretensões' : 'Adicionar às pretensões', pretCls: ep ? 'btn-primary' : 'btn-secondary', pretBg: ep ? '#151816' : '#ffffff', pretFg: ep ? '#ffffff' : '#151816', togglePret: () => this.togglePret('emp', emp.id),
+      ficha: [['Torres', emp.towers.length === 1 ? '1 torre' : emp.towers.length + ' torres'], ['Andares', emp.floors + ' andares'], ['Unidades', emp.total + ' apartamentos'], ['Plantas', areaLabel(emp)], ['Dormitórios', dormsLabel(emp)], ['Vagas', emp.vagas], ['Entrega', emp.entrega === 'Pronto' ? 'Pronto para morar' : emp.entrega], ['Corretor responsável', emp.corretor]].map(([k, v]) => ({ k, v })),
+      lazer: emp.lazer.map(k => ({ label: AMEN_FULL[k] })), obra: emp.obra.map(([k, v]) => ({ label: k, pct: v + '%' })), perto: emp.perto.map(([k, v]) => ({ k, v })),
+      corretor: emp.corretor,
+      obraWatch: () => { if (!ew) this.toggleWish('emp', emp.id); else this.toast('Você já recebe as atualizações da obra.'); },
+    };
+    const SX = s.siteMax ? { radius: '0px', position: 'fixed', inset: '0', z: 75, height: 'auto', bg: s.night ? '#141917' : SKY } : { radius: '28px', position: 'relative', inset: 'auto', z: 'auto', height: 'clamp(460px, 74vh, 880px)', bg: s.night ? '#141917' : SKY };
+    const nDone = MISSIONS.filter(m => s.missions[m.id]).length;
+    const missions = MISSIONS.map(m => ({ label: m.label, done: !!s.missions[m.id], todo: !s.missions[m.id], color: s.missions[m.id] ? '#6b675f' : '#151816', deco: s.missions[m.id] ? 'line-through' : 'none' }));
+    const planChips = ['Todas', ...emp.plans].map(p => chip(p === 'Todas' ? 'Todas' : `Planta ${p} · ${PLANS[p].area} m²`, s.uf.plan === p, () => set({ uf: { ...s.uf, plan: p } })));
+    const su = s.sel && UNIT[s.sel] && UNIT[s.sel].empId === emp.id ? UNIT[s.sel] : null;
+    const unitCard = u => {
+      if (!u) return {};
+      const P = PLANS[u.plan], inCart = s.cart.includes(u.id), w = this.inList(s.wish, 'unit', u.id), p = this.inList(s.pret, 'unit', u.id);
+      return { title: `Torre ${u.tower} · Apto ${u.num}`, status: STATUS[u.status], statusCls: u.status === 'disponivel' ? 'tag-accent' : 'tag-neutral', statusBg: u.status === 'disponivel' ? '#d4ec5c' : '#e6e2da', avail: u.status === 'disponivel', unavail: u.status !== 'disponivel',
+        unavailMsg: `Esta unidade está ${STATUS[u.status].toLowerCase()}. Adicione à lista de desejos para ser avisado sobre unidades parecidas.`,
+        specs: [['Andar', u.floor + 'º andar'], ['Planta', `${P.name} · ${P.title}`], ['Área privativa', P.area + ' m²'], ['Banheiros', String(P.baths)], ['Insolação', u.sun], ['Vista', u.vista]].map(([k, v]) => ({ k, v })),
+        price: brl(u.price), inCart, cartLabel: inCart ? 'No carrinho — remover' : 'Adicionar ao carrinho', cartCls: inCart ? 'btn-secondary' : 'btn-primary', cartBg: inCart ? '#ffffff' : '#d4ec5c', cartBd: inCart ? 'rgba(21,24,22,.16)' : '#d4ec5c', toggleCart: () => this.toggleCart(u.id),
+        heart: heart(w), wishLabel: w ? 'Nos desejos' : 'Desejo', toggleWish: () => this.toggleWish('unit', u.id),
+        pretLabel: p ? 'Nas pretensões' : 'Pretensão', pretCls: p ? 'btn-primary' : 'btn-secondary', pretBg: p ? '#151816' : '#ffffff', pretFg: p ? '#ffffff' : '#151816', togglePret: () => this.togglePret('unit', u.id), openPlan: () => this.openPlan(u.id) };
+    };
+    const rows = us.filter(match).slice().sort((a, b) => a.price - b.price);
+    const tableRows = rows.slice(0, s.tableLimit).map(u => ({ tower: u.tower, num: u.num, floor: u.floor + 'º', plan: `${u.plan} · ${PLANS[u.plan].area} m²`, sun: u.sun, price: brl(u.price), status: STATUS[u.status], bg: u.id === s.sel ? '#f1f7d4' : 'transparent', select: () => this.selectUnit(u.id), btn: u.id === s.sel ? 'Selecionada' : 'Ver na maquete', aria: `Ver torre ${u.tower} apartamento ${u.num} na maquete` }));
+    const planCards = emp.plans.map(p => { const P = PLANS[p], av = us.filter(u => u.plan === p && u.status === 'disponivel'); return { title: P.name, sub: P.title, area: P.area + ' m² privativos', baths: P.baths + (P.baths > 1 ? ' banheiros' : ' banheiro'), draw: DRAW[p], from: av.length ? 'a partir de ' + brl(Math.min(...av.map(u => u.price))) : 'Esgotada', avail: av.length + (av.length === 1 ? ' unidade disponível' : ' unidades disponíveis'), open: () => this.openPlanType(p) }; });
+    // plan modal
+    let PM = { rooms: [], draw: DRAW.A, modes: [] };
+    if (s.plan) {
+      const P = PLANS[s.plan.planId], u = UNIT[s.plan.unitId], e2 = EMPS.find(x => x.id === s.plan.empId);
+      PM = { title: `${P.name} · ${P.area} m²`, sub: P.title, emp: e2.name, unit: unitCard(u), draw: DRAW[P.id],
+        modes: [['planta', 'Planta 2D'], ['maquete', 'Maquete 3D'], ['passeio', 'Passeio']].map(([k, l]) => chip(l, s.planMode === k, () => set({ planMode: k, planT: k === 'planta' ? 0 : 1, room: null }))),
+        rooms: P.rooms.map(r => ({ name: r.name, area: m2(r.w * r.d), visited: s.visited.includes(r.id), here: s.room === r.id, bg: s.room === r.id ? '#f1f7d4' : 'transparent', focus: () => this.planV && this.planV.focusRoom(r.id) })),
+        tPct: Math.round(s.planT * 100), tLabel: s.planT < 0.15 ? 'Traço' : s.planT < 0.85 ? 'Construindo' : 'Pronto', hour: s.planHour, hourLabel: s.planHour + 'h', isWalk: s.planMode === 'passeio', notWalk: s.planMode !== 'passeio',
+        roomName: s.room ? (P.rooms.find(r => r.id === s.room) || {}).name : 'Entrada', visitedLabel: `${s.visited.length} de ${P.rooms.length} cômodos visitados`, visitPct: (s.visited.length / P.rooms.length * 100) + '%',
+        sw: sw(s.furnished) };
+    }
+    const mv = k => ({ down: e => { e.preventDefault(); this.planV && this.planV.setMove({ [k]: true }); }, up: () => this.planV && this.planV.setMove({ [k]: false }) });
+    // drawer
+    const cartUnits = s.cart.map(id => UNIT[id]).filter(Boolean);
+    const total = cartUnits.reduce((a, u) => a + u.price, 0), ent = total * s.entrada / 100, fin = total - ent, i = 0.0085, n = s.prazo;
+    const parcela = fin > 0 ? fin * i / (1 - Math.pow(1 + i, -n)) : 0;
+    const cartItems = cartUnits.map(u => ({ ...this.unitLine(u), remove: () => this.toggleCart(u.id), openPlan: () => this.openPlan(u.id), removeAria: `Remover torre ${u.tower} apartamento ${u.num} do carrinho` }));
+    const nameOf = (kind, id) => kind === 'emp' ? (EMPS.find(e => e.id === id) || {}).name : (() => { const u = UNIT[id]; return u ? `Torre ${u.tower} · Apto ${u.num}` : ''; })();
+    const subOf = (kind, id) => { if (kind === 'emp') { const e = EMPS.find(x => x.id === id); return e ? `${e.cidade}/${e.uf} · ${e.avail} unidades disponíveis` : ''; } const u = UNIT[id]; return u ? `${EMPS.find(e => e.id === u.empId).name} · Planta ${u.plan} · ${STATUS[u.status]}` : ''; };
+    const wishItems = s.wish.filter(w => w.kind === 'emp' ? EMPS.some(e => e.id === w.id) : UNIT[w.id]).map(w => {
+      const nt = (k, l) => chip(l, w.notify[k], () => set({ wish: s.wish.map(x => x === w ? { ...x, notify: { ...x.notify, [k]: !x.notify[k] } } : x) }));
+      let sim = [];
+      if (w.kind === 'unit') { const u = UNIT[w.id]; sim = UNITS[u.empId].filter(x => x.plan === u.plan && x.status === 'disponivel' && x.id !== u.id).sort((a, b) => Math.abs(a.floor - u.floor) - Math.abs(b.floor - u.floor)).slice(0, 2).map(x => ({ label: `Torre ${x.tower} · Apto ${x.num} · ${x.floor}º andar`, price: brl(x.price), go: () => { this.setState({ drawer: false }); this.openEmp(x.empId); setTimeout(() => this.selectUnit(x.id), 400); } })); }
+      else { const e = EMPS.find(x => x.id === w.id); sim = EMPS.filter(x => x.id !== e.id && x.regiao === e.regiao).slice(0, 2).map(x => ({ label: x.name + ' · ' + x.cidade, price: 'a partir de ' + brl(x.minPrice), go: () => { this.setState({ drawer: false }); this.openEmp(x.id); } })); }
+      return { name: nameOf(w.kind, w.id), sub: subOf(w.kind, w.id), notify: [nt('obra', 'Evolução da obra'), nt('preco', 'Mudança de preço'), nt('similares', 'Unidades parecidas')], sim, hasSim: sim.length > 0, simTitle: w.kind === 'unit' ? 'Parecidas e disponíveis' : 'Na mesma região', remove: () => this.toggleWish(w.kind, w.id), open: () => { this.setState({ drawer: false }); const id = w.kind === 'emp' ? w.id : UNIT[w.id].empId; this.openEmp(id); if (w.kind === 'unit') setTimeout(() => this.selectUnit(w.id), 400); } };
+    });
+    const pretItems = s.pret.filter(w => w.kind === 'emp' ? EMPS.some(e => e.id === w.id) : UNIT[w.id]).map(w => ({
+      name: nameOf(w.kind, w.id), sub: subOf(w.kind, w.id), remove: () => this.togglePret(w.kind, w.id),
+      topics: TOPICS.map(t => chip(t, w.topics.includes(t), () => set({ pret: s.pret.map(x => x === w ? { ...x, topics: togArr(x.topics, t) } : x), pretSent: false }))) }));
+    const c = s.contact, er = s.errors;
+    const tabs = [['cart', 'Carrinho', cartUnits.length], ['wish', 'Desejos', wishItems.length], ['pret', 'Pretensões', pretItems.length]].map(([k, l, n2]) => ({ label: `${l} (${n2})`, on: s.tab === k, cls: s.tab === k ? 'btn-primary' : 'btn-secondary', bg: s.tab === k ? '#151816' : 'transparent', fg: s.tab === k ? '#ffffff' : '#151816', pressed: s.tab === k, onClick: () => set({ tab: k }) }));
+    const openD = tab => () => set({ drawer: true, tab, a11yOpen: false, menuOpen: false, checkout: s.checkout === 'done' ? 'cart' : s.checkout });
+    return {
+      marqRef: this.marqRef, ST: STATS, TH: { a: s.thumbs['boa-viagem'], b: s.thumbs['pampulha'], c: s.thumbs['taquaral'], d: s.thumbs['vila-mariana'], ok: !!(s.thumbs['boa-viagem'] && s.thumbs['pampulha'] && s.thumbs['taquaral'] && s.thumbs['vila-mariana']) }, thNo: !(s.thumbs['boa-viagem'] && s.thumbs['pampulha'] && s.thumbs['taquaral'] && s.thumbs['vila-mariana']),
+      intro: s.intro, skipIntro: () => this.endIntro(), introRef: this.introRef, introLogoRef: this.introLogoRef, introCountRef: this.introCountRef, logoRef: this.logoRef, progRef: this.progRef,
+      wide, notWide: !wide, narrow, isHome: s.view === 'home', isEmp: s.view === 'emp',
+      goHome: e => { e && e.preventDefault && e.preventDefault(); this.goHome(); }, navEmps: () => this.scrollToId('empreendimentos'), navHow: () => this.scrollToId('como-funciona'), navContact: () => this.scrollToId('atendimento'),
+      menuOpen: s.menuOpen && !wide, toggleMenu: () => set({ menuOpen: !s.menuOpen, a11yOpen: false }),
+      a11yOpen: s.a11yOpen, toggleA11y: () => set({ a11yOpen: !s.a11yOpen, menuOpen: false }), closeA11y: () => set({ a11yOpen: false }),
+      sizeOpts: ['Padrão', 'Grande', 'Muito grande'].map((l, i2) => chip(l, s.a11y.size === i2, () => set({ a11y: { ...s.a11y, size: i2 } }))),
+      swContrast: sw(s.a11y.contrast), contrastOn: s.a11y.contrast, toggleContrast: () => set({ a11y: { ...s.a11y, contrast: !s.a11y.contrast } }),
+      swReduce: sw(s.a11y.reduce), reduceOn: !!s.a11y.reduce, toggleReduce: () => set({ a11y: { ...s.a11y, reduce: !s.a11y.reduce } }),
+      present: s.present, presentLabel: s.present ? 'Sair do modo apresentação' : 'Modo apresentação (telão)',
+      togglePresent: () => { const on = !s.present; this.setState({ present: on, a11yOpen: false, menuOpen: false }); try { if (on) { const r = document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); r && r.catch && r.catch(() => { }); } else if (document.fullscreenElement) document.exitFullscreen(); } catch (err) { } if (on && s.view === 'emp') setTimeout(() => this.setTour(true), 700); },
+      cartCount: cartUnits.length, hasCart: cartUnits.length > 0, wishCount: wishItems.length, hasWish: wishItems.length > 0, pretCount: pretItems.length, hasPret: pretItems.length > 0,
+      cartAria: `Carrinho, ${cartUnits.length} ${cartUnits.length === 1 ? 'unidade' : 'unidades'}`, wishAria: `Lista de desejos, ${wishItems.length} itens`, pretAria: `Lista de pretensões, ${pretItems.length} itens`,
+      openCart: openD('cart'), openWish: openD('wish'), openPret: openD('pret'),
+      // hero
+      heroRef: this.heroRef, heroRangeRef: this.heroRangeRef, crossVRef: this.crossVRef, crossHRef: this.crossHRef, coordRef: this.coordRef,
+      heroScrub: e => { this.hero && this.hero.setProgress(Number(e.target.value) / 100); },
+      heroReplay: () => this.hero && this.hero.play(),
+      heroMove: e => { const r = e.currentTarget.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height; if (this.crossV) { this.crossV.style.left = x * 100 + '%'; this.crossV.style.opacity = '.35'; } if (this.crossH) { this.crossH.style.top = y * 100 + '%'; this.crossH.style.opacity = '.35'; } if (this.coordEl) this.coordEl.textContent = `X ${String(Math.round(x * 1000)).padStart(4, '0')} · Y ${String(Math.round((1 - y) * 1000)).padStart(4, '0')}`; },
+      heroLeave: () => { if (this.crossV) this.crossV.style.opacity = '0'; if (this.crossH) this.crossH.style.opacity = '0'; },
+      goSearch: () => this.scrollToId('empreendimentos'), openFeatured: () => this.openEmp(this.props.featured || 'vila-mariana'),
+      // search
+      regiaoOpts, tamanhoOpts, dormOpts, oppOpts, emps, noResults: emps.length === 0,
+      resultsLabel: emps.length === 1 ? '1 empreendimento encontrado' : `${emps.length} empreendimentos encontrados`,
+      maxPrice: f.maxPrice, maxPriceLabel: f.maxPrice >= 800000 ? 'Qualquer valor' : 'Até ' + brl(f.maxPrice), setMaxPrice: e => setF({ maxPrice: Number(e.target.value) }),
+      clearFilters: () => set({ f: { regiao: 'Todas', tamanho: 'Todos', dorms: [], opps: [], maxPrice: 800000 } }),
+      // emp
+      E, siteRef: this.siteRef, siteWrapRef: this.siteWrapRef, tipRef: this.tipRef, SX,
+      dayCls: s.night ? 'btn-secondary' : 'btn-primary', nightCls: s.night ? 'btn-primary' : 'btn-secondary', dayBg: s.night ? 'transparent' : '#151816', dayFg: s.night ? '#151816' : '#ffffff', nightBg: s.night ? '#151816' : 'transparent', nightFg: s.night ? '#ffffff' : '#151816', dayPressed: !s.night, nightPressed: s.night,
+      setDay: () => set({ night: false }), setNight: () => set({ night: true }),
+      touring: s.touring, tourLabel: s.tourLabel, tourBtn: s.touring ? 'Parar tour' : 'Tour guiado', tourIcon: !s.touring, tourIconStop: s.touring, toggleTour: () => this.setTour(!s.touring),
+      maxLabel: s.siteMax ? 'Sair da tela cheia' : 'Tela cheia', toggleMax: () => set({ siteMax: !s.siteMax }),
+      zoomIn: () => this.site && this.site.zoom(0.8), zoomOut: () => this.site && this.site.zoom(1.25), resetView: () => { this.site && this.site.reset(); set({ cut: 0 }); },
+      showHint: !s.interacted || s.wheelHint, hintText: s.wheelHint ? 'Use Ctrl + rolagem ou os botões + e − para aproximar' : (narrow ? 'Arraste para os lados para girar · toque em uma unidade' : 'Arraste para girar · clique em uma unidade azul'),
+      cut: s.cut, maxFloors: emp.floors, cutLabel: s.cut ? `${s.cut}º andar` : 'Prédio inteiro', setCut: e => { const v = Number(e.target.value); set({ cut: v }); if (v) this.done('andar'); },
+      missions, missionsLabel: `${nDone} de ${MISSIONS.length}`, missionPct: (nDone / MISSIONS.length * 100) + '%', level: LEVELS[nDone], allDone: nDone === MISSIONS.length,
+      planChips, swAvail: sw(s.uf.onlyAvail), onlyAvail: s.uf.onlyAvail, toggleOnlyAvail: () => set({ uf: { ...s.uf, onlyAvail: !s.uf.onlyAvail } }),
+      hasSel: !!su, noSel: !su, U: unitCard(su),
+      showTable: s.showTable, tableBtn: s.showTable ? 'Ocultar lista de unidades' : 'Prefere lista? Ver unidades em tabela', toggleTable: () => set({ showTable: !s.showTable }),
+      tableRows, tableCaption: `${rows.length} unidades com os filtros atuais, ordenadas por preço`, tableMore: rows.length > s.tableLimit, showMore: () => set({ tableLimit: s.tableLimit + 24 }),
+      planCards,
+      // plan modal
+      planOpen: !!s.plan, PM, planWrap: s.compact ? 'wrap' : 'nowrap', planAsideMax: s.compact ? '100%' : '380px', planAsideBorder: s.compact ? '0' : '1px solid var(--color-divider)', planRef: this.planRef, dotRef: this.dotRef, closePlan: () => this.closePlan(),
+      setPlanT: e => set({ planT: Number(e.target.value) / 100 }), setHour: e => set({ planHour: Number(e.target.value) }), toggleFurn: () => set({ furnished: !s.furnished }), furnished: s.furnished,
+      planZoomIn: () => this.planV && this.planV.zoom(0.8), planZoomOut: () => this.planV && this.planV.zoom(1.25),
+      mF: mv('f'), mB: mv('b'), mL: mv('tl'), mR: mv('tr'),
+      // drawer
+      drawer: s.drawer, closeDrawer: () => set({ drawer: false }), tabs, tabCart: s.tab === 'cart', tabWish: s.tab === 'wish', tabPret: s.tab === 'pret',
+      stCart: s.checkout === 'cart', stForm: s.checkout === 'form', stDone: s.checkout === 'done' && !!s.sent,
+      cartItems, cartEmpty: cartItems.length === 0, cartFull: cartItems.length > 0, total: brl(total),
+      entrada: s.entrada, entradaLabel: `${s.entrada}% · ${brl(ent)}`, setEntrada: e => set({ entrada: Number(e.target.value) }),
+      prazoOpts: [120, 240, 360].map(m => chip(m / 12 + ' anos', s.prazo === m, () => set({ prazo: m }))), parcela: brl(Math.round(parcela)), prazoLabel: `em ${s.prazo} meses`,
+      toForm: () => set({ checkout: 'form' }), toCart: () => set({ checkout: 'cart' }), submitCart: () => this.submitCart(), sent: s.sent || { units: [] },
+      finishDone: () => set({ checkout: 'cart', drawer: false }), browse: () => { set({ drawer: false }); this.scrollToId('empreendimentos'); },
+      c, er, hasErNome: !!er.nome, hasErTel: !!er.tel, hasErEmail: !!er.email,
+      setNome: e => this.setContact('nome', e.target.value), setTel: e => this.setContact('tel', this.maskTel(e.target.value)), setEmail: e => this.setContact('email', e.target.value),
+      canalOpts: ['WhatsApp', 'Ligação', 'E-mail'].map(v => chip(v, c.canal === v, () => this.setContact('canal', v))),
+      horarioOpts: ['Manhã', 'Tarde', 'Noite'].map(v => chip(v, c.horario === v, () => this.setContact('horario', v))),
+      swFgts: sw(c.fgts), fgtsOn: c.fgts, toggleFgts: () => this.setContact('fgts', !c.fgts),
+      wishItems, wishEmpty: wishItems.length === 0, pretItems, pretEmpty: pretItems.length === 0, pretFull: pretItems.length > 0,
+      pretNote: s.pretNote, setPretNote: e => set({ pretNote: e.target.value, pretSent: false }), submitPret: () => this.submitPret(), pretSent: s.pretSent, pretNotSent: !s.pretSent,
+      toast: s.toast, hasToast: !!s.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ArrowRightIcon, ChevronDownIcon } from "@/components/ui/icons";
+import { WebDesign } from "@/components/sections/WebDesign";
 
 function CaseCard({ c, index, match }: { c: CaseStudy; index: number; match: boolean }) {
   const { openCase } = usePortfolio();
@@ -150,6 +151,7 @@ export function Cases() {
           Arquivo de estudos anteriores ↗
         </a>
       </div>
+      <WebDesign />
     </section>
   );
 }
