@@ -14,6 +14,7 @@ import {
   CV_ATS_URL,
   CV_FULL_URL,
   EMAIL,
+  game,
   GITHUB_URL,
   jobs,
   LINKEDIN_URL,
@@ -53,6 +54,8 @@ function snapshotHtml(): string {
         `<article><h3>${esc(w.name)} · ${esc(w.kind)}</h3><p>${esc(w.summary)}</p>` +
         `<p><a href="${abs(w.url)}">Ver ao vivo</a>${w.repo ? ` · <a href="${w.repo}">Código</a>` : ""}</p></article>`,
     ),
+    `</section><section id="jogo"><h2>Jogue ${esc(game.name)}</h2><p><strong>${esc(game.tagline)}</strong></p><p>${esc(game.summary)}</p>` +
+      `<p>Feito com ${esc(game.tools.join(", "))}.</p><p><a href="${abs(game.siteUrl)}">Site do jogo</a> · <a href="${game.downloadUrl}">Baixar beta grátis</a> · <a href="${game.repoUrl}">Código</a></p>`,
     `</section><section><h2>Experiência</h2>`,
     ...jobs.map(
       (j) => `<article><h3>${esc(j.company)} · ${esc(j.role)}</h3><p>${esc(j.period)}. ${esc(j.context)}</p>${list(j.items)}</article>`,
@@ -90,6 +93,12 @@ function llmsTxt(): string {
     "## Web design",
     `Código aberto: ${WEB_DESIGN_REPO_URL}`,
     ...webDesigns.map((w) => `- [${w.name}](${abs(w.url)}): ${w.summary}${w.repo ? ` Código: ${w.repo}` : ""}`),
+    "",
+    `## Jogo: ${game.name}`,
+    `${game.tagline} ${game.summary}`,
+    `- Site do jogo: ${abs(game.siteUrl)}`,
+    `- Baixar beta: ${game.downloadUrl}`,
+    `- Código: ${game.repoUrl}`,
     "",
     "## Habilidades",
     ...skillGroups.map((g) => `- ${g.title}: ${g.items.map((i) => i.name).join(", ")}`),
@@ -136,7 +145,7 @@ function main(): void {
   writeFileSync(indexPath, out);
 
   const today = new Date().toISOString().slice(0, 10);
-  const pages = ["/", ...webDesigns.map((w) => abs(w.url).slice(SITE_URL.length))];
+  const pages = ["/", abs(game.siteUrl).slice(SITE_URL.length), ...webDesigns.map((w) => abs(w.url).slice(SITE_URL.length))];
   writeFileSync(
     resolve(DIST, "sitemap.xml"),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

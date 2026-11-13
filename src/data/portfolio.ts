@@ -130,6 +130,20 @@ export const webDesigns: WebDesignPiece[] = [
   },
 ];
 
+/** Véspera: jogo autoral. O site do jogo é publicado dentro do portfólio, em public/vespera/. */
+export const VESPERA_REPO_URL = "https://github.com/NasckDev/vespera";
+export const game = {
+  name: "Véspera",
+  tagline: "Toda véspera, uma Brecha se abre em Lumeira.",
+  summary:
+    "RPG de ação 2D em pixel art que estou criando. Cace monstros, junte Fragmentos, forje armas e suba de rank até o Alvor, sozinho ou em co-op local para 2. Beta grátis para Windows.",
+  tools: ["Godot 4", "C#", "Pixel art", "Co-op local", "Código aberto"],
+  siteUrl: `${base}vespera/`,
+  downloadUrl: `${VESPERA_REPO_URL}/releases`,
+  repoUrl: VESPERA_REPO_URL,
+  video: { webm: `${base}vespera/video/hero-540.webm`, mp4: `${base}vespera/video/hero-540.mp4`, poster: `${base}vespera/video/hero-poster.webp` },
+};
+
 export const caseFilters = ["Todos", "React", "Angular", "Dados", "Design System"] as const;
 export type CaseFilter = (typeof caseFilters)[number];
 
@@ -196,6 +210,7 @@ export const repos = [
   { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "Vitest · Playwright + axe · CI", status: "Planejado", dot: "#6CC0EE" },
   { slug: "nasckdev/fiscotrack", name: "FiscoTrack", problem: "Evolução do minersCalculator: cálculo explicável e testável.", quality: "Casos table-driven · CI", status: "Em evolução", dot: "#FEBC2E" },
   { slug: "nasckdev/web-design", name: "Web design", problem: "Estudos visuais com 3D e movimento, com código, prints e README.", quality: "Páginas ao vivo · prints · README", status: "Publicado", dot: "#28C840", href: WEB_DESIGN_REPO_URL },
+  { slug: "nasckdev/vespera", name: "Véspera", problem: "Meu jogo: RPG de ação 2D em pixel art, com co-op local.", quality: "Godot 4 · C# · testes automatizados", status: "Beta", dot: "#FEBC2E", href: "https://github.com/NasckDev/vespera" },
   { slug: "nasckdev/myportfolio", name: "Myportfolio", problem: "Este portfólio, documentado como case de engenharia.", quality: "Lint · typecheck · E2E · Lighthouse CI", status: "Publicado", dot: "#28C840", href: "https://github.com/NasckDev/Myportfolio" },
 ] as { slug: string; name: string; problem: string; quality: string; status: string; dot: string; href?: string }[];
 
@@ -214,13 +229,13 @@ export const workModes = [
   { t: "100% remoto", d: "Para empresas de qualquer lugar do Brasil", tag: "remoto", remote: true },
 ];
 
-export const navItems: [id: string, label: string][] = [["habilidades", "Habilidades"], ["cases", "Projetos"], ["experiencia", "Experiência"], ["sobre", "Sobre"], ["contato", "Contato"]];
+export const navItems: [id: string, label: string][] = [["habilidades", "Habilidades"], ["cases", "Projetos"], ["jogo", "Jogo"], ["experiencia", "Experiência"], ["sobre", "Sobre"], ["contato", "Contato"]];
 
-export const footerLinks: [id: string, label: string][] = [["habilidades", "Habilidades"], ["cases", "Projetos"], ["experiencia", "Experiência"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
+export const footerLinks: [id: string, label: string][] = [["habilidades", "Habilidades"], ["cases", "Projetos"], ["jogo", "Jogue Véspera"], ["experiencia", "Experiência"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
 
-export const paletteNav: [id: string, label: string][] = [["habilidades", "Habilidades"], ["cases", "Projetos"], ["experiencia", "Experiência"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
+export const paletteNav: [id: string, label: string][] = [["habilidades", "Habilidades"], ["cases", "Projetos"], ["jogo", "Jogue Véspera"], ["experiencia", "Experiência"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
 
-export const sectionIds = ["topo", "habilidades", "cases", "experiencia", "engenharia", "sobre", "contato"];
+export const sectionIds = ["topo", "habilidades", "cases", "jogo", "experiencia", "engenharia", "sobre", "contato"];
 
 export const MAIL_SUBJECT = "Oportunidade frontend";
 export const MAIL_HREF = `mailto:${EMAIL}?subject=${encodeURIComponent(MAIL_SUBJECT)}`;

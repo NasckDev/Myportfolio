@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { Skills } from "@/components/sections/Skills";
 import { Cases } from "@/components/sections/Cases";
+import { PlayVespera } from "@/components/sections/PlayVespera";
 import { Experience } from "@/components/sections/Experience";
 import { OpenSource } from "@/components/sections/OpenSource";
 import { About } from "@/components/sections/About";
@@ -83,6 +84,7 @@ function Portfolio() {
         <Hero />
         <Skills />
         <Cases />
+        <PlayVespera />
         <Experience />
         <OpenSource />
         <About />
