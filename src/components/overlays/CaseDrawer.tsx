@@ -5,6 +5,7 @@ import { copyText } from "@/lib/clipboard";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { BlueprintCover } from "@/components/ui/BlueprintCover";
+import { DemoFrame, ShotGallery } from "@/components/overlays/ProjectDemo";
 import { CloseIcon, LinkIcon } from "@/components/ui/icons";
 
 export function CaseDrawer() {
@@ -89,13 +90,21 @@ export function CaseDrawer() {
             <div className="flex items-start gap-3 rounded-2xl px-4 py-3.5" style={{ background: "rgba(245,184,46,.14)", boxShadow: "inset 0 0 0 1px rgba(245,184,46,.5)" }}>
               <span className="mt-1.5 size-2.5 shrink-0 rounded-full" style={{ background: "#F5B82E" }} aria-hidden="true" />
               <p className="text-[15.5px]">
-                <strong className="text-head">Em construção.</strong> Agora: {cur.stage?.toLowerCase()}. Código, demo e estudo completo previstos para <strong className="text-head">{cur.eta}</strong>. O que está abaixo é o plano.
+                <strong className="text-head">Em construção.</strong> Agora: {cur.stage?.toLowerCase()}.{" "}
+                {cur.demoUrl ? "A primeira versão já roda aqui embaixo. A versão 1.0, com estudo de caso completo, está prevista para " : "Código, demo e estudo completo previstos para "}
+                <strong className="text-head">{cur.eta}</strong>.
               </p>
             </div>
           ) : null}
-          <div className="aspect-video overflow-hidden rounded-[20px] bg-bg2">
-            {cur.eta ? <BlueprintCover name={cur.name} eta={cur.eta} /> : <ImageSlot src={cur.image} alt={`Tela do ${cur.name}`} placeholder={`Tela do ${cur.name}`} objectPosition="top" />}
-          </div>
+          {cur.demoUrl ? (
+            // key: ao trocar de case, a demo volta ao estado "parada" e não carrega o app anterior.
+            <DemoFrame key={cur.id} c={{ ...cur, demoUrl: cur.demoUrl }} />
+          ) : (
+            <div className="aspect-video overflow-hidden rounded-[20px] bg-bg2">
+              {cur.eta ? <BlueprintCover name={cur.name} eta={cur.eta} /> : <ImageSlot src={cur.image} alt={`Tela do ${cur.name}`} placeholder={`Tela do ${cur.name}`} objectPosition="top" />}
+            </div>
+          )}
+          {cur.shots?.length ? <ShotGallery name={cur.name} shots={cur.shots} /> : null}
           <div className="grid grid-cols-2 gap-2.5">
             <div className="rounded-2xl bg-bg2 p-4">
               <div className="mono text-[12px] text-muted">Meu papel</div>
@@ -111,7 +120,7 @@ export function CaseDrawer() {
             <p className="text-[16px]">{cur.problem}</p>
           </div>
           <div className="flex flex-col gap-2.5">
-            <h3 className="stretch-112 text-[19px] font-bold text-head">{cur.eta ? "Decisões planejadas" : "Decisões"}</h3>
+            <h3 className="stretch-112 text-[19px] font-bold text-head">{cur.eta && !cur.demoUrl ? "Decisões planejadas" : "Decisões"}</h3>
             {cur.decisions.map((t, i) => (
               <div key={t} className="flex gap-3.5 rounded-2xl border border-line px-4 py-3.5">
                 <span className="mono pt-0.5 text-[12.5px] text-accent-text">0{i + 1}</span>
@@ -140,7 +149,7 @@ export function CaseDrawer() {
             </div>
           </div>
           <div className="flex flex-wrap gap-2.5 border-t border-line pt-2">
-            {cur.liveUrl ? (
+            {cur.liveUrl && !cur.demoUrl ? (
               <a href={cur.liveUrl} target="_blank" rel="noopener noreferrer" className="flex h-12 items-center gap-2 rounded-full bg-btn px-5 font-semibold text-btn-text no-underline hover:bg-brand hover:text-white">
                 Ver ao vivo ↗<span className="sr-only"> (abre em nova aba)</span>
               </a>

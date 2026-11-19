@@ -25,6 +25,14 @@ export const CV_FULL_URL = `${base}curriculo-alexandre-diogo-nascimento.pdf`;
 export const CV_ATS_URL = `${base}curriculo-alexandre-diogo-nascimento-ats.pdf`;
 export const PORTRAIT_URL = `${base}assets/retrato-alexandre.webp`;
 
+/** Print real de uma tela do projeto, servido em public/assets/projetos/<id>/. */
+export interface CaseShot {
+  src: string;
+  alt: string;
+  caption: string;
+  device: "desktop" | "mobile";
+}
+
 export type CaseTag = "React" | "Angular" | "Dados" | "Design System" | "Acessibilidade";
 
 export interface CaseStudy {
@@ -51,11 +59,19 @@ export interface CaseStudy {
   /** Código e página ao vivo, quando existirem. */
   repoUrl?: string;
   liveUrl?: string;
+  /** Demo executável servida pelo próprio portfólio (build estático em public/projetos/<id>/). */
+  demoUrl?: string;
+  /** Prints reais, do mais representativo para o menos; o primeiro desktop vira a capa. */
+  shots?: CaseShot[];
 }
+
+/** Monta a lista de prints de um projeto a partir dos arquivos em public/assets/projetos/<id>/. */
+const shotsOf = (id: string, list: [file: string, device: CaseShot["device"], caption: string][]): CaseShot[] =>
+  list.map(([file, device, caption]) => ({ src: `${base}assets/projetos/${id}/${file}`, alt: caption, caption, device }));
 
 /** Linha do tempo pública dos projetos em construção (mostrada na seção Projetos). */
 export const roadmap: { when: string; what: string; done?: boolean }[] = [
-  { when: "Já no ar", what: "Este portfólio, o site do Véspera e as primeiras versões abertas de FiscoTrack, OpsFlow, InsightHub e Nasck UI", done: true },
+  { when: "Já no ar", what: "Este portfólio, o site do Véspera e as primeiras versões de InsightHub, OpsFlow, FiscoTrack e Nasck UI, que já rodam aqui dentro", done: true },
   { when: "Jan 2027", what: "Nasck UI (design system) e FiscoTrack" },
   { when: "Fev 2027", what: "InsightHub" },
   { when: "Mar 2027", what: "OpsFlow" },
@@ -64,39 +80,74 @@ export const roadmap: { when: string; what: string; done?: boolean }[] = [
 export const cases: CaseStudy[] = [
   {
     id: "insighthub", num: "01", kind: "React · dados", read: "6 min", name: "InsightHub", tagline: "Research & AI Insights Workspace", tags: ["React", "Dados", "Acessibilidade"],
-    title: "Um workspace de insights para reduzir a distância entre dados e decisão.", eta: "Fev 2027", stage: "API e motor de síntese no ar, front-end em andamento", repoUrl: "https://github.com/NasckDev/insighthub",
+    title: "Um workspace de insights para reduzir a distância entre dados e decisão.", eta: "Fev 2027", stage: "Workspace rodando no navegador e API com 16 testes; faltam E2E e OpenAPI", repoUrl: "https://github.com/NasckDev/insighthub", liveUrl: "https://nasckdev.github.io/insighthub/",
+    demoUrl: `${base}projetos/insighthub/`,
+    shots: shotsOf("insighthub", [
+      ["insighthub-visao-geral-desktop.png", "desktop", "Visão geral: NPS, distribuição das notas e evolução semanal"],
+      ["insighthub-comparar-amostra-pequena-desktop.png", "desktop", "Comparação de segmentos com aviso de amostra pequena"],
+      ["insighthub-sintese-citacao-desktop.png", "desktop", "Síntese com citação aberta na resposta de origem"],
+      ["insighthub-visao-geral-celular.png", "mobile", "Visão geral no celular"],
+      ["insighthub-sintese-celular.png", "mobile", "Síntese com citações clicáveis no celular"],
+    ]),
     summary: "Workspace para explorar pesquisas, comparar segmentos e gerar sínteses assistidas por IA com rastreabilidade.",
     role: "Concepção, arquitetura e frontend", skills: ["React", "TypeScript", "TanStack", "IA"],
     problem: "Times de pesquisa e produto precisam transformar respostas, segmentos e indicadores em insights acionáveis. A experiência costuma ser fragmentada entre filtros complexos, tabelas, gráficos, comentários e geração de sínteses.",
     decisions: ["Filtros persistidos na URL para visões compartilháveis", "TanStack Query para estado de servidor, cache e invalidação", "IA com cancelamento, retry e indicação da fonte usada"],
-    a11y: "Gráficos com alternativa tabular e painel redimensionável por teclado.", tests: "Vitest e Testing Library nas regras; Playwright + axe nos fluxos principais.",
+    a11y: "Gráficos com alternativa em tabela, contraste AA nos dois temas e navegação completa por teclado.", tests: "76 testes: regras de NPS e schemas no core, API com SQLite em memória e interface com filtros na URL, estados e citações. Playwright + axe é o próximo passo.",
   },
   {
     id: "opsflow", num: "02", kind: "Angular · corporativo", read: "7 min", name: "OpsFlow", tagline: "Enterprise Workflow & Approval Console", tags: ["Angular", "Acessibilidade"],
-    title: "Um workflow corporativo com permissões, auditoria e evolução incremental.", eta: "Mar 2027", stage: "Máquina de estados, permissões e demo no ar", repoUrl: "https://github.com/NasckDev/opsflow", liveUrl: "https://nasckdev.github.io/opsflow/",
+    title: "Um workflow corporativo com permissões, auditoria e evolução incremental.", eta: "Mar 2027", stage: "Máquina de estados, permissões e auditoria rodando, com 84 testes; faltam testes de ponta a ponta", repoUrl: "https://github.com/NasckDev/opsflow", liveUrl: "https://nasckdev.github.io/opsflow/",
+    demoUrl: `${base}projetos/opsflow/`,
+    shots: shotsOf("opsflow", [
+      ["opsflow-lista-solicitacoes-desktop.webp", "desktop", "Lista de solicitações com status e prazo (SLA)"],
+      ["opsflow-detalhe-auditoria-desktop.webp", "desktop", "Detalhe aprovado, com a linha do tempo de auditoria"],
+      ["opsflow-wizard-detalhes-desktop.webp", "desktop", "Wizard de nova solicitação, etapa de detalhes"],
+      ["opsflow-wizard-revisao-desktop.webp", "desktop", "Wizard, revisão antes de enviar"],
+      ["opsflow-lista-solicitacoes-mobile.webp", "mobile", "Lista no celular"],
+      ["opsflow-detalhe-auditoria-mobile.webp", "mobile", "Auditoria no celular"],
+    ]),
     summary: "Console de workflow com etapas rastreáveis, permissões, histórico e suporte multilíngue.",
     role: "Estados, formulários e RBAC", skills: ["Angular", "RxJS", "RBAC", "i18n"],
     problem: "Operações corporativas precisam criar, revisar e aprovar solicitações com várias etapas, papéis, documentos, prazos e trilha de auditoria. Interfaces frágeis aumentam retrabalho, erros e tempo de decisão.",
     decisions: ["Workflow modelado como máquina de estados", "Matriz de permissões testada por papel", "Migração incremental de legado com adapter"],
-    a11y: "Wizard navegável por teclado e leitor de tela; foco vai para o primeiro erro.", tests: "Testes unitários de regras e permissões; E2E com Playwright.",
+    a11y: "Wizard navegável por teclado e leitor de tela; foco vai para o primeiro erro.", tests: "84 testes unitários da máquina de estados, das 35 combinações de papel e permissão, do SLA, da auditoria e do adapter do legado. E2E com Playwright é o próximo passo.",
   },
   {
     id: "fiscotrack", num: "03", kind: "Domínio · testes", read: "5 min", name: "FiscoTrack", tagline: "Investment Tax Calculator & Reporting", tags: ["React", "Dados"],
-    title: "Regras financeiras em um motor de cálculo testável e explicável.", eta: "Jan 2027", stage: "Motor e app web publicados, refinando testes de ponta a ponta", repoUrl: "https://github.com/NasckDev/fiscotrack", liveUrl: "https://nasckdev.github.io/fiscotrack/",
+    title: "Regras financeiras em um motor de cálculo testável e explicável.", eta: "Jan 2027", stage: "Motor com 71 testes e app web rodando; faltam testes de ponta a ponta", repoUrl: "https://github.com/NasckDev/fiscotrack", liveUrl: "https://nasckdev.github.io/fiscotrack/",
+    demoUrl: `${base}projetos/fiscotrack/`,
+    shots: shotsOf("fiscotrack", [
+      ["fiscotrack-painel-mensal-desktop.webp", "desktop", "Painel mensal: resultado e DARF estimado por mês"],
+      ["fiscotrack-explicacao-calculo-desktop.webp", "desktop", "\"Por que deu esse valor?\": o cálculo passo a passo, com as fontes legais"],
+      ["fiscotrack-importacao-csv-desktop.webp", "desktop", "Importação de CSV com erro apontado por linha"],
+      ["fiscotrack-operacoes-desktop.webp", "desktop", "Lançamento manual e tabela de operações"],
+      ["fiscotrack-regras-desktop.webp", "desktop", "Regras e premissas, com vigência e fonte"],
+      ["fiscotrack-painel-mensal-mobile.webp", "mobile", "Painel no celular"],
+    ]),
     summary: "Calculadora educacional de resultados de investimentos com regras versionadas e explicáveis.",
     role: "Modelagem de domínio e testes", skills: ["React", "Funções puras", "Vitest"],
     problem: "Investidores precisam organizar operações, calcular resultados por período e compreender regras aplicadas, sem depender de uma planilha opaca.",
     decisions: ["Motor de cálculo em funções puras, fora da UI", "Regras versionadas por data, com fonte", "Dados locais por padrão; nada enviado à telemetria"],
-    a11y: "Gráficos com alternativa textual e erros de importação por linha.", tests: "Casos table-driven: zero operações, custos, prejuízo acumulado, arredondamento.",
+    a11y: "Gráficos com alternativa textual e erros de importação por linha.", tests: "71 testes do motor (99% de cobertura), table-driven: zero operações, custos, prejuízo acumulado, arredondamento. Mais 23 testes de interface.",
   },
   {
     id: "nasckui", num: "04", kind: "Design System", read: "5 min", name: "Nasck UI", tagline: "Accessible Product Interface System", tags: ["React", "Design System"],
-    title: "Padrões recorrentes em um sistema de interface acessível e governável.", eta: "Jan 2027", stage: "Tokens e 14 componentes no ar, Storybook em andamento", repoUrl: "https://github.com/NasckDev/nasck-ui",
-    summary: "Biblioteca de componentes acessíveis usada pelos outros projetos, com tokens, Storybook e governança.",
-    role: "Arquitetura de componentes e documentação", skills: ["Design System", "Storybook", "Tokens", "a11y"],
+    title: "Padrões recorrentes em um sistema de interface acessível e governável.", eta: "Jan 2027", stage: "14 componentes, tokens e playground rodando, com 100 testes e 99% de cobertura", repoUrl: "https://github.com/NasckDev/nasck-ui", liveUrl: "https://nasckdev.github.io/nasck-ui/",
+    demoUrl: `${base}projetos/nasck-ui/`,
+    shots: shotsOf("nasckui", [
+      ["nasckui-desktop-visao-geral.png", "desktop", "Playground: visão geral, princípios e navegação por componente"],
+      ["nasckui-desktop-componente-button.png", "desktop", "Página do Button: variantes, tamanhos e código copiável"],
+      ["nasckui-desktop-tokens-escuro.png", "desktop", "Tokens no tema escuro, com a paleta e o contraste"],
+      ["nasckui-mobile-visao-geral.png", "mobile", "Playground no celular"],
+      ["nasckui-mobile-exemplo-composto.png", "mobile", "Tela de configurações montada só com a lib, com erro de validação"],
+      ["nasckui-mobile-menu.png", "mobile", "Menu de componentes no celular"],
+    ]),
+    summary: "Biblioteca de componentes acessíveis usada pelos outros projetos, com tokens, playground e governança.",
+    role: "Arquitetura de componentes e documentação", skills: ["Design System", "Tokens", "a11y", "Vitest"],
     problem: "Padrões recorrentes eram reimplementados em cada projeto, com estados, foco e acessibilidade inconsistentes.",
-    decisions: ["Tokens de cor, tipografia, espaço e movimento exportáveis", "Teclado e acessibilidade documentados por componente", "Visual regression e changelog a cada release"],
-    a11y: "Foco visível em fundo claro e escuro; axe em todas as stories.", tests: "Testes de interação, visual regression e CI.",
+    decisions: ["Tokens de cor, tipografia, espaço e movimento exportáveis", "Teclado e acessibilidade documentados por componente", "Changelog com Changesets e CI que barra tokens desatualizados"],
+    a11y: "Foco visível em fundo claro e escuro, suporte a forced-colors e axe em todos os componentes.", tests: "100 testes de teclado, axe e contraste WCAG dos tokens; 99% de cobertura e CI a cada push.",
   },
   {
     id: "myportfolio", num: "05", kind: "Produto · engenharia", read: "4 min", name: "Myportfolio", tagline: "Este portfólio como case de engenharia", tags: ["React", "Acessibilidade"],
@@ -109,7 +160,7 @@ export const cases: CaseStudy[] = [
       "three.js carregado só em telas largas e depois do primeiro conteúdo; no celular, o 3D é CSS puro",
       "Visitas e avaliações em Vercel Functions com Redis, visitante identificado por hash anônimo e limite de votos",
     ],
-    a11y: "Skip link, foco visível, alvos de toque de 44 px e respeito a prefers-reduced-motion.", tests: "Testes automatizados das Functions, typecheck e build de produção a cada deploy.",
+    a11y: "Skip link, foco visível, alvos de toque de 44 px e respeito a prefers-reduced-motion.", tests: "ESLint com jsx-a11y, testes de componente com Vitest e Testing Library, testes das Functions e build de produção a cada deploy.",
     image: `${base}og-image.jpg`, repoUrl: "https://github.com/NasckDev/Myportfolio", liveUrl: SITE_URL,
   },
 ];
@@ -206,7 +257,7 @@ type RawSkill = [name: string, cases: number[], jobs: number[]];
 const rawSkillGroups: [string, RawSkill[]][] = [
   ["Linguagens e base", [["JavaScript", [4], [0, 1, 2, 3]], ["TypeScript", [0, 2, 3, 4], [0, 1]], ["HTML5", [], [0, 1, 2, 3]], ["CSS3 / SCSS", [3, 4], [0, 1]], ["Responsividade", [4], [0, 1]], ["C# e ABSL (SAP)", [], [1, 2]]]],
   ["Frameworks", [["React.js", [0, 2, 3, 4], [0, 1]], ["React Hooks", [0, 4], [0]], ["Next.js", [], []], ["Angular / AngularJS", [1], [1]], ["Vue.js", [], [1]], ["Nuxt.js", [], [1]], ["Node.js / NestJS", [], [1]]]],
-  ["Arquitetura e interface", [["Micro frontends", [], []], ["Webpack", [], []], ["WebSockets", [], []], ["Componentização", [3], [0, 1]], ["Design Systems", [3], [0]], ["Storybook", [3], []], ["styled-components", [], []], ["Tailwind CSS", [4], []], ["Motion / GSAP", [4], []]]],
+  ["Arquitetura e interface", [["Micro frontends", [], []], ["Webpack", [], []], ["WebSockets", [], []], ["Componentização", [3], [0, 1]], ["Design Systems", [3], [0]], ["Storybook", [], []], ["styled-components", [], []], ["Tailwind CSS", [4], []], ["Motion / GSAP", [4], []]]],
   ["Dados e integrações", [["APIs REST", [0], [0, 1]], ["Integração com IA", [0], [0]], ["React Query / TanStack Query", [0], []], ["Redux Toolkit", [], []], ["Microsserviços", [], [1]], ["Backends em C# e Python", [], [0]], ["Serverless (Vercel)", [4], []]]],
   ["Qualidade e performance", [["Acessibilidade (WCAG)", [0, 1, 3], [0]], ["Performance web", [4], []], ["Jest", [], [1]], ["Testes unitários e de integração", [0, 2, 4], [1]], ["Cypress", [], []], ["Playwright", [0, 1, 4], []], ["Code review", [], [0, 1]], ["Troubleshooting e incidentes", [], [1]]]],
   ["Entrega e colaboração", [["CI/CD", [4], [1]], ["Jenkins", [], [1]], ["ArgoCD", [], [1]], ["GitHub Actions", [4], []], ["Feature flags", [], [0, 1]], ["Git · GitHub · GitLab · Azure DevOps", [4], [0, 1]], ["Scrum / Kanban", [], [0]], ["Documentação técnica", [], [0]], ["SAP Commerce", [], [1]]]],
@@ -227,13 +278,13 @@ export const skillGroups: SkillGroup[] = rawSkillGroups.map(([title, items], gi)
 }));
 
 export const repos = [
-  { slug: "nasckdev/nasck-ui", name: "Nasck UI", problem: "Sistema de interface acessível usado pelos outros projetos.", quality: "Tokens · axe · Vitest", status: "Em construção · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/nasck-ui" },
-  { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "Hono · Drizzle · Vitest · CI", status: "Em construção · v1 fev 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/insighthub" },
+  { slug: "nasckdev/nasck-ui", name: "Nasck UI", problem: "Sistema de interface acessível usado pelos outros projetos.", quality: "100 testes · axe · Pages", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/nasck-ui" },
+  { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "Hono · Drizzle · TanStack · CI", status: "Demo no ar · v1 fev 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/insighthub" },
   { slug: "nasckdev/fiscotrack", name: "FiscoTrack", problem: "Evolução do minersCalculator: cálculo explicável e testável.", quality: "71 testes do motor · CI · Pages", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/fiscotrack" },
   { slug: "nasckdev/opsflow", name: "OpsFlow", problem: "Workflow de aprovações em Angular com máquina de estados, RBAC e auditoria.", quality: "84 testes · CI · Pages", status: "Demo no ar · v1 mar 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/opsflow" },
   { slug: "nasckdev/web-design", name: "Web design", problem: "Estudos visuais com 3D e movimento, com código, prints e README.", quality: "Páginas ao vivo · prints · README", status: "Publicado", dot: "#28C840", href: WEB_DESIGN_REPO_URL },
   { slug: "nasckdev/vespera", name: "Véspera", problem: "Meu jogo: RPG de ação 2D em pixel art, com co-op local.", quality: "Godot 4 · C# · testes automatizados", status: "Beta", dot: "#FEBC2E", href: VESPERA_REPO_URL },
-  { slug: "nasckdev/myportfolio", name: "Myportfolio", problem: "Este portfólio, documentado como case de engenharia.", quality: "Typecheck · testes das Functions · prerender", status: "Publicado", dot: "#28C840", href: "https://github.com/NasckDev/Myportfolio" },
+  { slug: "nasckdev/myportfolio", name: "Myportfolio", problem: "Este portfólio, documentado como case de engenharia.", quality: "ESLint · Vitest · CI · prerender", status: "Publicado", dot: "#28C840", href: "https://github.com/NasckDev/Myportfolio" },
 ] as { slug: string; name: string; problem: string; quality: string; status: string; dot: string; href?: string }[];
 
 export const principles = [

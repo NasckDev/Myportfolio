@@ -1,0 +1,13 @@
+data;ticker;tipo;quantidade;preco;taxas;modalidade
+2024-01-08;PETR4;compra;1000;30,00;8,50;comum
+2024-01-22;PETR4;venda;1000;25,00;8,50;comum
+2024-02-05;VALE3;compra;500;60,00;7,90;comum
+2024-02-26;VALE3;venda;500;72,00;7,90;comum
+2024-03-11;ITUB4;compra;200;30,00;4,90;comum
+2024-03-25;ITUB4;venda;200;34,50;4,90;comum
+2024-04-15;BBAS3;compra;300;25,00;2,00;daytrade
+2024-04-15;BBAS3;venda;300;26,10;2,00;daytrade
+2024-05-06;WEGE3;compra;100;40,00;1,00;comum
+2024-05-20;WEGE3;venda;150;45,00;1,00;comum
+data-invalida;MGLU3;compra;10;5,00;0;comum
+2024-05-21;ABEV3;compra;-5;12,00;0;comum

@@ -38,17 +38,27 @@ const esc = (s: string): string =>
 
 const list = (items: string[]): string => `<ul>${items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>`;
 
+/** Links de um case: demo que roda no portfólio, código e página ao vivo, quando existirem. */
+const links = (c: (typeof cases)[number]): string => {
+  const l = [
+    c.demoUrl && `<a href="${abs(c.demoUrl)}">Demo executável</a>`,
+    c.repoUrl && `<a href="${c.repoUrl}">Código</a>`,
+    c.liveUrl && !c.demoUrl && `<a href="${abs(c.liveUrl)}">Ao vivo</a>`,
+  ].filter(Boolean);
+  return l.length ? `<p>${l.join(" · ")}</p>` : "";
+};
+
 function snapshotHtml(): string {
   const parts = [
     `<header><h1>${esc(profile.name)}</h1><p><strong>${esc(profile.role)}</strong></p><p>${esc(profile.intro)}</p>`,
     `<p><a href="mailto:${EMAIL}">${EMAIL}</a> · <a href="${LINKEDIN_URL}">LinkedIn</a> · <a href="${GITHUB_URL}">GitHub</a> · <a href="${abs(CV_FULL_URL)}">Currículo (PDF)</a></p></header>`,
-    `<section><h2>Projetos</h2><p>Estudos em construção, que vão virar projetos completos e abertos no GitHub (código, testes, demo e estudo de caso), com dados fictícios.</p>`,
+    `<section><h2>Projetos</h2><p>Projetos em construção, com código aberto e demos que rodam no próprio portfólio. A versão 1.0 de cada um, com estudo de caso completo, sai entre janeiro e março de 2027. Todos os dados são fictícios.</p>`,
     list(roadmap.map((r) => `${r.when}: ${r.what}`)),
     ...cases.map(
       (c) =>
         `<article><h3>${esc(c.name)} · ${esc(c.tagline)}</h3><p>${c.eta ? `<strong>Em construção</strong> (${esc(c.stage ?? "")}), previsto para ${esc(c.eta)}. ` : ""}${esc(c.summary)}</p><p>${esc(c.problem)}</p>` +
         `<p>Papel: ${esc(c.role)}. Tecnologias: ${esc(c.skills.join(", "))}.</p>${list(c.decisions)}` +
-        `<p>Acessibilidade: ${esc(c.a11y)} Testes: ${esc(c.tests)}</p></article>`,
+        `<p>Acessibilidade: ${esc(c.a11y)} Testes: ${esc(c.tests)}</p>${links(c)}</article>`,
     ),
     `</section><section id="web-design"><h2>Web design</h2><p>Estudos visuais publicados como páginas reais. Código aberto em <a href="${WEB_DESIGN_REPO_URL}">${WEB_DESIGN_REPO_URL}</a>.</p>`,
     ...webDesigns.map(
@@ -91,7 +101,7 @@ function llmsTxt(): string {
     "",
     "## Projetos (em construção, com dados fictícios)",
     ...roadmap.map((r) => `- ${r.when}: ${r.what}`),
-    ...cases.map((c) => `- ${c.name} (${c.tagline})${c.eta ? ` [em construção, previsto para ${c.eta}]` : ""}: ${c.summary} Tecnologias: ${c.skills.join(", ")}.`),
+    ...cases.map((c) => `- ${c.name} (${c.tagline})${c.eta ? ` [em construção, previsto para ${c.eta}]` : ""}: ${c.summary} Tecnologias: ${c.skills.join(", ")}.${c.demoUrl ? ` Demo: ${abs(c.demoUrl)}` : ""}${c.repoUrl ? ` Código: ${c.repoUrl}` : ""}`),
     "",
     "## Web design",
     `Código aberto: ${WEB_DESIGN_REPO_URL}`,
@@ -148,7 +158,8 @@ function main(): void {
   writeFileSync(indexPath, out);
 
   const today = new Date().toISOString().slice(0, 10);
-  const pages = ["/", abs(game.siteUrl).slice(SITE_URL.length), ...webDesigns.map((w) => abs(w.url).slice(SITE_URL.length))];
+  const demos = cases.flatMap((c) => (c.demoUrl ? [abs(c.demoUrl).slice(SITE_URL.length)] : []));
+  const pages = ["/", ...demos, abs(game.siteUrl).slice(SITE_URL.length), ...webDesigns.map((w) => abs(w.url).slice(SITE_URL.length))];
   writeFileSync(
     resolve(DIST, "sitemap.xml"),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

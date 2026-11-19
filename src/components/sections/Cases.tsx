@@ -8,12 +8,18 @@ import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ArrowRightIcon, ChevronDownIcon } from "@/components/ui/icons";
 import { WebDesign } from "@/components/sections/WebDesign";
 
+/** Capa do card: o primeiro print de desktop, quando o projeto já tem prints. */
+const coverShot = (c: CaseStudy) => c.shots?.find((s) => s.device === "desktop");
+
+/** Texto do botão do card: o que a pessoa vai encontrar ao abrir. */
+const cardAction = (c: CaseStudy) => (c.demoUrl ? "Ver a demo" : c.eta ? "Ver o plano" : "Ver detalhes");
+
 function CaseCard({ c, index, match }: { c: CaseStudy; index: number; match: boolean }) {
   const { openCase } = usePortfolio();
   const open = () => openCase(index);
   return (
     // O card inteiro é só um atalho de mouse; para teclado e leitor de tela o controle é o botão
-    // "Ver o plano"/"Ver detalhes" abaixo. role="presentation" declara que o contêiner não é um controle.
+    // do card ("Ver a demo", "Ver o plano" ou "Ver detalhes") abaixo. role="presentation" declara que o contêiner não é um controle.
     <div
       role="presentation"
       data-spot="1"
@@ -28,7 +34,7 @@ function CaseCard({ c, index, match }: { c: CaseStudy; index: number; match: boo
       } as CSSProperties}
     >
       <div className="relative mx-2.5 mt-2.5 aspect-[16/10] overflow-hidden rounded-[18px] bg-bg2">
-        {c.eta ? <BlueprintCover name={c.name} eta={c.eta} /> : <ImageSlot src={c.image} alt={`Tela do ${c.name}`} placeholder={`Tela do ${c.name}`} objectPosition="top" />}
+        {c.eta ? <BlueprintCover name={c.name} eta={c.eta} shot={coverShot(c)} /> : <ImageSlot src={c.image} alt={`Tela do ${c.name}`} placeholder={`Tela do ${c.name}`} objectPosition="top" />}
         <span className="mono pointer-events-none absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-glass px-2.5 py-1.5 text-[12px] font-medium text-head leading-normal" style={{ backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
           {c.num} · {c.kind}
         </span>
@@ -63,10 +69,10 @@ function CaseCard({ c, index, match }: { c: CaseStudy; index: number; match: boo
             e.stopPropagation();
             open();
           }}
-          aria-label={`${c.eta ? "Ver o plano" : "Ver detalhes"} do ${c.name}`}
+          aria-label={`${cardAction(c)} do ${c.name}`}
           className="mt-0.5 flex min-h-11 cursor-pointer items-center gap-2 self-start border-0 bg-transparent p-0 text-[15px] font-bold text-accent-text"
         >
-          {c.eta ? "Ver o plano" : "Ver detalhes"}
+          {cardAction(c)}
           <ArrowRightIcon size={16} sw={2.2} />
         </button>
       </div>
@@ -122,7 +128,7 @@ export function Cases() {
             Projetos que mostram como eu penso e entrego.
           </Reveal>
           <Reveal as="p" delay={80} className="max-w-[58ch] text-[17px] text-muted">
-            Estou transformando estes estudos em projetos completos e abertos no GitHub, com código, testes, demo e estudo de caso. As primeiras entregas chegam em janeiro de 2027. Os dados serão fictícios, para não expor informações de empregadores.
+            Os projetos já têm código aberto e demos que rodam aqui dentro do portfólio: abra um card e clique em "Rodar a demo". A versão 1.0 de cada um, com estudo de caso completo, chega entre janeiro e março de 2027. Todos os dados são fictícios, para não expor informações de empregadores.
           </Reveal>
         </div>
         <Reveal

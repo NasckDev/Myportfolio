@@ -20,18 +20,18 @@ describe("CaseDrawer", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("abre ao clicar em 'Ver o plano' e mostra o plano do case em construção", async () => {
+  it("abre ao clicar em 'Ver a demo' e mostra o case em construção com previsão e código", async () => {
     // Arrange
     const { user } = renderCasesWithDrawer();
-    const verPlano = screen.getByRole("button", { name: "Ver o plano do InsightHub" });
-    expect(verPlano).toHaveTextContent("Ver o plano");
+    const verDemo = screen.getByRole("button", { name: "Ver a demo do InsightHub" });
+    expect(verDemo).toHaveTextContent("Ver a demo");
 
     // Act
-    await user.click(verPlano);
+    await user.click(verDemo);
 
     // Assert
     const dialog = screen.getByRole("dialog", { name: "InsightHub" });
-    expect(within(dialog).getByRole("heading", { name: "Decisões planejadas" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("heading", { name: "Decisões" })).toBeInTheDocument();
     expect(within(dialog).getByText("Em construção.")).toBeInTheDocument();
     expect(within(dialog).getByText("Fev 2027")).toBeInTheDocument();
     const repo = within(dialog).getByRole("link", { name: /Código no GitHub/ });
@@ -42,12 +42,12 @@ describe("CaseDrawer", () => {
   it("leva o foco para o botão de fechar ao abrir", async () => {
     const { user } = renderCasesWithDrawer();
 
-    await user.click(screen.getByRole("button", { name: "Ver o plano do OpsFlow" }));
+    await user.click(screen.getByRole("button", { name: "Ver a demo do OpsFlow" }));
 
     await waitFor(() => expect(screen.getByRole("button", { name: "Fechar case" })).toHaveFocus());
   });
 
-  it("case publicado mostra 'Decisões' (sem 'planejadas') e o link do código", async () => {
+  it("case publicado não mostra o aviso de construção e linka o código", async () => {
     const { user } = renderCasesWithDrawer();
     await user.click(screen.getByRole("button", { name: /Ver mais projetos/ }));
 
@@ -61,7 +61,7 @@ describe("CaseDrawer", () => {
 
   it("'Próximo' navega para o case seguinte sem fechar a gaveta", async () => {
     const { user } = renderCasesWithDrawer();
-    await user.click(screen.getByRole("button", { name: "Ver o plano do InsightHub" }));
+    await user.click(screen.getByRole("button", { name: "Ver a demo do InsightHub" }));
 
     await user.click(screen.getByRole("button", { name: "Próximo: OpsFlow →" }));
 
@@ -70,13 +70,29 @@ describe("CaseDrawer", () => {
 
   it("fecha pelo botão 'Fechar case' e pela tecla Escape", async () => {
     const { user } = renderCasesWithDrawer();
-    await user.click(screen.getByRole("button", { name: "Ver o plano do InsightHub" }));
+    await user.click(screen.getByRole("button", { name: "Ver a demo do InsightHub" }));
 
     await user.click(screen.getByRole("button", { name: "Fechar case" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Ver o plano do OpsFlow" }));
+    await user.click(screen.getByRole("button", { name: "Ver a demo do OpsFlow" }));
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("roda a demo do projeto dentro da gaveta só depois do clique", async () => {
+    // Arrange
+    const { user } = renderCasesWithDrawer();
+    await user.click(screen.getByRole("button", { name: "Ver a demo do OpsFlow" }));
+    const dialog = screen.getByRole("dialog", { name: "OpsFlow" });
+    expect(within(dialog).queryByTitle("Demo do OpsFlow")).not.toBeInTheDocument();
+    expect(within(dialog).getByRole("list", { name: "Prints do OpsFlow" })).toBeInTheDocument();
+
+    // Act
+    await user.click(within(dialog).getByRole("button", { name: "Rodar a demo aqui" }));
+
+    // Assert
+    expect(within(dialog).getByTitle("Demo do OpsFlow")).toHaveAttribute("src", "/projetos/opsflow/");
+    expect(within(dialog).getByRole("link", { name: /Abrir em tela cheia/ })).toHaveAttribute("href", "/projetos/opsflow/");
   });
 });
