@@ -1,7 +1,7 @@
 import { screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { Cases } from "@/components/sections/Cases";
-import { cases, roadmap } from "@/data/portfolio";
+import { cases } from "@/data/portfolio";
 import { renderWithPortfolio } from "@/test/render";
 
 /**
@@ -39,19 +39,6 @@ describe("Cases", () => {
 
     expect(within(card).getByText("Publicado")).toBeInTheDocument();
     expect(within(card).queryByText("Em construção")).not.toBeInTheDocument();
-  });
-
-  it("lista o roadmap público com cada data e entrega", () => {
-    renderWithPortfolio(<Cases />);
-
-    const lista = screen.getByRole("heading", { name: /Em construção · próximas entregas/ }).closest("div")?.parentElement;
-    const itens = within(lista as HTMLElement).getAllByRole("listitem");
-
-    expect(itens).toHaveLength(roadmap.length);
-    roadmap.forEach((r, i) => {
-      expect(itens[i]).toHaveTextContent(r.when);
-      expect(itens[i]).toHaveTextContent(r.what);
-    });
   });
 
   it("filtrar por 'Angular' destaca o OpsFlow e esmaece os cases sem a tag", async () => {

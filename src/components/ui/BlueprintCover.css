@@ -1,4 +1,4 @@
-/* Capa "em construção": planta técnica com uma linha de varredura e faixa listrada. Só transform/opacity. */
+/* Capa "em construção": planta técnica com uma linha de varredura. Só transform/opacity. */
 .bp-cover {
   position: relative;
   overflow: hidden;
@@ -20,20 +20,13 @@
   stroke-dasharray: 6 5;
   animation: bp-dash 1.6s linear infinite;
 }
-.bp-tape {
-  background: repeating-linear-gradient(-45deg, #f5b82e 0 10px, #0a2742 10px 20px);
-  background-size: 28px 28px;
-  animation: bp-tape 1.2s linear infinite;
-}
 .no-motion .bp-scan,
-.no-motion .bp-draw *,
-.no-motion .bp-tape { animation: none; }
+.no-motion .bp-draw * { animation: none; }
 .no-motion .bp-scan { opacity: 0; }
 
 @keyframes bp-scan { to { transform: translateY(100%); } }
 @keyframes bp-dash { to { stroke-dashoffset: -22; } }
-@keyframes bp-tape { to { background-position: 28px 0; } }
 @media (prefers-reduced-motion: reduce) {
-  .bp-scan, .bp-draw *, .bp-tape { animation: none; }
+  .bp-scan, .bp-draw * { animation: none; }
   .bp-scan { opacity: 0; }
 }

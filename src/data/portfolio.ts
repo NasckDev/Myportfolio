@@ -69,14 +69,6 @@ export interface CaseStudy {
 const shotsOf = (id: string, list: [file: string, device: CaseShot["device"], caption: string][]): CaseShot[] =>
   list.map(([file, device, caption]) => ({ src: `${base}assets/projetos/${id}/${file}`, alt: caption, caption, device }));
 
-/** Linha do tempo pública dos projetos em construção (mostrada na seção Projetos). */
-export const roadmap: { when: string; what: string; done?: boolean }[] = [
-  { when: "Já no ar", what: "Este portfólio, o site do Véspera e as primeiras versões de InsightHub, OpsFlow, FiscoTrack e Nasck UI, que já rodam aqui dentro", done: true },
-  { when: "Jan 2027", what: "Nasck UI (design system) e FiscoTrack" },
-  { when: "Fev 2027", what: "InsightHub" },
-  { when: "Mar 2027", what: "OpsFlow" },
-];
-
 export const cases: CaseStudy[] = [
   {
     id: "insighthub", num: "01", kind: "React · dados", read: "6 min", name: "InsightHub", tagline: "Research & AI Insights Workspace", tags: ["React", "Dados", "Acessibilidade"],

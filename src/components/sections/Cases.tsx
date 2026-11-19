@@ -1,6 +1,6 @@
 import { useState, type CSSProperties } from "react";
 import { usePortfolio } from "@/context/PortfolioContext";
-import { caseFilters, cases, GITHUB_REPOS_URL, roadmap, type CaseFilter, type CaseStudy } from "@/data/portfolio";
+import { caseFilters, cases, GITHUB_REPOS_URL, type CaseFilter, type CaseStudy } from "@/data/portfolio";
 import { Reveal } from "@/components/motion/Reveal";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { BlueprintCover } from "@/components/ui/BlueprintCover";
@@ -80,37 +80,6 @@ function CaseCard({ c, index, match }: { c: CaseStudy; index: number; match: boo
   );
 }
 
-/** Linha do tempo pública: o que já está no ar e quando cada projeto em construção chega. */
-function Roadmap() {
-  return (
-    <Reveal className="mb-8 rounded-[22px] border border-line bg-surface p-4 sm:p-5">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <h3 className="mono flex items-center gap-2 text-[13px] font-semibold text-head">
-          <span className="relative flex size-2.5" aria-hidden="true">
-            <span className="absolute inset-0 animate-ping rounded-full motion-reduce:animate-none" style={{ background: "#F5B82E", opacity: 0.6 }} />
-            <span className="relative size-2.5 rounded-full" style={{ background: "#F5B82E" }} />
-          </span>
-          Em construção · próximas entregas
-        </h3>
-        <span className="mono text-[12.5px] text-muted">atualizado em nov 2026</span>
-      </div>
-      <ol className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-        {roadmap.map((r) => (
-          <li key={r.when} className="flex items-start gap-3 rounded-2xl bg-bg2 px-3.5 py-3">
-            <span
-              className="mono mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-[12px] font-semibold"
-              style={r.done ? { background: "#28C840", color: "#04230b" } : { background: "#F5B82E", color: "#2e2000" }}
-            >
-              {r.when}
-            </span>
-            <span className="text-[14.5px] leading-[1.45] text-ink">{r.what}</span>
-          </li>
-        ))}
-      </ol>
-    </Reveal>
-  );
-}
-
 export function Cases() {
   const { scrollToId } = usePortfolio();
   const [filter, setFilter] = useState<CaseFilter>("Todos");
@@ -159,7 +128,6 @@ export function Cases() {
           })}
         </Reveal>
       </div>
-      <Roadmap />
       <div className="grid gap-[18px]" style={gridStyle}>
         {cases.slice(0, 3).map((c, i) => (
           <Reveal as="article" key={c.id} delay={i * 90}>
