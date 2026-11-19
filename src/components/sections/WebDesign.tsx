@@ -43,6 +43,7 @@ function WebDesignCard({ piece }: { piece: WebDesignPiece }) {
             <a href={piece.repo} target="_blank" rel="noopener noreferrer" className="relative z-[1] flex items-center gap-2 text-[15px] font-semibold">
               <GithubIcon size={16} sw={2} />
               Código
+              <span className="sr-only"> do {piece.name} (abre em nova aba)</span>
             </a>
           ) : null}
         </div>
@@ -62,7 +63,7 @@ export function WebDesign() {
         <Reveal as="p" delay={80} className="max-w-[56ch] text-[17px] text-muted">
           Estudos visuais publicados como páginas reais: movimento, 3D e interfaces que dá para abrir e usar.{" "}
           <a href={WEB_DESIGN_REPO_URL} target="_blank" rel="noopener noreferrer" className="font-semibold">
-            Código aberto no GitHub ↗
+            Código aberto no GitHub ↗<span className="sr-only"> (abre em nova aba)</span>
           </a>
         </Reveal>
       </div>

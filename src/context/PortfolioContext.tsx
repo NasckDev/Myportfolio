@@ -1,8 +1,9 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { cases, EMAIL, skillGroups } from "@/data/portfolio";
 import { copyText, readStorage, writeStorage } from "@/lib/clipboard";
 import { live, type Theme } from "@/lib/live";
 import { useViewport, type Viewport } from "@/hooks/useViewport";
+import { useScrollLock } from "@/hooks/useScrollLock";
 
 export type ModalKind = "cv" | "avail" | "feedback" | "keys" | "skill";
 
@@ -55,6 +56,30 @@ function initialMotion(): boolean {
   return !(typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches);
 }
 
+// Estado inicial de `live` aplicado no carregamento do módulo: efeitos de layout dos filhos
+// (ex.: entrada da Navbar) leem live.motion ao montar, antes do useLayoutEffect do provider.
+live.theme = initialTheme();
+live.motion = initialMotion();
+
+/**
+ * Espera antes de abrir um case vindo de link direto (#case-id). Antes eram 1600 ms para esperar
+ * o Loader (~1,7 s); sem ele, basta deixar a página pintar para a gaveta animar a entrada.
+ */
+const DEEP_LINK_OPEN_DELAY_MS = 300;
+/** Duração do toast: base + tempo por caractere, com teto. */
+const TOAST_BASE_MS = 2000;
+const TOAST_PER_CHAR_MS = 50;
+const TOAST_MAX_MS = 7000;
+
+/** Desconto do topo da seção ao rolar, para o título não ficar atrás da Navbar fixa. */
+const SCROLL_OFFSET_PX = 90;
+
+/** Leitor de tela e teclado acompanham a rolagem: a seção recebe o foco sem rolar de novo. */
+function focusSection(el: HTMLElement) {
+  if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+  el.focus({ preventScroll: true });
+}
+
 export function PortfolioProvider({ children }: { children: ReactNode }) {
   const vp = useViewport();
   const [theme, setThemeState] = useState<Theme>(initialTheme);
@@ -72,9 +97,17 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const returnFocus = useRef<{ modal: Element | null; palette: Element | null; drawer: Element | null }>({ modal: null, palette: null, drawer: null });
   const toastTimer = useRef<number | undefined>(undefined);
   const copiedTimer = useRef<number | undefined>(undefined);
+  // Lido pelos atalhos globais e por openCase, sempre com o estado do último commit.
+  const stateRef = useRef({ modal, palette, caseOpen });
+  const prev = useRef({ modal, caseOpen, palette });
+  const firstUrlSync = useRef(true);
 
-  live.theme = theme;
-  live.motion = motion;
+  // Sincroniza o estado mutável lido fora do React (cenas three.js, efeitos de scroll) após cada commit.
+  useLayoutEffect(() => {
+    live.theme = theme;
+    live.motion = motion;
+    stateRef.current = { modal, palette, caseOpen };
+  }, [theme, motion, modal, palette, caseOpen]);
 
   useEffect(() => {
     document.body.dataset.theme = theme;
@@ -85,7 +118,9 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const showToast = useCallback((msg: string) => {
     setToast({ msg, on: true });
     window.clearTimeout(toastTimer.current);
-    toastTimer.current = window.setTimeout(() => setToast((t) => ({ ...t, on: false })), 2400);
+    // Mensagens longas ficam mais tempo na tela (base + tempo por caractere, com teto).
+    const ms = Math.min(TOAST_MAX_MS, TOAST_BASE_MS + msg.length * TOAST_PER_CHAR_MS);
+    toastTimer.current = window.setTimeout(() => setToast((t) => ({ ...t, on: false })), ms);
   }, []);
 
   const setTheme = useCallback((next: Theme, x: number, y: number) => {
@@ -166,8 +201,9 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const scrollToId = useCallback((id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
-    const top = id === "topo" ? 0 : el.getBoundingClientRect().top + live.scrollY - 90;
+    const top = id === "topo" ? 0 : el.getBoundingClientRect().top + live.scrollY - SCROLL_OFFSET_PX;
     window.scrollTo({ top, behavior: live.motion ? "smooth" : "auto" });
+    focusSection(el);
   }, []);
 
   const copyEmail = useCallback(async () => {
@@ -186,8 +222,12 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
 
   const setHeroReady = useCallback(() => setHeroReadyState(true), []);
 
-  // Travamento de scroll e retorno de foco para modais, gaveta e paleta.
-  const prev = useRef({ modal, caseOpen, palette });
+  // Trava de rolagem com contagem de referências (ver useScrollLock).
+  useScrollLock(!!modal);
+  useScrollLock(caseOpen >= 0);
+  useScrollLock(palette);
+
+  // Retorno de foco para modais, gaveta e paleta.
   useEffect(() => {
     const p = prev.current;
     const restore = (el: Element | null) => {
@@ -205,7 +245,6 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
       restore(returnFocus.current.palette);
       returnFocus.current.palette = null;
     }
-    document.body.style.overflow = modal || caseOpen >= 0 ? "hidden" : "";
     prev.current = { modal, caseOpen, palette };
   }, [modal, caseOpen, palette]);
 
@@ -215,11 +254,10 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     if (!hm) return;
     const ci = cases.findIndex((c) => c.id === hm[1]);
     if (ci < 0) return;
-    const t = window.setTimeout(() => openCase(ci), 1600);
+    const t = window.setTimeout(() => openCase(ci), DEEP_LINK_OPEN_DELAY_MS);
     return () => window.clearTimeout(t);
   }, [openCase]);
 
-  const firstUrlSync = useRef(true);
   useEffect(() => {
     if (firstUrlSync.current) {
       firstUrlSync.current = false;
@@ -233,8 +271,6 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   }, [caseOpen]);
 
   // Atalhos globais de teclado.
-  const stateRef = useRef({ modal, palette, caseOpen });
-  stateRef.current = { modal, palette, caseOpen };
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const s = stateRef.current;

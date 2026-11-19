@@ -14,11 +14,13 @@ import {
   CV_ATS_URL,
   CV_FULL_URL,
   EMAIL,
+  game,
   GITHUB_URL,
   jobs,
   LINKEDIN_URL,
   profile,
   repos,
+  roadmap,
   SITE_URL,
   skillGroups,
   WEB_DESIGN_REPO_URL,
@@ -40,10 +42,11 @@ function snapshotHtml(): string {
   const parts = [
     `<header><h1>${esc(profile.name)}</h1><p><strong>${esc(profile.role)}</strong></p><p>${esc(profile.intro)}</p>`,
     `<p><a href="mailto:${EMAIL}">${EMAIL}</a> · <a href="${LINKEDIN_URL}">LinkedIn</a> · <a href="${GITHUB_URL}">GitHub</a> · <a href="${abs(CV_FULL_URL)}">Currículo (PDF)</a></p></header>`,
-    `<section><h2>Projetos</h2><p>Estudos de caso com dados fictícios, para não expor informações de empregadores.</p>`,
+    `<section><h2>Projetos</h2><p>Estudos em construção, que vão virar projetos completos e abertos no GitHub (código, testes, demo e estudo de caso), com dados fictícios.</p>`,
+    list(roadmap.map((r) => `${r.when}: ${r.what}`)),
     ...cases.map(
       (c) =>
-        `<article><h3>${esc(c.name)} · ${esc(c.tagline)}</h3><p>${esc(c.summary)}</p><p>${esc(c.problem)}</p>` +
+        `<article><h3>${esc(c.name)} · ${esc(c.tagline)}</h3><p>${c.eta ? `<strong>Em construção</strong> (${esc(c.stage ?? "")}), previsto para ${esc(c.eta)}. ` : ""}${esc(c.summary)}</p><p>${esc(c.problem)}</p>` +
         `<p>Papel: ${esc(c.role)}. Tecnologias: ${esc(c.skills.join(", "))}.</p>${list(c.decisions)}` +
         `<p>Acessibilidade: ${esc(c.a11y)} Testes: ${esc(c.tests)}</p></article>`,
     ),
@@ -53,6 +56,8 @@ function snapshotHtml(): string {
         `<article><h3>${esc(w.name)} · ${esc(w.kind)}</h3><p>${esc(w.summary)}</p>` +
         `<p><a href="${abs(w.url)}">Ver ao vivo</a>${w.repo ? ` · <a href="${w.repo}">Código</a>` : ""}</p></article>`,
     ),
+    `</section><section id="jogo"><h2>Jogue ${esc(game.name)}</h2><p><strong>${esc(game.tagline)}</strong></p><p>${esc(game.summary)}</p>` +
+      `<p>Feito com ${esc(game.tools.join(", "))}.</p><p><a href="${abs(game.siteUrl)}">Site do jogo</a> · <a href="${game.downloadUrl}">Baixar beta grátis</a> · <a href="${game.repoUrl}">Código</a></p>`,
     `</section><section><h2>Experiência</h2>`,
     ...jobs.map(
       (j) => `<article><h3>${esc(j.company)} · ${esc(j.role)}</h3><p>${esc(j.period)}. ${esc(j.context)}</p>${list(j.items)}</article>`,
@@ -84,12 +89,19 @@ function llmsTxt(): string {
     "## Experiência",
     ...jobs.map((j) => `- ${j.period} · ${j.company} · ${j.role}: ${j.context}`),
     "",
-    "## Projetos (estudos de caso com dados fictícios)",
-    ...cases.map((c) => `- ${c.name} (${c.tagline}): ${c.summary} Tecnologias: ${c.skills.join(", ")}.`),
+    "## Projetos (em construção, com dados fictícios)",
+    ...roadmap.map((r) => `- ${r.when}: ${r.what}`),
+    ...cases.map((c) => `- ${c.name} (${c.tagline})${c.eta ? ` [em construção, previsto para ${c.eta}]` : ""}: ${c.summary} Tecnologias: ${c.skills.join(", ")}.`),
     "",
     "## Web design",
     `Código aberto: ${WEB_DESIGN_REPO_URL}`,
     ...webDesigns.map((w) => `- [${w.name}](${abs(w.url)}): ${w.summary}${w.repo ? ` Código: ${w.repo}` : ""}`),
+    "",
+    `## Jogo: ${game.name}`,
+    `${game.tagline} ${game.summary}`,
+    `- Site do jogo: ${abs(game.siteUrl)}`,
+    `- Baixar beta: ${game.downloadUrl}`,
+    `- Código: ${game.repoUrl}`,
     "",
     "## Habilidades",
     ...skillGroups.map((g) => `- ${g.title}: ${g.items.map((i) => i.name).join(", ")}`),
@@ -136,7 +148,7 @@ function main(): void {
   writeFileSync(indexPath, out);
 
   const today = new Date().toISOString().slice(0, 10);
-  const pages = ["/", ...webDesigns.map((w) => abs(w.url).slice(SITE_URL.length))];
+  const pages = ["/", abs(game.siteUrl).slice(SITE_URL.length), ...webDesigns.map((w) => abs(w.url).slice(SITE_URL.length))];
   writeFileSync(
     resolve(DIST, "sitemap.xml"),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

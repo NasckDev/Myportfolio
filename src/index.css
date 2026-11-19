@@ -83,6 +83,8 @@ body[data-theme="dark"] {
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    /* Âncoras e foco não ficam escondidos atrás da navbar fixa. */
+    scroll-padding-top: 88px;
   }
 
   a {
@@ -96,6 +98,21 @@ body[data-theme="dark"] {
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
+  }
+
+  /* Seções recebem foco programático ao navegar pelo menu; não desenhar contorno em volta delas. */
+  [tabindex="-1"]:focus {
+    outline: none;
+  }
+
+  .scroll-dot {
+    animation: scroll-dot 1.2s ease-in-out infinite alternate;
+  }
+  @keyframes scroll-dot {
+    to { transform: translateY(10px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-dot { animation: none; }
   }
 
   ::selection {
@@ -175,6 +192,11 @@ body { --zoom: 1; }
     -webkit-backdrop-filter: blur(16px) saturate(1.4);
   }
 
+  .glass-blur-sm {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
   /* Altura exata da janela, mesmo com o zoom de telas grandes. */
   .h-vp {
     height: calc(100vh / var(--zoom, 1));
@@ -184,6 +206,13 @@ body { --zoom: 1; }
     padding-top: clamp(112px, 17vh, 210px);
   }
 
+  /* No celular 17vh vira um buraco de ~145px entre seções; desktop fica igual. */
+  @media (max-width: 859px) {
+    .section-pad {
+      padding-top: clamp(64px, 10vh, 96px);
+    }
+  }
+
   /* content-box como no design: 1180px de conteúdo + gutters. */
   .container-x {
     box-sizing: content-box;
@@ -191,4 +220,86 @@ body { --zoom: 1; }
     margin-inline: auto;
     padding-inline: clamp(20px, 4vw, 40px);
   }
+}
+
+/*
+ * Elementos fixos (navbar e "voltar ao topo") com backdrop-filter recompõem a página a cada
+ * frame de scroll; em GPU de celular isso custa caro. No toque, fundo sólido semi-opaco.
+ * Fora de @layer para vencer as utilities (bg-glass, glass-blur).
+ */
+body {
+  --glass-solid: rgba(250, 251, 253, .95);
+}
+
+body[data-theme="dark"] {
+  --glass-solid: rgba(7, 22, 42, .95);
+}
+
+@media (pointer: coarse) {
+  .glass-fixed {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: var(--glass-solid);
+  }
+}
+
+/* Animações decorativas em CSS (compositor), ligadas só quando o componente aplica a classe. */
+@keyframes caret-blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+.caret-blink {
+  animation: caret-blink 1.06s steps(1, end) infinite;
+}
+
+/* Envelope leve do contato no celular (substitui a cena WebGL). */
+.env-css {
+  perspective: 420px;
+}
+
+.env-css__body {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(12deg) rotateY(-16deg);
+}
+
+.env-css__letter {
+  transform: translate3d(0, 6px, 1px);
+}
+
+.env-css__pocket {
+  transform: translateZ(2px);
+}
+
+.env-css__flap {
+  transform-origin: 50% 0;
+  transform: translateZ(3px) rotateX(0deg);
+}
+
+.env-css.is-anim .env-css__body {
+  animation: env-float 6s ease-in-out infinite;
+}
+
+.env-css.is-anim .env-css__flap {
+  animation: env-flap 6s cubic-bezier(.65, 0, .35, 1) infinite;
+}
+
+.env-css.is-anim .env-css__letter {
+  animation: env-letter 6s cubic-bezier(.65, 0, .35, 1) infinite;
+}
+
+@keyframes env-float {
+  0%, 100% { transform: translateY(1px) rotateX(12deg) rotateY(-16deg); }
+  50% { transform: translateY(-2px) rotateX(6deg) rotateY(14deg); }
+}
+
+@keyframes env-flap {
+  0%, 15%, 85%, 100% { transform: translateZ(3px) rotateX(0deg); }
+  35%, 65% { transform: translateZ(3px) rotateX(-170deg); }
+}
+
+@keyframes env-letter {
+  0%, 30%, 85%, 100% { transform: translate3d(0, 6px, 1px); }
+  45%, 65% { transform: translate3d(0, -9px, 1px); }
 }

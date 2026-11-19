@@ -34,8 +34,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Test and build
-        run: npm run verify
+      - name: Lint
+        run: npm run lint
+
+      - name: Component tests
+        run: npm run test
+
+      - name: API tests
+        run: npm run test:api
+
+      - name: Build
+        run: npm run build
         env:
           VITE_BASE_PATH: /Myportfolio/
 

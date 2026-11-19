@@ -1,59 +1,71 @@
 import { useEffect, useRef, type MouseEvent } from "react";
 import { usePortfolio } from "@/context/PortfolioContext";
 import { GITHUB_URL, LINKEDIN_URL, profile } from "@/data/portfolio";
-import { live, onFrame } from "@/lib/live";
+import { live, onFrame, onScrollFrame } from "@/lib/live";
 import { loadThree } from "@/three/loadThree";
-import { createHeroScene, HERO_HINT_DEFAULT, type HeroScene } from "@/three/heroScene";
+import { createHeroScene, type HeroScene } from "@/three/heroScene";
 import { Reveal } from "@/components/motion/Reveal";
+import { PhoneStack } from "@/components/sections/PhoneStack";
 import { ArrowRightIcon, ChevronRightIcon, GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 
+/** Altura do celular 3D (CSS) no topo em telas estreitas. */
+const MOBILE_STAGE = "min(132vw,540px)";
 const MAGNETIC_T = "transform .35s cubic-bezier(.2,.8,.2,1),background .2s,border-color .2s";
 
 export function Hero() {
   const { vp, motion, heroReady, openModal, scrollToId } = usePortfolio();
   const mountRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const hintRef = useRef<HTMLSpanElement>(null);
-  const scrollDotRef = useRef<HTMLSpanElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<HeroScene | null>(null);
   const isWide = vp.w >= 980;
   const kbd = vp.mac ? "⌘K" : "Ctrl K";
   const hasKeyboard = vp.fine && vp.w >= 860;
 
+  // A cena WebGL só existe em telas largas e é baixada depois que a página fica ociosa,
+  // para o three.js (≈170 KB gz) nunca competir com o primeiro conteúdo. No celular, o topo usa o PhoneStack em CSS 3D.
   useEffect(() => {
+    if (!isWide) return;
     let dead = false;
-    loadThree()
-      .then((THREE) => {
-        if (dead || !mountRef.current) return;
-        sceneRef.current = createHeroScene(THREE, mountRef.current, () => hintRef.current);
-        live.hero3dReady = true;
-      })
-      .catch(() => {
-        live.hero3dReady = true;
-      });
+    const start = () =>
+      loadThree()
+        .then((THREE) => {
+          if (dead || !mountRef.current) return;
+          sceneRef.current = createHeroScene(THREE, mountRef.current, () => null);
+        })
+        .catch(() => undefined);
+    const idle = window.requestIdleCallback?.(start, { timeout: 1200 }) ?? window.setTimeout(start, 300);
     return () => {
       dead = true;
+      if (window.cancelIdleCallback) window.cancelIdleCallback(idle);
+      else window.clearTimeout(idle);
       sceneRef.current?.dispose();
       sceneRef.current = null;
     };
-  }, []);
+  }, [isWide]);
 
   useEffect(() => {
     if (heroReady) sceneRef.current?.restart();
   }, [heroReady]);
 
+  // Paralaxe do texto: só recalcula quando o scroll muda.
   useEffect(
     () =>
-      onFrame((t) => {
-        const y = live.scrollY, motionOn = live.motion;
+      onScrollFrame(() => {
         const hc = contentRef.current;
-        if (hc && y < innerHeight * 1.2 && motionOn) hc.style.transform = `translate3d(0,${y * 0.12}px,0)`;
-        else if (hc && !motionOn) hc.style.transform = "none";
-        if (scrollDotRef.current) scrollDotRef.current.style.transform = motionOn ? `translateY(${(Math.sin(t / 380) * 0.5 + 0.5) * 10}px)` : "none";
-        sceneRef.current?.tick(t / 1000);
+        if (!hc) return;
+        const y = live.scrollY;
+        if (!live.motion) hc.style.transform = "none";
+        else if (y < innerHeight * 1.2) hc.style.transform = `translate3d(0,${y * 0.12}px,0)`;
       }),
     [],
   );
+
+  // Cena 3D (só telas largas): animação contínua, mas apenas enquanto o topo está visível.
+  useEffect(() => {
+    if (!isWide) return;
+    return onFrame((t) => sceneRef.current?.tick(t / 1000), sectionRef.current);
+  }, [isWide]);
 
   const goCases = (e: MouseEvent) => {
     e.preventDefault();
@@ -61,20 +73,8 @@ export function Hero() {
   };
 
   return (
-    <section id="topo" className="relative overflow-hidden bg-bg">
-      <div ref={mountRef} aria-hidden="true" className="absolute inset-x-0 bottom-0" style={{ top: isWide ? 0 : "auto", height: isWide ? "auto" : "min(92vw,440px)" }} />
-      {!isWide && motion && (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-[18px] left-1/2 z-[2] flex max-w-[calc(100%-32px)] -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-line bg-glass px-3.5 py-2 shadow-card"
-          style={{ backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}
-        >
-          <span className="size-2 shrink-0 rounded-full" style={{ background: "#1783C1", boxShadow: "0 0 0 4px rgba(23,131,193,.18)" }} />
-          <span ref={hintRef} className="mono overflow-hidden text-ellipsis text-[12.5px] font-medium text-head">
-            {HERO_HINT_DEFAULT}
-          </span>
-        </div>
-      )}
+    <section ref={sectionRef} id="topo" className="relative overflow-hidden bg-bg">
+      {isWide && <div ref={mountRef} aria-hidden="true" className="absolute inset-0" />}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ opacity: isWide ? 1 : 0, background: "linear-gradient(90deg,var(--bg) 0%,var(--bg) 28%,transparent 62%)" }} />
       <div
         aria-hidden="true"
@@ -85,7 +85,7 @@ export function Hero() {
         ref={contentRef}
         className="pointer-events-none relative mx-auto box-border flex max-w-[1180px] flex-col justify-between gap-14"
         style={{
-          padding: `clamp(116px,18vh,200px) clamp(20px,4vw,40px) ${isWide ? "64px" : "min(92vw,440px)"}`,
+          padding: `clamp(116px,18vh,200px) clamp(20px,4vw,40px) ${isWide ? "64px" : "28px"}`,
           minHeight: isWide ? "min(calc(100vh / var(--zoom, 1)),900px)" : 0,
         }}
       >
@@ -141,18 +141,16 @@ export function Hero() {
               Ver projetos
               <ArrowRightIcon size={18} sw={2.2} />
             </a>
-            <a
-              href="#"
+            <button
+              type="button"
+              aria-haspopup="dialog"
               data-magnetic="1"
-              onClick={(e) => {
-                e.preventDefault();
-                openModal("cv");
-              }}
-              className="flex h-[56px] items-center gap-2.5 rounded-full border border-line2 bg-glass px-6 text-[16px] font-semibold text-head no-underline hover:border-brand hover:text-head"
+              onClick={() => openModal("cv")}
+              className="flex h-[56px] cursor-pointer items-center gap-2.5 rounded-full border border-line2 bg-glass px-6 text-[16px] font-semibold text-head no-underline hover:border-brand hover:text-head"
               style={{ transition: MAGNETIC_T, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
             >
               Baixar currículo
-            </a>
+            </button>
             <a
               href={LINKEDIN_URL}
               target="_blank"
@@ -177,20 +175,27 @@ export function Hero() {
             </a>
           </Reveal>
         </div>
-        <Reveal kind="blur" hero delay={620} className="mono flex flex-wrap items-center justify-between gap-4 text-[12.5px] text-muted">
-          <span className="flex items-center gap-2.5">
-            <span className="box-border flex h-[34px] w-[22px] justify-center rounded-full border-[1.5px] border-line2 pt-1.5">
-              <span ref={scrollDotRef} className="h-2 w-1 rounded" style={{ background: "#1783C1" }} />
+        {isWide && (
+          <Reveal kind="blur" hero delay={620} className="mono flex flex-wrap items-center justify-between gap-4 text-[12.5px] text-muted">
+            <span className="flex items-center gap-2.5">
+              <span className="box-border flex h-[34px] w-[22px] justify-center rounded-full border-[1.5px] border-line2 pt-1.5">
+                <span className={`${motion ? "scroll-dot " : ""}h-2 w-1 rounded`} style={{ background: "#1783C1" }} />
+              </span>
+              Role para explorar
             </span>
-            Role para explorar
-          </span>
-          {hasKeyboard && (
-            <span>
-              Pressione <span className="rounded-[5px] border border-line2 px-1.5 py-0.5">{kbd}</span> para navegar por comandos
-            </span>
-          )}
-        </Reveal>
+            {hasKeyboard && (
+              <span>
+                Pressione <span className="rounded-[5px] border border-line2 px-1.5 py-0.5">{kbd}</span> para navegar por comandos
+              </span>
+            )}
+          </Reveal>
+        )}
       </div>
+      {!isWide && (
+        <div className="relative pb-10">
+          <PhoneStack height={MOBILE_STAGE} />
+        </div>
+      )}
     </section>
   );
 }

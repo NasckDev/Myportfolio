@@ -1,5 +1,5 @@
 import type * as ThreeNS from "three";
-import { clamp01, live, smoothstep } from "@/lib/live";
+import { clamp01, isCoarse, live, smoothstep } from "@/lib/live";
 import { view3d } from "./view3d";
 
 type Three = typeof ThreeNS;
@@ -7,7 +7,8 @@ type Three = typeof ThreeNS;
 /** Envelope 3D do card de contato: abre ao rolar, reage ao hover e "envia" a carta no clique. */
 export function createLogoScene(THREE: Three, mount: HTMLElement) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  // Em toque o ícone tem 74px: DPR 1.25 basta e poupa fill-rate da GPU do celular.
+  renderer.setPixelRatio(Math.min(devicePixelRatio, isCoarse() ? 1.25 : 2));
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   const W = 2.2, H = 1.4, hw = W / 2, hh = H / 2;
@@ -94,12 +95,20 @@ export function createLogoScene(THREE: Three, mount: HTMLElement) {
   scene.add(rim);
 
   let mx = 0, my = 0, tmx = 0, tmy = 0, open = 0, rise = 0, spin = 0;
+  // Centro do ícone em coordenadas da tela, atualizado no tick (que já mede o retângulo):
+  // o pointermove não força layout e só fica ligado enquanto a cena está visível.
+  let cx = 0, cy = 0;
   const onDoc = (e: PointerEvent) => {
-    const bx = mount.getBoundingClientRect();
-    tmx = Math.max(-1, Math.min(1, (e.clientX - bx.left - bx.width / 2) / 420));
-    tmy = Math.max(-1, Math.min(1, (e.clientY - bx.top - bx.height / 2) / 320));
+    tmx = Math.max(-1, Math.min(1, (e.clientX - cx) / 420));
+    tmy = Math.max(-1, Math.min(1, (e.clientY - cy) / 320));
   };
-  document.addEventListener("pointermove", onDoc, { passive: true });
+  let listening = false;
+  const listen = (on: boolean) => {
+    if (on === listening) return;
+    listening = on;
+    if (on) document.addEventListener("pointermove", onDoc, { passive: true });
+    else document.removeEventListener("pointermove", onDoc);
+  };
 
   const stop = view3d(
     mount,
@@ -113,6 +122,8 @@ export function createLogoScene(THREE: Three, mount: HTMLElement) {
     (t) => {
       const motion = live.motion;
       const r = mount.getBoundingClientRect();
+      cx = r.left + r.width / 2;
+      cy = r.top + r.height / 2;
       const sp = clamp01((innerHeight - r.top) / (innerHeight * 0.7));
       const hover = live.mailHover;
       const sendAge = live.sendT ? performance.now() / 1000 - live.sendT : 99;
@@ -141,12 +152,13 @@ export function createLogoScene(THREE: Three, mount: HTMLElement) {
       } else env.rotation.set(0.12, -0.3, 0);
       renderer.render(scene, camera);
     },
+    listen,
   );
 
   return {
     dispose: () => {
       stop();
-      document.removeEventListener("pointermove", onDoc);
+      listen(false);
       [backGeo, pocketGeo, flapGeo, letter.geometry, sealGeo].forEach((x) => x.dispose());
       [mBack, mPocket, mFlap, letterMat, sealMat].forEach((m) => m.dispose());
       lt.dispose();

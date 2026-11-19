@@ -35,18 +35,22 @@ export function Skills() {
         </Reveal>
       </div>
       <Reveal className="mb-[18px] flex flex-wrap items-center gap-2.5">
-        <label className="box-border flex h-[50px] max-w-[460px] flex-[1_1_280px] items-center gap-2.5 rounded-full border border-line2 bg-surface px-4 text-muted">
+        <label className="box-border flex h-[50px] max-w-[460px] flex-[1_1_280px] items-center gap-2.5 rounded-full border border-line2 bg-surface px-4 text-muted focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent">
           <SearchIcon size={17} />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Procure uma tecnologia, ex.: Angular"
             aria-label="Procurar habilidade"
-            className="min-w-0 flex-1 border-0 bg-transparent text-[15.5px] font-medium text-head outline-0 placeholder:text-muted"
+            enterKeyHint="search"
+            className="min-w-0 flex-1 border-0 bg-transparent text-[16px] font-medium text-head outline-none placeholder:text-muted"
           />
           {q && (
-            <button type="button" onClick={() => setQuery("")} aria-label="Limpar busca" className="size-7 cursor-pointer rounded-full border-0 bg-chip text-[13px] text-chip-text">
-              ✕
+            // Alvo de 44px; o círculo visível continua com 28px.
+            <button type="button" onClick={() => setQuery("")} aria-label="Limpar busca" className="-mr-2.5 grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border-0 bg-transparent p-0">
+              <span aria-hidden="true" className="grid size-7 place-items-center rounded-full bg-chip text-[13px] text-chip-text">
+                ✕
+              </span>
             </button>
           )}
         </label>
@@ -78,9 +82,9 @@ export function Skills() {
                     <span className="grid size-10 place-items-center rounded-xl" style={{ background: rgba(g.color, 0.08), color: g.color, boxShadow: `inset 0 0 0 1px ${rgba(g.color, 0.16)}` }}>
                       <Icon size={19} />
                     </span>
-                    <span className="stretch-112 text-[17px] font-bold text-head">{g.title}</span>
+                    <h3 className="stretch-112 text-[17px] font-bold text-head">{g.title}</h3>
                   </span>
-                  <span className="mono whitespace-nowrap text-[12px] text-muted">{g.items.length} itens</span>
+                  <span className="mono whitespace-nowrap text-[12px] text-muted">{q ? `${g.items.filter((i) => i.match).length} de ${g.items.length}` : `${g.items.length} itens`}</span>
                 </div>
                 <div className="flex flex-wrap gap-[7px]">
                   {g.items.map((k) => (
@@ -88,7 +92,9 @@ export function Skills() {
                       key={k.id}
                       type="button"
                       onClick={() => openModal("skill", k.id)}
-                      className="flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-[7px] text-[14px] font-medium hover:border-brand!"
+                      // Fora da busca: continua visível (esmaecido), mas sai do foco e do leitor de tela; a contagem fica no role="status".
+                      inert={!k.match}
+                      className="flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-[7px] text-[14px] font-medium hover:border-brand! pointer-coarse:min-h-11 pointer-coarse:px-3.5"
                       style={{
                         borderColor: k.hl ? g.color : "var(--line)",
                         background: k.hl ? g.color : "var(--bg2)",

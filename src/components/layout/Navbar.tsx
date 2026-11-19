@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { usePortfolio } from "@/context/PortfolioContext";
 import { navItems, sectionIds } from "@/data/portfolio";
-import { live, onFrame } from "@/lib/live";
+import { live, onScrollFrame, setStyle, wake } from "@/lib/live";
 import { BrandMark } from "./BrandMark";
 import { DownloadIcon, MenuIcon, MoonIcon, SearchIcon, SunIcon } from "@/components/ui/icons";
 
 const RING = 106.8;
 
 export function Navbar() {
-  const { vp, theme, heroReady, palette, caseOpen, toggleTheme, openPalette, openModal, scrollToId } = usePortfolio();
+  const { vp, theme, motion, heroReady, palette, caseOpen, toggleTheme, openPalette, openModal, scrollToId } = usePortfolio();
   const [active, setActive] = useState("topo");
   const hdrRef = useRef<HTMLElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -98,31 +98,34 @@ export function Navbar() {
     if (heroReady) flags.current.navIn = true;
   }, [heroReady]);
 
+  // Acorda o loop quando muda algo que o efeito de scroll lê fora do scroll.
+  useEffect(() => {
+    wake();
+  }, [palette, caseOpen, heroReady, vp.w, motion]);
+
+  // Só roda quando o scroll muda (ou após wake) e só escreve no DOM o que mudou.
   useEffect(
     () =>
-      onFrame(() => {
+      onScrollFrame(() => {
         const f = flags.current;
         const se = document.scrollingElement || document.documentElement;
         const y = live.scrollY, max = se.scrollHeight - innerHeight, motion = live.motion;
-        if (ringRef.current) ringRef.current.style.strokeDashoffset = String(RING * (1 - (max > 0 ? y / max : 0)));
-        if (markRef.current) markRef.current.style.transform = motion ? `rotate(${Math.round(y / 400) * 90 + spin.current}deg)` : "none";
+        setStyle(ringRef.current, "stroke-dashoffset", (RING * (1 - (max > 0 ? Math.min(1, y / max) : 0))).toFixed(1));
+        setStyle(markRef.current, "transform", motion ? `rotate(${Math.round(y / 400) * 90 + spin.current}deg)` : "none");
         const dy = y - f.py;
         f.py = y;
         const c = y > 40;
         const nav = innerRef.current, hdr = hdrRef.current;
-        if (nav) {
-          nav.style.padding = c ? "5px 5px 5px 8px" : "8px 8px 8px 12px";
-          nav.style.boxShadow = c ? "0 10px 40px -12px rgba(4,20,40,.35)" : "var(--shadow)";
-        }
-        if (hdr) {
-          if (Math.abs(dy) > 2) f.hide = dy > 0 && y > 480;
-          const focusIn = hdr.contains(document.activeElement);
-          const hide = !f.navIn || (motion && f.hide && !focusIn && !f.palette && f.caseOpen < 0);
-          hdr.style.top = c ? "8px" : "14px";
-          hdr.style.width = c && f.w >= 1100 ? "min(1080px,calc(100% - 24px))" : "min(1180px,calc(100% - 24px))";
-          hdr.style.transform = `translateX(-50%) translateY(${hide ? "-160%" : "0"})`;
-          hdr.style.opacity = !f.navIn ? "0" : "1";
-        }
+        setStyle(nav, "padding", c ? "5px 5px 5px 8px" : "8px 8px 8px 12px");
+        setStyle(nav, "box-shadow", c ? "0 10px 40px -12px rgba(4,20,40,.35)" : "var(--shadow)");
+        if (!hdr) return;
+        if (Math.abs(dy) > 2) f.hide = dy > 0 && y > 480;
+        const focusIn = hdr.contains(document.activeElement);
+        const hide = !f.navIn || (motion && f.hide && !focusIn && !f.palette && f.caseOpen < 0);
+        // `top` virou translateY (compositor): 14px fixo, -6px quando compacto.
+        setStyle(hdr, "width", c && f.w >= 1100 ? "min(1080px,calc(100% - 24px))" : "min(1180px,calc(100% - 24px))");
+        setStyle(hdr, "transform", `translateX(-50%) translateY(${hide ? "-160%" : c ? "-6px" : "0px"})`);
+        setStyle(hdr, "opacity", f.navIn ? "1" : "0");
       }),
     [],
   );
@@ -135,19 +138,23 @@ export function Navbar() {
   return (
     <header
       ref={hdrRef}
+      onFocus={() => wake()}
+      onBlur={() => wake()}
       className="fixed left-1/2 top-[14px] z-[60] w-[min(1180px,calc(100%-24px))]"
-      style={{ transform: "translateX(-50%) translateY(-160%)", opacity: 0, transition: "top .4s cubic-bezier(.2,.8,.2,1),transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s,width .6s cubic-bezier(.2,.8,.2,1)" }}
+      style={{ transform: "translateX(-50%) translateY(-160%)", opacity: 0, transition: "transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s,width .6s cubic-bezier(.2,.8,.2,1)" }}
     >
       <div
         ref={innerRef}
-        className="glass-blur flex items-center gap-3 rounded-full border border-line bg-glass"
+        className="glass-blur glass-fixed flex items-center gap-3 rounded-full border border-line bg-glass"
         style={{ padding: "8px 8px 8px 12px", boxShadow: "var(--shadow)", transition: "padding .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s,background .4s" }}
       >
         <a
           href="#topo"
           onClick={go("topo")}
           onPointerEnter={() => {
-            if (live.motion) spin.current += 90;
+            if (!live.motion) return;
+            spin.current += 90;
+            wake();
           }}
           aria-label="Alexandre Nascimento, início"
           className="mr-auto flex shrink-0 items-center gap-2.5 text-head no-underline hover:text-head"
@@ -209,20 +216,36 @@ export function Navbar() {
             type="button"
             onClick={openPalette}
             aria-label="Abrir busca e comandos"
-            className="flex h-[42px] shrink-0 cursor-pointer items-center gap-2.5 rounded-full border border-line bg-bg2 pl-3.5 pr-2.5 text-[14px] font-medium text-muted transition-[border-color] duration-200 hover:border-accent"
+            aria-haspopup="dialog"
+            className="flex h-11 shrink-0 cursor-pointer items-center gap-2.5 rounded-full border border-line bg-bg2 pl-3.5 pr-2.5 text-[14px] font-medium text-muted transition-[border-color] duration-200 hover:border-accent"
           >
             <SearchIcon size={16} />
             {showLast && <span>Buscar</span>}
             <span className="mono rounded-md border border-line bg-surface px-[7px] py-[3px] text-[12px] font-medium leading-normal">{kbd}</span>
           </button>
+        ) : compact ? (
+          // No celular não há links de seção: o menu (paleta de comandos) é a navegação principal.
+          <nav aria-label="Principal" className="flex shrink-0">
+            <button
+              type="button"
+              onClick={openPalette}
+              aria-label="Abrir menu de navegação"
+              aria-haspopup="dialog"
+              aria-expanded={palette}
+              className="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-line bg-bg2 text-head hover:border-accent"
+            >
+              <MenuIcon size={18} sw={2.2} />
+            </button>
+          </nav>
         ) : (
           <button
             type="button"
             onClick={openPalette}
-            aria-label={compact ? "Abrir menu" : "Abrir busca e comandos"}
-            className="grid size-[42px] shrink-0 cursor-pointer place-items-center rounded-full border border-line bg-bg2 text-head hover:border-accent"
+            aria-label="Abrir busca e comandos"
+            aria-haspopup="dialog"
+            className="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-line bg-bg2 text-head hover:border-accent"
           >
-            {compact ? <MenuIcon size={18} sw={2.2} /> : <SearchIcon size={17} sw={2.2} />}
+            <SearchIcon size={17} sw={2.2} />
           </button>
         )}
 
@@ -230,24 +253,23 @@ export function Navbar() {
           type="button"
           onClick={(e) => toggleTheme(e.currentTarget)}
           aria-label={dark ? "Ativar tema claro" : "Ativar tema escuro"}
-          className="grid size-[42px] shrink-0 cursor-pointer place-items-center rounded-full border border-line bg-bg2 text-head hover:border-accent"
+          className="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-line bg-bg2 text-head hover:border-accent"
         >
           {dark ? <SunIcon size={18} /> : <MoonIcon size={18} />}
         </button>
 
-        <a
-          href="#"
+        <button
+          type="button"
           data-magnetic="1"
-          onClick={(e) => {
-            e.preventDefault();
-            openModal("cv");
-          }}
-          className="flex h-[42px] shrink-0 items-center gap-2 rounded-full bg-btn px-[18px] text-[14.5px] font-semibold text-btn-text no-underline hover:bg-brand hover:text-white"
+          aria-haspopup="dialog"
+          aria-label="CV, baixar currículo"
+          onClick={() => openModal("cv")}
+          className="flex h-11 shrink-0 cursor-pointer items-center gap-2 rounded-full border-0 bg-btn px-[18px] text-[14.5px] font-semibold text-btn-text hover:bg-brand hover:text-white"
           style={{ transition: "transform .35s cubic-bezier(.2,.8,.2,1),background .2s" }}
         >
           CV
           <DownloadIcon size={15} sw={2.2} />
-        </a>
+        </button>
       </div>
     </header>
   );
