@@ -114,7 +114,7 @@ export function PlayVespera() {
       >
         <video
           ref={videoRef}
-          className="absolute inset-0 -z-10 size-full object-cover"
+          className="absolute inset-0 -z-10 size-full scale-[1.06] object-cover"
           poster={game.video.poster}
           muted
           loop
