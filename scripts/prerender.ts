@@ -20,7 +20,6 @@ import {
   LINKEDIN_URL,
   profile,
   repos,
-  roadmap,
   SITE_URL,
   skillGroups,
   WEB_DESIGN_REPO_URL,
@@ -53,7 +52,6 @@ function snapshotHtml(): string {
     `<header><h1>${esc(profile.name)}</h1><p><strong>${esc(profile.role)}</strong></p><p>${esc(profile.intro)}</p>`,
     `<p><a href="mailto:${EMAIL}">${EMAIL}</a> · <a href="${LINKEDIN_URL}">LinkedIn</a> · <a href="${GITHUB_URL}">GitHub</a> · <a href="${abs(CV_FULL_URL)}">Currículo (PDF)</a></p></header>`,
     `<section><h2>Projetos</h2><p>Projetos em construção, com código aberto e demos que rodam no próprio portfólio. A versão 1.0 de cada um, com estudo de caso completo, sai entre janeiro e março de 2027. Todos os dados são fictícios.</p>`,
-    list(roadmap.map((r) => `${r.when}: ${r.what}`)),
     ...cases.map(
       (c) =>
         `<article><h3>${esc(c.name)} · ${esc(c.tagline)}</h3><p>${c.eta ? `<strong>Em construção</strong> (${esc(c.stage ?? "")}), previsto para ${esc(c.eta)}. ` : ""}${esc(c.summary)}</p><p>${esc(c.problem)}</p>` +
@@ -100,7 +98,6 @@ function llmsTxt(): string {
     ...jobs.map((j) => `- ${j.period} · ${j.company} · ${j.role}: ${j.context}`),
     "",
     "## Projetos (em construção, com dados fictícios)",
-    ...roadmap.map((r) => `- ${r.when}: ${r.what}`),
     ...cases.map((c) => `- ${c.name} (${c.tagline})${c.eta ? ` [em construção, previsto para ${c.eta}]` : ""}: ${c.summary} Tecnologias: ${c.skills.join(", ")}.${c.demoUrl ? ` Demo: ${abs(c.demoUrl)}` : ""}${c.repoUrl ? ` Código: ${c.repoUrl}` : ""}`),
     "",
     "## Web design",

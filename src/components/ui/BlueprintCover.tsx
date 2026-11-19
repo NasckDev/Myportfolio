@@ -30,10 +30,7 @@ export function BlueprintCover({ name, eta, shot }: BlueprintCoverProps) {
         </>
       )}
       <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 px-3.5 pb-3 pt-6" style={{ background: "linear-gradient(0deg,rgba(7,26,46,.92),transparent)" }}>
-        <span className="mono flex items-center gap-2 whitespace-nowrap text-[12.5px] font-semibold text-white">
-          <span className="bp-tape h-3 w-7 rounded-[3px]" aria-hidden="true" />
-          Em construção
-        </span>
+        <span className="mono whitespace-nowrap text-[12.5px] font-semibold text-white">Em construção</span>
         <span className="mono whitespace-nowrap rounded-full px-2.5 py-1 text-[12.5px] font-semibold" style={{ background: "#F5B82E", color: "#0a2742" }}>
           Previsto · {eta}
         </span>

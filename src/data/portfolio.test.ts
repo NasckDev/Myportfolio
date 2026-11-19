@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import * as data from "@/data/portfolio";
-import { caseFilters, cases, footerLinks, jobs, navItems, paletteNav, repos, roadmap, sectionIds, skillGroups, webDesigns } from "@/data/portfolio";
+import { caseFilters, cases, footerLinks, jobs, navItems, paletteNav, repos, sectionIds, skillGroups, webDesigns } from "@/data/portfolio";
 
 /** Coleta recursivamente toda string de um valor (objetos, arrays) com o caminho, para varrer links. */
 function collectStrings(value: unknown, path: string, out: { path: string; value: string }[] = []) {
@@ -79,29 +79,6 @@ describe("demos e prints dos projetos", () => {
     for (const c of cases.filter((k) => k.shots?.length)) {
       expect(c.shots?.some((s) => s.device === "desktop"), c.id).toBe(true);
     }
-  });
-});
-
-describe("roadmap", () => {
-  it("cada item pendente tem data no formato 'Mmm AAAA' e só itens concluídos fogem disso", () => {
-    const pendentes = roadmap.filter((r) => !r.done);
-
-    expect(pendentes.length).toBeGreaterThan(0);
-    for (const r of pendentes) expect(r.when, r.what).toMatch(MONTH_YEAR);
-  });
-
-  it("toda previsão de case aparece no roadmap público", () => {
-    const datas = new Set(roadmap.map((r) => r.when));
-
-    const etasForaDoRoadmap = cases.filter((c) => c.eta && !datas.has(c.eta)).map((c) => `${c.id}: ${c.eta}`);
-
-    expect(etasForaDoRoadmap).toEqual([]);
-  });
-
-  it("as chaves (when) são únicas, pois são usadas como key na lista", () => {
-    const whens = roadmap.map((r) => r.when);
-
-    expect(new Set(whens).size).toBe(whens.length);
   });
 });
 
