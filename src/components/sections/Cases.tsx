@@ -1,8 +1,9 @@
 import { useState, type CSSProperties } from "react";
 import { usePortfolio } from "@/context/PortfolioContext";
-import { caseFilters, cases, GITHUB_REPOS_URL, type CaseFilter, type CaseStudy } from "@/data/portfolio";
+import { caseFilters, cases, GITHUB_REPOS_URL, roadmap, type CaseFilter, type CaseStudy } from "@/data/portfolio";
 import { Reveal } from "@/components/motion/Reveal";
 import { ImageSlot } from "@/components/ui/ImageSlot";
+import { BlueprintCover } from "@/components/ui/BlueprintCover";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { ArrowRightIcon, ChevronDownIcon } from "@/components/ui/icons";
 import { WebDesign } from "@/components/sections/WebDesign";
@@ -11,7 +12,10 @@ function CaseCard({ c, index, match }: { c: CaseStudy; index: number; match: boo
   const { openCase } = usePortfolio();
   const open = () => openCase(index);
   return (
+    // O card inteiro é só um atalho de mouse; para teclado e leitor de tela o controle é o botão
+    // "Ver o plano"/"Ver detalhes" abaixo. role="presentation" declara que o contêiner não é um controle.
     <div
+      role="presentation"
       data-spot="1"
       data-tilt="1"
       onClick={open}
@@ -24,7 +28,7 @@ function CaseCard({ c, index, match }: { c: CaseStudy; index: number; match: boo
       } as CSSProperties}
     >
       <div className="relative mx-2.5 mt-2.5 aspect-[16/10] overflow-hidden rounded-[18px] bg-bg2">
-        <ImageSlot src={c.image} alt={`Tela do ${c.name}`} placeholder={`Tela do ${c.name}`} />
+        {c.eta ? <BlueprintCover name={c.name} eta={c.eta} /> : <ImageSlot src={c.image} alt={`Tela do ${c.name}`} placeholder={`Tela do ${c.name}`} objectPosition="top" />}
         <span className="mono pointer-events-none absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-glass px-2.5 py-1.5 text-[12px] font-medium text-head leading-normal" style={{ backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
           {c.num} · {c.kind}
         </span>
@@ -32,9 +36,20 @@ function CaseCard({ c, index, match }: { c: CaseStudy; index: number; match: boo
       <div className="flex flex-1 flex-col gap-3 px-6 pb-6 pt-[22px]">
         <div className="flex items-baseline justify-between gap-3">
           <h3 className="stretch-120 text-[26px] font-bold leading-[1.15] text-head">{c.name}</h3>
-          <span className="mono whitespace-nowrap text-[12px] text-muted">{c.read}</span>
+          {c.eta ? null : <span className="mono whitespace-nowrap text-[12px] text-muted">{c.read}</span>}
         </div>
         <p className="text-[16px] leading-[1.55] text-ink">{c.summary}</p>
+        {c.eta ? (
+          <p className="mono text-[13px] leading-[1.5] text-muted">
+            <span className="mr-2 inline-block size-2 rounded-full align-middle" style={{ background: "#F5B82E" }} aria-hidden="true" />
+            Agora: {c.stage} · entrega prevista para {c.eta}
+          </p>
+        ) : (
+          <p className="mono flex items-center gap-2 text-[13px] text-muted">
+            <span className="size-2 rounded-full" style={{ background: "#28C840" }} aria-hidden="true" />
+            Publicado
+          </p>
+        )}
         <div className="mt-auto flex flex-wrap gap-1.5 pt-1.5">
           {c.skills.map((s) => (
             <span key={s} className="mono rounded-full bg-chip px-2.5 py-[5px] text-[12.5px] font-medium text-chip-text leading-normal">
@@ -48,13 +63,45 @@ function CaseCard({ c, index, match }: { c: CaseStudy; index: number; match: boo
             e.stopPropagation();
             open();
           }}
-          className="mt-1.5 flex cursor-pointer items-center gap-2 self-start border-0 bg-transparent p-0 text-[15px] font-bold text-accent-text"
+          aria-label={`${c.eta ? "Ver o plano" : "Ver detalhes"} do ${c.name}`}
+          className="mt-0.5 flex min-h-11 cursor-pointer items-center gap-2 self-start border-0 bg-transparent p-0 text-[15px] font-bold text-accent-text"
         >
-          Ver detalhes
+          {c.eta ? "Ver o plano" : "Ver detalhes"}
           <ArrowRightIcon size={16} sw={2.2} />
         </button>
       </div>
     </div>
+  );
+}
+
+/** Linha do tempo pública: o que já está no ar e quando cada projeto em construção chega. */
+function Roadmap() {
+  return (
+    <Reveal className="mb-8 rounded-[22px] border border-line bg-surface p-4 sm:p-5">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h3 className="mono flex items-center gap-2 text-[13px] font-semibold text-head">
+          <span className="relative flex size-2.5" aria-hidden="true">
+            <span className="absolute inset-0 animate-ping rounded-full motion-reduce:animate-none" style={{ background: "#F5B82E", opacity: 0.6 }} />
+            <span className="relative size-2.5 rounded-full" style={{ background: "#F5B82E" }} />
+          </span>
+          Em construção · próximas entregas
+        </h3>
+        <span className="mono text-[12.5px] text-muted">atualizado em nov 2026</span>
+      </div>
+      <ol className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {roadmap.map((r) => (
+          <li key={r.when} className="flex items-start gap-3 rounded-2xl bg-bg2 px-3.5 py-3">
+            <span
+              className="mono mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-[12px] font-semibold"
+              style={r.done ? { background: "#28C840", color: "#04230b" } : { background: "#F5B82E", color: "#2e2000" }}
+            >
+              {r.when}
+            </span>
+            <span className="text-[14.5px] leading-[1.45] text-ink">{r.what}</span>
+          </li>
+        ))}
+      </ol>
+    </Reveal>
   );
 }
 
@@ -74,8 +121,8 @@ export function Cases() {
           <Reveal as="h2" className="stretch-115 font-bold text-head" style={{ fontSize: "clamp(26px,3vw,36px)", lineHeight: 1.15, letterSpacing: "-.02em" }}>
             Projetos que mostram como eu penso e entrego.
           </Reveal>
-          <Reveal as="p" delay={80} className="max-w-[56ch] text-[17px] text-muted">
-            Cada projeto mostra o problema, as decisões técnicas, os testes e o resultado. Os dados são fictícios para não expor informações de empregadores.
+          <Reveal as="p" delay={80} className="max-w-[58ch] text-[17px] text-muted">
+            Estou transformando estes estudos em projetos completos e abertos no GitHub, com código, testes, demo e estudo de caso. As primeiras entregas chegam em janeiro de 2027. Os dados serão fictícios, para não expor informações de empregadores.
           </Reveal>
         </div>
         <Reveal
@@ -106,6 +153,7 @@ export function Cases() {
           })}
         </Reveal>
       </div>
+      <Roadmap />
       <div className="grid gap-[18px]" style={gridStyle}>
         {cases.slice(0, 3).map((c, i) => (
           <Reveal as="article" key={c.id} delay={i * 90}>
@@ -147,8 +195,8 @@ export function Cases() {
             <ChevronDownIcon size={16} sw={2.2} style={{ transition: "transform .45s cubic-bezier(.2,.8,.2,1)", transform: more ? "rotate(180deg)" : "none" }} />
           </span>
         </button>
-        <a href={GITHUB_REPOS_URL} target="_blank" rel="noopener" className="text-[15px] font-semibold">
-          Arquivo de estudos anteriores ↗
+        <a href={GITHUB_REPOS_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center text-[15px] font-semibold">
+          Acompanhar no GitHub ↗<span className="sr-only"> (abre em nova aba)</span>
         </a>
       </div>
       <WebDesign />

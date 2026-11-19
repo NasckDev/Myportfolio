@@ -1,0 +1,39 @@
+/* Capa "em construção": planta técnica com uma linha de varredura e faixa listrada. Só transform/opacity. */
+.bp-cover {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(108, 192, 238, .12) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, rgba(108, 192, 238, .12) 1px, transparent 1px) 0 0 / 22px 22px,
+    radial-gradient(120% 90% at 20% 0%, #12406c 0%, #0a2742 55%, #071a2e 100%);
+}
+.bp-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(108, 192, 238, .22) 48%, rgba(108, 192, 238, .5) 50%, transparent 52%);
+  transform: translateY(-100%);
+  animation: bp-scan 3.6s cubic-bezier(.45, 0, .55, 1) infinite;
+}
+.bp-draw path,
+.bp-draw rect,
+.bp-draw circle {
+  stroke-dasharray: 6 5;
+  animation: bp-dash 1.6s linear infinite;
+}
+.bp-tape {
+  background: repeating-linear-gradient(-45deg, #f5b82e 0 10px, #0a2742 10px 20px);
+  background-size: 28px 28px;
+  animation: bp-tape 1.2s linear infinite;
+}
+.no-motion .bp-scan,
+.no-motion .bp-draw *,
+.no-motion .bp-tape { animation: none; }
+.no-motion .bp-scan { opacity: 0; }
+
+@keyframes bp-scan { to { transform: translateY(100%); } }
+@keyframes bp-dash { to { stroke-dashoffset: -22; } }
+@keyframes bp-tape { to { background-position: 28px 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .bp-scan, .bp-draw *, .bp-tape { animation: none; }
+  .bp-scan { opacity: 0; }
+}

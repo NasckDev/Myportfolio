@@ -44,12 +44,27 @@ export interface CaseStudy {
   a11y: string;
   tests: string;
   image?: string;
+  /** Previsão de publicação (estudo + código + demo). Ausente = já publicado. */
+  eta?: string;
+  /** Em que pé o projeto está hoje. */
+  stage?: string;
+  /** Código e página ao vivo, quando existirem. */
+  repoUrl?: string;
+  liveUrl?: string;
 }
+
+/** Linha do tempo pública dos projetos em construção (mostrada na seção Projetos). */
+export const roadmap: { when: string; what: string; done?: boolean }[] = [
+  { when: "Já no ar", what: "Este portfólio, o site do Véspera e as primeiras versões abertas de FiscoTrack, OpsFlow, InsightHub e Nasck UI", done: true },
+  { when: "Jan 2027", what: "Nasck UI (design system) e FiscoTrack" },
+  { when: "Fev 2027", what: "InsightHub" },
+  { when: "Mar 2027", what: "OpsFlow" },
+];
 
 export const cases: CaseStudy[] = [
   {
     id: "insighthub", num: "01", kind: "React · dados", read: "6 min", name: "InsightHub", tagline: "Research & AI Insights Workspace", tags: ["React", "Dados", "Acessibilidade"],
-    title: "Como desenhei um workspace de insights para reduzir a distância entre dados e decisão.",
+    title: "Um workspace de insights para reduzir a distância entre dados e decisão.", eta: "Fev 2027", stage: "API e motor de síntese no ar, front-end em andamento", repoUrl: "https://github.com/NasckDev/insighthub",
     summary: "Workspace para explorar pesquisas, comparar segmentos e gerar sínteses assistidas por IA com rastreabilidade.",
     role: "Concepção, arquitetura e frontend", skills: ["React", "TypeScript", "TanStack", "IA"],
     problem: "Times de pesquisa e produto precisam transformar respostas, segmentos e indicadores em insights acionáveis. A experiência costuma ser fragmentada entre filtros complexos, tabelas, gráficos, comentários e geração de sínteses.",
@@ -58,7 +73,7 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "opsflow", num: "02", kind: "Angular · corporativo", read: "7 min", name: "OpsFlow", tagline: "Enterprise Workflow & Approval Console", tags: ["Angular", "Acessibilidade"],
-    title: "Como modelei um workflow corporativo com permissões, auditoria e evolução incremental.",
+    title: "Um workflow corporativo com permissões, auditoria e evolução incremental.", eta: "Mar 2027", stage: "Máquina de estados, permissões e demo no ar", repoUrl: "https://github.com/NasckDev/opsflow", liveUrl: "https://nasckdev.github.io/opsflow/",
     summary: "Console de workflow com etapas rastreáveis, permissões, histórico e suporte multilíngue.",
     role: "Estados, formulários e RBAC", skills: ["Angular", "RxJS", "RBAC", "i18n"],
     problem: "Operações corporativas precisam criar, revisar e aprovar solicitações com várias etapas, papéis, documentos, prazos e trilha de auditoria. Interfaces frágeis aumentam retrabalho, erros e tempo de decisão.",
@@ -67,7 +82,7 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "fiscotrack", num: "03", kind: "Domínio · testes", read: "5 min", name: "FiscoTrack", tagline: "Investment Tax Calculator & Reporting", tags: ["React", "Dados"],
-    title: "Como transformei regras financeiras em um motor de cálculo testável e explicável.",
+    title: "Regras financeiras em um motor de cálculo testável e explicável.", eta: "Jan 2027", stage: "Motor e app web publicados, refinando testes de ponta a ponta", repoUrl: "https://github.com/NasckDev/fiscotrack", liveUrl: "https://nasckdev.github.io/fiscotrack/",
     summary: "Calculadora educacional de resultados de investimentos com regras versionadas e explicáveis.",
     role: "Modelagem de domínio e testes", skills: ["React", "Funções puras", "Vitest"],
     problem: "Investidores precisam organizar operações, calcular resultados por período e compreender regras aplicadas, sem depender de uma planilha opaca.",
@@ -76,7 +91,7 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "nasckui", num: "04", kind: "Design System", read: "5 min", name: "Nasck UI", tagline: "Accessible Product Interface System", tags: ["React", "Design System"],
-    title: "Como transformei padrões recorrentes em um sistema de interface acessível e governável.",
+    title: "Padrões recorrentes em um sistema de interface acessível e governável.", eta: "Jan 2027", stage: "Tokens e 14 componentes no ar, Storybook em andamento", repoUrl: "https://github.com/NasckDev/nasck-ui",
     summary: "Biblioteca de componentes acessíveis usada pelos outros projetos, com tokens, Storybook e governança.",
     role: "Arquitetura de componentes e documentação", skills: ["Design System", "Storybook", "Tokens", "a11y"],
     problem: "Padrões recorrentes eram reimplementados em cada projeto, com estados, foco e acessibilidade inconsistentes.",
@@ -86,11 +101,16 @@ export const cases: CaseStudy[] = [
   {
     id: "myportfolio", num: "05", kind: "Produto · engenharia", read: "4 min", name: "Myportfolio", tagline: "Este portfólio como case de engenharia", tags: ["React", "Acessibilidade"],
     title: "Como reposicionei meu portfólio para transformar experiência em evidência.",
-    summary: "React, TypeScript e Vite com rotas por case, métricas de funil e quality gates.",
-    role: "Produto, UX e engenharia", skills: ["React", "Vite", "Analytics", "CI"],
-    problem: "O portfólio anterior chamava atenção, mas apresentava primeiro os projetos que menos representavam a carreira.",
-    decisions: ["Remoção do preloader e orçamento de movimento", "Cases em rotas próprias com metadados", "Eventos de funil sem dados pessoais"],
-    a11y: "Skip link, foco visível e respeito a prefers-reduced-motion.", tests: "Lint, typecheck, E2E, axe e Lighthouse CI.",
+    summary: "React 19, TypeScript e Vite, legível por robôs e IAs, com 3D sob demanda e métricas sem dados pessoais.",
+    role: "Produto, UX e engenharia", skills: ["React", "TypeScript", "three.js", "Vercel"],
+    problem: "O portfólio anterior chamava atenção, mas apresentava primeiro os projetos que menos representavam a carreira, e robôs e IAs viam uma página vazia.",
+    decisions: [
+      "Conteúdo pré-renderizado no HTML, com robots.txt, sitemap e llms.txt, para IAs e prévias de link lerem o site",
+      "three.js carregado só em telas largas e depois do primeiro conteúdo; no celular, o 3D é CSS puro",
+      "Visitas e avaliações em Vercel Functions com Redis, visitante identificado por hash anônimo e limite de votos",
+    ],
+    a11y: "Skip link, foco visível, alvos de toque de 44 px e respeito a prefers-reduced-motion.", tests: "Testes automatizados das Functions, typecheck e build de produção a cada deploy.",
+    image: `${base}og-image.jpg`, repoUrl: "https://github.com/NasckDev/Myportfolio", liveUrl: SITE_URL,
   },
 ];
 
@@ -192,7 +212,8 @@ const rawSkillGroups: [string, RawSkill[]][] = [
   ["Entrega e colaboração", [["CI/CD", [4], [1]], ["Jenkins", [], [1]], ["ArgoCD", [], [1]], ["GitHub Actions", [4], []], ["Feature flags", [], [0, 1]], ["Git · GitHub · GitLab · Azure DevOps", [4], [0, 1]], ["Scrum / Kanban", [], [0]], ["Documentação técnica", [], [0]], ["SAP Commerce", [], [1]]]],
 ];
 
-const groupColors = ["#1783C1", "#3B6FD4", "#0E8C9E", "#2A74C9", "#12689A", "#0B8575"];
+// Fundos de chip com texto branco: todos com contraste ≥ 4,5:1 (WCAG AA).
+const groupColors = ["#1677B0", "#3B6FD4", "#0B7D8D", "#2A74C9", "#12689A", "#0B7A6B"];
 
 export const allSkills: Skill[] = [];
 export const skillGroups: SkillGroup[] = rawSkillGroups.map(([title, items], gi) => ({
@@ -206,12 +227,13 @@ export const skillGroups: SkillGroup[] = rawSkillGroups.map(([title, items], gi)
 }));
 
 export const repos = [
-  { slug: "nasckdev/nasck-ui", name: "Nasck UI", problem: "Sistema de interface acessível usado pelos outros projetos.", quality: "Storybook · axe · testes de interação", status: "Em construção", dot: "#FEBC2E" },
-  { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "Vitest · Playwright + axe · CI", status: "Planejado", dot: "#6CC0EE" },
-  { slug: "nasckdev/fiscotrack", name: "FiscoTrack", problem: "Evolução do minersCalculator: cálculo explicável e testável.", quality: "Casos table-driven · CI", status: "Em evolução", dot: "#FEBC2E" },
+  { slug: "nasckdev/nasck-ui", name: "Nasck UI", problem: "Sistema de interface acessível usado pelos outros projetos.", quality: "Tokens · axe · Vitest", status: "Em construção · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/nasck-ui" },
+  { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "Hono · Drizzle · Vitest · CI", status: "Em construção · v1 fev 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/insighthub" },
+  { slug: "nasckdev/fiscotrack", name: "FiscoTrack", problem: "Evolução do minersCalculator: cálculo explicável e testável.", quality: "71 testes do motor · CI · Pages", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/fiscotrack" },
+  { slug: "nasckdev/opsflow", name: "OpsFlow", problem: "Workflow de aprovações em Angular com máquina de estados, RBAC e auditoria.", quality: "84 testes · CI · Pages", status: "Demo no ar · v1 mar 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/opsflow" },
   { slug: "nasckdev/web-design", name: "Web design", problem: "Estudos visuais com 3D e movimento, com código, prints e README.", quality: "Páginas ao vivo · prints · README", status: "Publicado", dot: "#28C840", href: WEB_DESIGN_REPO_URL },
-  { slug: "nasckdev/vespera", name: "Véspera", problem: "Meu jogo: RPG de ação 2D em pixel art, com co-op local.", quality: "Godot 4 · C# · testes automatizados", status: "Beta", dot: "#FEBC2E", href: "https://github.com/NasckDev/vespera" },
-  { slug: "nasckdev/myportfolio", name: "Myportfolio", problem: "Este portfólio, documentado como case de engenharia.", quality: "Lint · typecheck · E2E · Lighthouse CI", status: "Publicado", dot: "#28C840", href: "https://github.com/NasckDev/Myportfolio" },
+  { slug: "nasckdev/vespera", name: "Véspera", problem: "Meu jogo: RPG de ação 2D em pixel art, com co-op local.", quality: "Godot 4 · C# · testes automatizados", status: "Beta", dot: "#FEBC2E", href: VESPERA_REPO_URL },
+  { slug: "nasckdev/myportfolio", name: "Myportfolio", problem: "Este portfólio, documentado como case de engenharia.", quality: "Typecheck · testes das Functions · prerender", status: "Publicado", dot: "#28C840", href: "https://github.com/NasckDev/Myportfolio" },
 ] as { slug: string; name: string; problem: string; quality: string; status: string; dot: string; href?: string }[];
 
 export const principles = [

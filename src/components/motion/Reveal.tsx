@@ -77,7 +77,8 @@ export function useReveal<T extends HTMLElement>(kind: RevealKind = "blur", dela
     const el = ref.current;
     if (!el) return;
     if (state.current === "idle") {
-      if (!motion || (hero && heroReady)) {
+      // No celular o topo já nasce visível: o maior conteúdo da tela (LCP) não espera animação.
+      if (!motion || (hero && (heroReady || isCoarse()))) {
         state.current = "shown";
         return;
       }
@@ -91,6 +92,10 @@ export function useReveal<T extends HTMLElement>(kind: RevealKind = "blur", dela
         state.current = "shown";
       });
     }
+    // Montagem única de propósito: o estado inicial (esconder ou já mostrar) e o observer são decididos
+    // com os valores da montagem; mudanças posteriores de motion/heroReady são tratadas pelo efeito abaixo.
+    // Com as dependências, trocar o tema de movimento ou o heroReady desfaria e refaria o observer.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

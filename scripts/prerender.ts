@@ -20,6 +20,7 @@ import {
   LINKEDIN_URL,
   profile,
   repos,
+  roadmap,
   SITE_URL,
   skillGroups,
   WEB_DESIGN_REPO_URL,
@@ -41,10 +42,11 @@ function snapshotHtml(): string {
   const parts = [
     `<header><h1>${esc(profile.name)}</h1><p><strong>${esc(profile.role)}</strong></p><p>${esc(profile.intro)}</p>`,
     `<p><a href="mailto:${EMAIL}">${EMAIL}</a> · <a href="${LINKEDIN_URL}">LinkedIn</a> · <a href="${GITHUB_URL}">GitHub</a> · <a href="${abs(CV_FULL_URL)}">Currículo (PDF)</a></p></header>`,
-    `<section><h2>Projetos</h2><p>Estudos de caso com dados fictícios, para não expor informações de empregadores.</p>`,
+    `<section><h2>Projetos</h2><p>Estudos em construção, que vão virar projetos completos e abertos no GitHub (código, testes, demo e estudo de caso), com dados fictícios.</p>`,
+    list(roadmap.map((r) => `${r.when}: ${r.what}`)),
     ...cases.map(
       (c) =>
-        `<article><h3>${esc(c.name)} · ${esc(c.tagline)}</h3><p>${esc(c.summary)}</p><p>${esc(c.problem)}</p>` +
+        `<article><h3>${esc(c.name)} · ${esc(c.tagline)}</h3><p>${c.eta ? `<strong>Em construção</strong> (${esc(c.stage ?? "")}), previsto para ${esc(c.eta)}. ` : ""}${esc(c.summary)}</p><p>${esc(c.problem)}</p>` +
         `<p>Papel: ${esc(c.role)}. Tecnologias: ${esc(c.skills.join(", "))}.</p>${list(c.decisions)}` +
         `<p>Acessibilidade: ${esc(c.a11y)} Testes: ${esc(c.tests)}</p></article>`,
     ),
@@ -87,8 +89,9 @@ function llmsTxt(): string {
     "## Experiência",
     ...jobs.map((j) => `- ${j.period} · ${j.company} · ${j.role}: ${j.context}`),
     "",
-    "## Projetos (estudos de caso com dados fictícios)",
-    ...cases.map((c) => `- ${c.name} (${c.tagline}): ${c.summary} Tecnologias: ${c.skills.join(", ")}.`),
+    "## Projetos (em construção, com dados fictícios)",
+    ...roadmap.map((r) => `- ${r.when}: ${r.what}`),
+    ...cases.map((c) => `- ${c.name} (${c.tagline})${c.eta ? ` [em construção, previsto para ${c.eta}]` : ""}: ${c.summary} Tecnologias: ${c.skills.join(", ")}.`),
     "",
     "## Web design",
     `Código aberto: ${WEB_DESIGN_REPO_URL}`,

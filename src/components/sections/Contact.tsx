@@ -21,18 +21,53 @@ function useClock() {
   return clock || "São Paulo · UTC−3";
 }
 
+/** Envelope em CSS 3D para celular: mesma ideia da cena WebGL, sem custo de GPU/JS por frame. */
+function EnvelopeCss({ animate }: { animate: boolean }) {
+  return (
+    <div aria-hidden="true" className={"env-css grid size-full place-items-center" + (animate ? " is-anim" : "")}>
+      <div className="env-css__body h-[30px] w-[46px]">
+        <span className="absolute inset-0 rounded-[4px]" style={{ background: "#CFE2F3", boxShadow: "0 6px 12px -6px rgba(4,20,40,.6)" }} />
+        <span className="env-css__letter mono absolute inset-x-[4px] top-[2px] grid h-[22px] place-items-center rounded-[2px] bg-white text-[9px] font-bold leading-none" style={{ color: "#1783C1" }}>
+          {"</>"}
+        </span>
+        <span className="env-css__pocket absolute inset-0 rounded-[4px]" style={{ background: "#F4F9FF", clipPath: "polygon(0 0,50% 58%,100% 0,100% 100%,0 100%)" }} />
+        <span className="env-css__flap absolute inset-x-0 top-0 h-[19px]" style={{ background: "#E3EEF8", clipPath: "polygon(0 0,100% 0,50% 100%)" }}>
+          <span className="absolute bottom-[1px] left-1/2 -ml-[4px] size-2 rounded-full" style={{ background: "#1783C1" }} />
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/** Quebra o e-mail só antes do "@", nunca no meio do usuário ou do domínio. */
+function EmailText({ email }: { email: string }) {
+  const at = email.indexOf("@");
+  if (at < 0) return <span className="whitespace-nowrap">{email}</span>;
+  return (
+    <>
+      <span className="whitespace-nowrap">{email.slice(0, at)}</span>
+      <wbr />
+      <span className="whitespace-nowrap">{email.slice(at)}</span>
+    </>
+  );
+}
+
+const NewTab = () => <span className="sr-only">(abre em nova aba)</span>;
+
 const channelClass =
   "flex items-center gap-3.5 px-1 py-[15px] text-head no-underline transition-[background,padding] duration-[250ms,350ms] ease-[cubic-bezier(.2,.8,.2,1)] hover:bg-chip hover:pl-2.5 hover:text-head";
 
 export function Contact() {
-  const { motion, emailCopied, copyEmail, showToast, openModal } = usePortfolio();
+  const { vp, motion, emailCopied, copyEmail, showToast, openModal } = usePortfolio();
+  // Celular (toque ou tela estreita): envelope em CSS em vez de criar um contexto WebGL.
+  const lightEnvelope = !vp.fine || vp.w < 860;
   const clock = useClock();
   const logoRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState(false);
 
   useEffect(() => {
     const mount = logoRef.current;
-    if (!mount) return;
+    if (lightEnvelope || !mount) return;
     let dead = false;
     let scene: { dispose: () => void } | null = null;
     const stopWatching = whenNear(mount, () => {
@@ -52,7 +87,7 @@ export function Contact() {
       stopWatching();
       scene?.dispose();
     };
-  }, []);
+  }, [lightEnvelope]);
 
   const setMailHover = (v: boolean) => {
     live.mailHover = v;
@@ -86,7 +121,7 @@ export function Contact() {
           <div className="flex flex-col justify-between gap-7">
             <div className="flex flex-col gap-[18px]">
               <div className="size-[74px] shrink-0 overflow-hidden rounded-[20px]" style={{ background: "linear-gradient(160deg,#0A3C6E,#1783C1)", border: "1px solid rgba(23,131,193,.35)", boxShadow: "0 12px 24px -12px rgba(10,60,110,.5)" }}>
-                <div ref={logoRef} aria-hidden="true" className="pointer-events-none size-full" />
+                {lightEnvelope ? <EnvelopeCss animate={motion} /> : <div ref={logoRef} aria-hidden="true" className="pointer-events-none size-full" />}
               </div>
               <SectionLabel>06 — CONTATO</SectionLabel>
               <h2 className="stretch-115 font-bold" style={{ fontSize: "clamp(28px,3.4vw,42px)", lineHeight: 1.1, letterSpacing: "-.02em" }}>
@@ -134,8 +169,8 @@ export function Contact() {
                 aria-label={`Copiar e-mail ${EMAIL}`}
                 className="flex min-w-0 cursor-pointer flex-wrap items-center justify-between gap-x-3 gap-y-2.5 border-0 bg-transparent p-0 text-left text-head hover:text-accent-text"
               >
-                <span className="stretch-112 min-w-0 font-bold tracking-[-.01em] [overflow-wrap:anywhere]" style={{ fontSize: "clamp(17px,2.2vw,24px)" }}>
-                  {EMAIL}
+                <span className="stretch-112 min-w-0 font-bold tracking-[-.01em]" style={{ fontSize: "clamp(16px,2.2vw,24px)" }}>
+                  <EmailText email={EMAIL} />
                 </span>
                 <span className="flex h-[34px] shrink-0 items-center gap-1.5 rounded-full bg-chip px-3 text-[13px] font-semibold text-head">
                   <CopyIcon size={14} />
@@ -182,37 +217,37 @@ export function Contact() {
             <div className="mt-auto flex flex-col gap-1.5">
               <span className="mono pb-1.5 text-[12.5px] text-muted">Outros canais</span>
               <nav aria-label="Outros canais" className="flex flex-col border-t border-line">
-                <a href={LINKEDIN_URL} target="_blank" rel="noopener" className={channelClass}>
+                <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className={channelClass}>
                   <LinkedinIcon size={20} stroke="var(--accentText)" className="shrink-0" />
                   <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                     <span className="text-[16px] font-bold">LinkedIn</span>
                     <span className="text-[13.5px] text-muted">perfil e recomendações</span>
                   </span>
-                  <span className="text-[17px] text-accent-text">↗</span>
+                  <span aria-hidden="true" className="text-[17px] text-accent-text">↗</span>
+                  <NewTab />
                 </a>
-                <a href={GITHUB_URL} target="_blank" rel="noopener" className={channelClass + " border-t border-line"}>
+                <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={channelClass + " border-t border-line"}>
                   <GithubIcon size={20} stroke="var(--accentText)" className="shrink-0" />
                   <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                     <span className="text-[16px] font-bold">GitHub</span>
                     <span className="text-[13.5px] text-muted">@NasckDev</span>
                   </span>
-                  <span className="text-[17px] text-accent-text">↗</span>
+                  <span aria-hidden="true" className="text-[17px] text-accent-text">↗</span>
+                  <NewTab />
                 </a>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    openModal("cv");
-                  }}
-                  className={channelClass + " border-t border-line"}
+                <button
+                  type="button"
+                  aria-haspopup="dialog"
+                  onClick={() => openModal("cv")}
+                  className={channelClass + " w-full cursor-pointer border-x-0 border-b-0 border-t border-solid border-line bg-transparent pr-1 text-left leading-[1.6]"}
                 >
                   <FileDownIcon size={20} stroke="var(--accentText)" className="shrink-0" />
                   <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                     <span className="text-[16px] font-bold">Currículo</span>
                     <span className="text-[13.5px] text-muted">PDF completo ou versão ATS</span>
                   </span>
-                  <span className="text-[17px] text-accent-text">↓</span>
-                </a>
+                  <span aria-hidden="true" className="text-[17px] text-accent-text">↓</span>
+                </button>
               </nav>
             </div>
           </div>

@@ -7,6 +7,15 @@ import { CloseIcon, FileDownIcon, GlobeIcon, PinIcon } from "@/components/ui/ico
 
 const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
 
+/** Espera a animação de saída do modal antes de abrir a gaveta do case. */
+const CLOSE_THEN_OPEN_MS = 220;
+/** Espera o modal começar a fechar antes de rolar até a seção. */
+const CLOSE_THEN_SCROLL_MS = 150;
+/** Deixa o toast de download aparecer antes de fechar o modal. */
+const CLOSE_AFTER_DOWNLOAD_MS = 300;
+/** Foco no botão Fechar depois que o diálogo fica visível. */
+const FOCUS_DELAY_MS = 60;
+
 async function sendFeedback(message: string) {
   if (!WEB3FORMS_KEY) return false;
   try {
@@ -28,19 +37,26 @@ export function Modal() {
   const closeRef = useRef<HTMLButtonElement>(null);
   const [fbText, setFbText] = useState("");
   const [sending, setSending] = useState(false);
+  // Mantém o conteúdo durante a animação de saída: guarda o último tipo aberto (ajuste de estado no render, sem efeito).
   const [last, setLast] = useState(modal);
+  if (modal && modal !== last) setLast(modal);
+  const m = modal || last;
   const open = !!modal;
   useFocusTrap(dlgRef, open);
+  const timers = useRef<number[]>([]);
 
-  // Mantém o conteúdo durante a animação de saída.
+  /** setTimeout com limpeza na desmontagem. */
+  const later = (fn: () => void, ms: number) => {
+    timers.current.push(window.setTimeout(fn, ms));
+  };
   useEffect(() => {
-    if (modal) setLast(modal);
-  }, [modal]);
-  const m = modal || last;
+    const pending = timers.current;
+    return () => pending.forEach((t) => window.clearTimeout(t));
+  }, []);
 
   useEffect(() => {
     if (!open) return;
-    const t = window.setTimeout(() => closeRef.current?.focus({ preventScroll: true }), 60);
+    const t = window.setTimeout(() => closeRef.current?.focus({ preventScroll: true }), FOCUS_DELAY_MS);
     return () => window.clearTimeout(t);
   }, [open]);
 
@@ -52,7 +68,7 @@ export function Modal() {
           label: `${cases[ci].name} · ${cases[ci].tagline}`,
           go: () => {
             closeModal();
-            window.setTimeout(() => openCase(ci), 220);
+            later(() => openCase(ci), CLOSE_THEN_OPEN_MS);
           },
         })),
         ...sel.jobs.map((ji) => ({
@@ -61,7 +77,7 @@ export function Modal() {
           go: () => {
             closeModal();
             setOpenJob(ji);
-            window.setTimeout(() => scrollToId("experiencia"), 120);
+            later(() => scrollToId("experiencia"), CLOSE_THEN_SCROLL_MS);
           },
         })),
       ]
@@ -90,10 +106,17 @@ export function Modal() {
       return;
     }
     writeStorage("adn4-feedback", t);
+    // Sem a chave do Web3Forms nada sai do navegador: a mensagem diz isso em vez de "enviada".
+    if (!WEB3FORMS_KEY) {
+      closeModal();
+      setFbText("");
+      showToast("Sugestão salva neste navegador. Obrigado!");
+      return;
+    }
     setSending(true);
     const sent = await sendFeedback(t);
     setSending(false);
-    if (WEB3FORMS_KEY && !sent) {
+    if (!sent) {
       showToast("Não foi possível enviar agora. Tente novamente.");
       return;
     }
@@ -117,7 +140,7 @@ export function Modal() {
         aria-label={title}
         aria-hidden={!open}
         inert={!open}
-        className="fixed left-1/2 top-1/2 z-[141] box-border max-h-[calc(100vh/var(--zoom,1)-40px)] w-[min(560px,calc(100%-24px))] overflow-y-auto rounded-[26px] border border-line bg-surface"
+        className="fixed left-1/2 top-1/2 z-[141] box-border max-h-[calc(100vh/var(--zoom,1)-40px)] supports-[height:100dvh]:max-h-[calc(100dvh/var(--zoom,1)-40px)] w-[min(560px,calc(100%-24px))] overflow-y-auto rounded-[26px] border border-line bg-surface"
         style={{
           boxShadow: "0 40px 90px -30px rgba(0,0,0,.55)",
           opacity: open ? 1 : 0,
@@ -129,7 +152,7 @@ export function Modal() {
       >
         <div className="flex items-center justify-between gap-3 pl-6 pr-[18px] pt-[18px]">
           <span className="mono text-[12.5px] text-accent-text">{kicker}</span>
-          <button ref={closeRef} type="button" onClick={closeModal} aria-label="Fechar" className="grid size-10 cursor-pointer place-items-center rounded-full border border-line bg-bg2 text-head">
+          <button ref={closeRef} type="button" onClick={closeModal} aria-label="Fechar" className="grid size-11 cursor-pointer place-items-center rounded-full border border-line bg-bg2 text-head">
             <CloseIcon size={17} sw={2.2} />
           </button>
         </div>
@@ -149,7 +172,7 @@ export function Modal() {
                     download=""
                     onClick={() => {
                       showToast(o.toast);
-                      window.setTimeout(closeModal, 300);
+                      later(closeModal, CLOSE_AFTER_DOWNLOAD_MS);
                     }}
                     className="flex items-center gap-3.5 rounded-[18px] border border-line bg-bg2 p-4 text-ink no-underline transition-[border-color,transform] duration-[200ms,300ms] ease-[cubic-bezier(.2,.8,.2,1)] hover:[transform:translateY(-2px)] hover:border-brand hover:text-ink"
                   >
@@ -166,12 +189,12 @@ export function Modal() {
               </div>
               <div className="flex flex-wrap items-center gap-2 text-[14px] text-muted">
                 Prefere outro canal?
-                <button type="button" onClick={copyEmail} className="cursor-pointer border-0 bg-transparent p-0 text-[14px] font-semibold text-accent-text">
+                <button type="button" onClick={copyEmail} className="min-h-11 cursor-pointer border-0 bg-transparent p-0 text-[14px] font-semibold text-accent-text">
                   Copiar e-mail
                 </button>
                 ·
-                <a href={LINKEDIN_URL} target="_blank" rel="noopener" className="font-semibold">
-                  LinkedIn ↗
+                <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center font-semibold">
+                  LinkedIn ↗<span className="sr-only"> (abre em nova aba)</span>
                 </a>
               </div>
             </>
@@ -201,7 +224,7 @@ export function Modal() {
                   type="button"
                   onClick={() => {
                     closeModal();
-                    window.setTimeout(() => scrollToId("contato"), 150);
+                    later(() => scrollToId("contato"), CLOSE_THEN_SCROLL_MS);
                   }}
                   className="h-12 cursor-pointer rounded-full border-0 bg-btn px-5 text-[15px] font-bold text-btn-text hover:bg-brand hover:text-white"
                 >
@@ -224,7 +247,7 @@ export function Modal() {
                 maxLength={2000}
                 placeholder="Ex.: senti falta de mais detalhes nos projetos"
                 aria-label="Sugestão"
-                className="box-border w-full resize-y rounded-2xl border border-line2 bg-bg2 px-4 py-3.5 text-[15.5px] font-medium leading-normal text-head outline-0 placeholder:text-muted"
+                className="box-border w-full resize-y rounded-2xl border border-line2 bg-bg2 px-4 py-3.5 text-[16px] font-medium leading-normal text-head placeholder:text-muted"
               />
               <div className="flex flex-wrap justify-end gap-2.5">
                 <button type="button" onClick={closeModal} className="h-[46px] cursor-pointer rounded-full border border-line2 bg-transparent px-[18px] text-[14.5px] font-semibold text-head">
@@ -236,7 +259,7 @@ export function Modal() {
                   disabled={sending}
                   className="h-[46px] cursor-pointer rounded-full border-0 bg-btn px-5 text-[14.5px] font-bold text-btn-text hover:bg-brand hover:text-white disabled:opacity-60"
                 >
-                  Enviar sugestão
+                  {sending ? "Enviando…" : "Enviar sugestão"}
                 </button>
               </div>
             </>

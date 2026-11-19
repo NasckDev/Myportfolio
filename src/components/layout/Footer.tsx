@@ -7,6 +7,13 @@ import { EyeIcon, ThumbDownIcon, ThumbUpIcon } from "@/components/ui/icons";
 
 const fmt = (n: number) => n.toLocaleString("pt-BR");
 
+/** Azul do voto ativo: #12689A dá 6,05:1 com texto branco (o #1783C1 anterior dava 4,16:1). */
+const VOTE_ON = "#12689A";
+
+/** Alvo de toque de 44px no celular sem mudar o visual no desktop. */
+const tapTarget = "inline-flex items-center pointer-coarse:min-h-11";
+const newTab = <span className="sr-only"> (abre em nova aba)</span>;
+
 export function Footer() {
   const { vp, motion, toggleMotion, openModal, showToast, scrollToId } = usePortfolio();
   const visits = useVisits();
@@ -30,9 +37,9 @@ export function Footer() {
   };
 
   const voteBtn = (on: boolean) => ({
-    background: on ? "#1783C1" : "var(--surface)",
+    background: on ? VOTE_ON : "var(--surface)",
     color: on ? "#FFFFFF" : "var(--head)",
-    borderColor: on ? "#1783C1" : "var(--line2)",
+    borderColor: on ? VOTE_ON : "var(--line2)",
     transform: on ? "scale(1.06)" : "none",
     transition: "background .25s,color .25s,border-color .25s,transform .35s cubic-bezier(.34,1.56,.64,1)",
   });
@@ -54,7 +61,7 @@ export function Footer() {
           <span className="mono text-[12px] text-muted">Navegar</span>
           <div className="grid grid-cols-2 gap-x-4 gap-y-2">
             {footerLinks.map(([id, label]) => (
-              <a key={id} href={"#" + id} onClick={go(id)} className="text-[14.5px] font-medium text-ink no-underline hover:text-brand">
+              <a key={id} href={"#" + id} onClick={go(id)} className={`${tapTarget} text-[14.5px] font-medium text-ink no-underline hover:text-brand`}>
                 {label}
               </a>
             ))}
@@ -63,11 +70,11 @@ export function Footer() {
         <div className="flex flex-col gap-3">
           <span className="mono text-[12px] text-muted">Gostou do site?</span>
           <div role="group" aria-label="Avaliar o site" className="flex gap-2">
-            <button type="button" onClick={voteUp} aria-pressed={vote === "up"} aria-label="Gostei" className="flex h-11 cursor-pointer items-center gap-2 rounded-full border px-4 text-[14.5px] font-semibold" style={voteBtn(vote === "up")}>
+            <button type="button" onClick={voteUp} aria-pressed={vote === "up"} aria-label={`Gostei, ${fmt(likes)}`} className="flex h-11 cursor-pointer items-center gap-2 rounded-full border px-4 text-[14.5px] font-semibold" style={voteBtn(vote === "up")}>
               <ThumbUpIcon size={17} />
               <span className="tabular-nums">{fmt(likes)}</span>
             </button>
-            <button type="button" onClick={voteDown} aria-pressed={vote === "down"} aria-label="Não gostei" className="flex h-11 cursor-pointer items-center gap-2 rounded-full border px-4 text-[14.5px] font-semibold" style={voteBtn(vote === "down")}>
+            <button type="button" onClick={voteDown} aria-pressed={vote === "down"} aria-label={`Não gostei, ${fmt(dislikes)}`} className="flex h-11 cursor-pointer items-center gap-2 rounded-full border px-4 text-[14.5px] font-semibold" style={voteBtn(vote === "down")}>
               <ThumbDownIcon size={17} />
               <span className="tabular-nums">{fmt(dislikes)}</span>
             </button>
@@ -84,31 +91,36 @@ export function Footer() {
               <span className="stretch-120 text-[30px] font-bold tabular-nums text-head" aria-live="polite">
                 {visits === null ? "—" : fmt(visits)}
               </span>
-              <span className="text-[13.5px] text-muted">pessoas passaram por aqui</span>
+              <span className="text-[13.5px] text-muted">{visits === 1 ? "pessoa passou por aqui" : "pessoas passaram por aqui"}</span>
             </span>
           </span>
         </div>
       </div>
-      <div className="container-x flex flex-wrap items-center gap-x-[22px] gap-y-3 border-t border-line pb-7 pt-[18px] text-[13.5px] text-muted">
-        <span className="mr-auto">© 2026 Alexandre Diogo Nascimento</span>
-        <a href={GITHUB_URL} target="_blank" rel="noopener" className="text-ink">
-          GitHub
-        </a>
-        <a href={LINKEDIN_URL} target="_blank" rel="noopener" className="text-ink">
-          LinkedIn
-        </a>
-        {hasKeyboard && (
-          <button type="button" onClick={() => openModal("keys")} className="cursor-pointer border-0 bg-transparent p-0 text-[13.5px] font-medium text-ink">
-            Atalhos <span className="mono rounded-[5px] border border-line2 px-1.5 py-0.5 text-[12px] font-medium leading-normal">?</span>
+      <div className="container-x border-t border-line pb-7 pt-[18px] text-[13.5px] text-muted">
+        {/* No celular, reserva a faixa da direita para o botão flutuante "Voltar ao topo" (52px + 20px de margem). */}
+        <div className="flex flex-wrap items-center gap-x-[22px] gap-y-3 max-[859px]:pr-14">
+          <span className="mr-auto">© 2026 Alexandre Diogo Nascimento</span>
+          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={`${tapTarget} text-ink`}>
+            GitHub
+            {newTab}
+          </a>
+          <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className={`${tapTarget} text-ink`}>
+            LinkedIn
+            {newTab}
+          </a>
+          {hasKeyboard && (
+            <button type="button" onClick={() => openModal("keys")} className="cursor-pointer border-0 bg-transparent p-0 text-[13.5px] font-medium text-ink">
+              Atalhos <span className="mono rounded-[5px] border border-line2 px-1.5 py-0.5 text-[12px] font-medium leading-normal">?</span>
+            </button>
+          )}
+          <button type="button" onClick={toggleMotion} aria-pressed={motion} className="mono flex cursor-pointer items-center gap-2 rounded-full border border-line bg-transparent px-3 py-1.5 text-[12.5px] font-medium text-ink leading-normal pointer-coarse:min-h-11">
+            <span aria-hidden="true" className="size-2 rounded-full" style={{ background: motion ? "#22B573" : "#9AA6B2" }} />
+            {motion ? "animações: on" : "animações: off"}
           </button>
-        )}
-        <button type="button" onClick={toggleMotion} aria-pressed={motion} className="mono flex cursor-pointer items-center gap-2 rounded-full border border-line bg-transparent px-3 py-1.5 text-[12.5px] font-medium text-ink leading-normal">
-          <span className="size-2 rounded-full" style={{ background: motion ? "#22B573" : "#9AA6B2" }} />
-          {motion ? "animações: on" : "animações: off"}
-        </button>
-        <a href="#topo" onClick={go("topo")} className="font-semibold text-head">
-          Voltar ao topo ↑
-        </a>
+          <a href="#topo" onClick={go("topo")} className={`${tapTarget} font-semibold text-head`}>
+            Voltar ao topo ↑
+          </a>
+        </div>
       </div>
     </footer>
   );

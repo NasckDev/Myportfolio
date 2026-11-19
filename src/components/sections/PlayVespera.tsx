@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { usePortfolio } from "@/context/PortfolioContext";
 import { game } from "@/data/portfolio";
 import { Reveal, Scramble } from "@/components/motion/Reveal";
 import { ArrowUpRightIcon, GithubIcon } from "@/components/ui/icons";
@@ -8,24 +9,69 @@ const NIGHT = "#0d0b1a";
 const LANTERN = "#F2A541";
 const PARCHMENT = "#F4E7C6";
 
-/** Toca o vídeo de fundo só enquanto a seção está visível e se o visitante não pediu menos movimento. */
-function useVisiblePlayback() {
+const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
+
+function subscribeReducedMotion(cb: () => void) {
+  const mq = window.matchMedia(REDUCED_MOTION);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+
+/** Preferência do sistema por menos movimento, atualizada se o visitante mudar com a página aberta. */
+function usePrefersReducedMotion(): boolean {
+  return useSyncExternalStore(
+    subscribeReducedMotion,
+    () => window.matchMedia(REDUCED_MOTION).matches,
+    () => false,
+  );
+}
+
+type NavigatorWithConnection = Navigator & { connection?: { saveData?: boolean } };
+
+/** "Economia de dados" ligada no navegador/sistema: fica só o pôster, sem baixar o vídeo. */
+function prefersSaveData(): boolean {
+  return typeof navigator !== "undefined" && (navigator as NavigatorWithConnection).connection?.saveData === true;
+}
+
+/** Toca o vídeo de fundo só enquanto `enabled` e a seção estiver visível. */
+function useVisiblePlayback(enabled: boolean) {
   const ref = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     const video = ref.current;
-    if (!video || !("IntersectionObserver" in window)) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!video) return;
+    if (!enabled) {
+      video.pause();
+      return;
+    }
+    if (!("IntersectionObserver" in window)) return;
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !reduced.matches) video.play().catch(() => undefined);
+        if (entry.isIntersecting) video.play().catch(() => undefined);
         else video.pause();
       },
       { threshold: 0.25 },
     );
     io.observe(video);
     return () => io.disconnect();
-  }, []);
+  }, [enabled]);
   return ref;
+}
+
+function PauseGlyph() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <rect x="6" y="4" width="4" height="16" rx="1" />
+      <rect x="14" y="4" width="4" height="16" rx="1" />
+    </svg>
+  );
+}
+
+function PlayGlyph() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z" />
+    </svg>
+  );
 }
 
 /** Sol pixelado do selo do Véspera, o mesmo do carregamento do site do jogo. */
@@ -53,7 +99,13 @@ const newTab = <span className="sr-only"> (abre em nova aba)</span>;
 
 /** "Jogue Véspera": convite para o site do jogo, publicado em public/vespera/. */
 export function PlayVespera() {
-  const videoRef = useVisiblePlayback();
+  const { motion } = usePortfolio();
+  const reduced = usePrefersReducedMotion();
+  const [saveData] = useState(prefersSaveData);
+  const [paused, setPaused] = useState(false);
+  // O vídeo respeita o botão de animações do site, o pedido de menos movimento do sistema e a economia de dados.
+  const canAnimate = motion && !reduced && !saveData;
+  const videoRef = useVisiblePlayback(canAnimate && !paused);
   return (
     <section id="jogo" className="container-x section-pad scroll-mt-20">
       <Reveal
@@ -148,6 +200,20 @@ export function PlayVespera() {
         <div className="pointer-events-none absolute right-6 top-6 sm:right-10 sm:top-10">
           <LanternSeal />
         </div>
+
+        {canAnimate && (
+          // Rótulo fixo + aria-pressed (padrão de botão de alternância): "pressionado" = vídeo pausado.
+          <button
+            type="button"
+            onClick={() => setPaused((p) => !p)}
+            aria-pressed={paused}
+            aria-label="Pausar vídeo"
+            className="absolute left-4 top-4 grid size-11 cursor-pointer place-items-center rounded-full border-0 md:bottom-6 md:left-auto md:right-6 md:top-auto"
+            style={{ background: "rgba(13,11,26,.72)", color: PARCHMENT, boxShadow: "inset 0 0 0 1px rgba(244,231,198,.35)" }}
+          >
+            {paused ? <PlayGlyph /> : <PauseGlyph />}
+          </button>
+        )}
       </Reveal>
     </section>
   );

@@ -2,6 +2,7 @@ import type * as ThreeNS from "three";
 
 /**
  * Monta o canvas no container, acompanha o tamanho e só anima enquanto visível.
+ * `onVisibility` avisa quando a cena entra/sai da tela (ex.: ligar listeners só quando visível).
  * Retorna a função de limpeza.
  */
 export function view3d(
@@ -10,6 +11,7 @@ export function view3d(
   camera: ThreeNS.PerspectiveCamera,
   onFit: ((aspect: number) => void) | null,
   onTick: (t: number) => void,
+  onVisibility?: (visible: boolean) => void,
 ) {
   const cv = renderer.domElement;
   cv.style.display = "block";
@@ -38,7 +40,9 @@ export function view3d(
   fit();
   const io = new IntersectionObserver(
     (es) => {
-      visible = es[0].isIntersecting;
+      const next = es[0].isIntersecting;
+      if (next !== visible) onVisibility?.(next);
+      visible = next;
       if (visible && !raf) raf = requestAnimationFrame(tick);
     },
     { rootMargin: "120px" },

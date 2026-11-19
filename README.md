@@ -1,6 +1,6 @@
 # Alexandre Diogo Nascimento — Portfólio
 
-Portfólio profissional (v3) de Alexandre Diogo Nascimento, Software Engineer · Frontend & Fullstack. Página única com topo 3D, habilidades pesquisáveis, projetos com gaveta de detalhes, trajetória em 3D, código aberto, sobre mim e contato. Tem tema claro/escuro, paleta de comandos (⌘K / Ctrl K), modais, toasts e respeita `prefers-reduced-motion`.
+Portfólio profissional (v3) de Alexandre Diogo Nascimento, Software Engineer · Frontend & Fullstack. Página única com topo 3D (WebGL no desktop, CSS 3D no celular), habilidades pesquisáveis, projetos com linha do tempo pública e gaveta de detalhes, web design, o jogo Véspera, trajetória, código aberto, sobre mim e contato. Tem tema claro/escuro, paleta de comandos (⌘K / Ctrl K), modais, toasts e respeita `prefers-reduced-motion`.
 
 Stack: React 19, TypeScript, Vite, Tailwind CSS 4 e three.js (carregado sob demanda). Contador de visitas e avaliações em Vercel Functions com Redis (Upstash).
 
@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-Validação completa (testes das Functions + typecheck + build de produção):
+Validação completa (ESLint + testes de componentes com Vitest + testes das Functions + typecheck + build de produção):
 
 ```bash
 npm run verify
@@ -24,10 +24,13 @@ No `npm run dev` não existem Vercel Functions, então o rodapé usa o comportam
 ## Estrutura
 
 - `src/data/portfolio.ts`: todo o conteúdo (projetos, experiências, habilidades, repositórios, links). Para trocar um projeto, edite este arquivo; para adicionar a tela de um case, preencha o campo `image` com um caminho em `public/`.
-- `src/components/sections`: uma seção por arquivo (Hero, Skills, Cases, WebDesign, Experience, OpenSource, About, Contact).
+- `src/components/sections`: uma seção por arquivo (Hero, Skills, Cases, WebDesign, PlayVespera, Experience, OpenSource, About, Contact). `PhoneStack` é o celular em CSS 3D do topo em telas estreitas; `experience/` divide a trajetória em versão fixada (desktop) e lista (celular).
+- `public/vespera/`: site do jogo Véspera, publicado dentro do portfólio em `/vespera/` (HTML/CSS/JS puro, só caminhos relativos).
 - `public/web-design/<projeto>/`: páginas de web design publicadas no portfólio (código-fonte, prints e READMEs em [NasckDev/web-design](https://github.com/NasckDev/web-design)). Para adicionar uma, copie a pasta para cá, a capa para `public/assets/web-design/` e crie um item em `webDesigns` no `src/data/portfolio.ts`.
 - `scripts/prerender.ts`: roda depois do build e gera uma versão em texto do conteúdo dentro do `index.html`, além de `robots.txt`, `sitemap.xml` e `llms.txt`, para que IAs e robôs que não executam JavaScript consigam ler o portfólio. O texto vem do mesmo `src/data/portfolio.ts`.
-- `src/components/overlays`: gaveta de case, paleta de comandos, modais, toast.
+- `src/components/overlays`: gaveta de case, paleta de comandos (também é o menu do celular), modais, toast.
+- `src/lib/live.ts`: loop único de animação que dorme quando nada muda; `src/hooks/useScrollLock.ts` e `useFocusTrap.ts` cuidam de rolagem e foco dos overlays.
+- Testes ficam ao lado do código (`*.test.ts(x)`), com setup em `src/test/`.
 - `src/three`: cenas 3D (topo, trajetória, envelope do contato).
 - `api/visits.ts` e `api/votes.ts`: contador de visitas e avaliações.
 - `public/curriculo-alexandre-diogo-nascimento.pdf` (completo) e `public/curriculo-alexandre-diogo-nascimento-ats.pdf` (ATS).

@@ -1,7 +1,6 @@
 import { lazy, Suspense, useEffect, type PointerEvent } from "react";
-import { PortfolioProvider } from "@/context/PortfolioContext";
+import { PortfolioProvider, usePortfolio } from "@/context/PortfolioContext";
 import { live } from "@/lib/live";
-import { Loader } from "@/components/layout/Loader";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
@@ -71,11 +70,20 @@ function useMouseTracking() {
   }, []);
 }
 
+/** Sem tela de carregamento: o topo é liberado no primeiro quadro e a cena 3D entra quando estiver pronta. */
+function useHeroReadyOnFirstFrame() {
+  const { setHeroReady } = usePortfolio();
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setHeroReady());
+    return () => cancelAnimationFrame(raf);
+  }, [setHeroReady]);
+}
+
 function Portfolio() {
   useMouseTracking();
+  useHeroReadyOnFirstFrame();
   return (
     <div className="relative" onPointerMove={onPointerMove} onPointerOut={onPointerOut}>
-      <Loader />
       <a href="#conteudo" className="fixed -left-[9999px] top-3 z-[200] rounded-xl bg-surface px-4 py-3 font-semibold text-head focus:left-4">
         Pular para o conteúdo
       </a>
