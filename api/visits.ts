@@ -1,4 +1,4 @@
-import { KEY_PREFIX, noStore, redis, redisConfig, toCount, visitorId, type RequestLike, type ResponseLike } from "./_redis.js";
+import { KEY_PREFIX, logFailure, noStore, redis, redisConfig, toCount, visitorId, type RequestLike, type ResponseLike } from "./_redis.js";
 
 export type VisitsApiResponse = { available: true; visits: number } | { available: false };
 
@@ -30,7 +30,8 @@ export default async function handler(request: RequestLike, response: ResponseLi
         ? await redis(["EVAL", COUNT_VISIT, 2, `${KEY_PREFIX}seen:${visitorId(request)}`, VISITS_KEY, DEDUPE_SECONDS])
         : await redis(["GET", VISITS_KEY]);
     return response.status(200).json({ available: true, visits: toCount(result) });
-  } catch {
-    return response.status(200).json({ available: false });
+  } catch (error) {
+    logFailure("visits", error);
+    return response.status(503).json({ available: false });
   }
 }

@@ -45,7 +45,10 @@ As contagens ficam em um Redis da Upstash, compartilhadas entre todos os visitan
 
 - **Visitas**: cada visitante conta uma vez a cada 12 horas.
 - **Avaliações**: cada visitante tem um voto, que pode trocar ou remover; o voto é lembrado pelo servidor.
-- O visitante é identificado por um hash anônimo de IP + user-agent (nada é guardado em texto puro), com limite de 20 votos a cada 10 minutos.
+- O visitante é identificado por um HMAC-SHA256 do IP com um segredo do servidor (`COUNTER_SALT` ou, na falta dele, o token do Redis). Nada é guardado em texto puro, e o user-agent fica de fora: trocar de navegador não conta como outra pessoa.
+- O IP vem dos headers que a própria Vercel escreve (`x-vercel-forwarded-for`, `x-real-ip`), não de `x-forwarded-for` enviado pelo cliente.
+- Limite de 20 votos a cada 10 minutos por visitante; corpo acima de 1 KB é recusado (413); falhas do Redis respondem 503 e ficam registradas no log da função.
+- Sem login, os contadores são "melhor esforço": quem tem muitos IPs ainda consegue somar votos. É um termômetro, não uma métrica auditável.
 
 Para ativar:
 

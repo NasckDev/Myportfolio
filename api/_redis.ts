@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHmac } from "node:crypto";
 
 export interface RequestLike {
   method?: string;
@@ -13,6 +13,8 @@ export interface ResponseLike<T> {
 }
 
 const REQUEST_TIMEOUT_MS = 4_000;
+/** Corpo maior que isto é recusado sem ser lido; o maior payload válido é {"vote":"down"}. */
+export const MAX_BODY_BYTES = 1024;
 export const KEY_PREFIX = "adn:";
 
 /**
@@ -53,12 +55,42 @@ function header(request: RequestLike, name: string) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-/** Identificador anônimo do visitante: hash de IP + user-agent (nada é guardado em texto puro). */
+/**
+ * IP do visitante. Na Vercel, x-vercel-forwarded-for e x-real-ip são escritos pela plataforma e o cliente
+ * não consegue forjá-los; x-forwarded-for só é usado fora dela (dev local), como último recurso.
+ */
+export function clientIp(request: RequestLike) {
+  const raw = header(request, "x-vercel-forwarded-for") || header(request, "x-real-ip") || header(request, "x-forwarded-for") || "";
+  return raw.split(",")[0].trim() || "unknown";
+}
+
+/**
+ * Segredo do hash: COUNTER_SALT (recomendado) ou, na falta dele, o token do Redis, que também só existe no servidor.
+ * O hash nunca depende de um valor público do repositório, então ninguém reconstrói o IP a partir dele.
+ */
+function hashSecret(): string {
+  const secret = process.env.COUNTER_SALT || redisConfig()?.token;
+  if (!secret) throw new Error("counter secret not configured");
+  return secret;
+}
+
+/**
+ * Identificador anônimo do visitante: HMAC-SHA256 do IP com um segredo do servidor (nada é guardado em texto puro).
+ * O user-agent fica de fora de propósito: trocar de navegador não pode virar "outra pessoa" para votos e visitas.
+ */
 export function visitorId(request: RequestLike) {
-  const ip = (header(request, "x-forwarded-for") || header(request, "x-real-ip") || "unknown").split(",")[0].trim();
-  const ua = header(request, "user-agent") || "";
-  const salt = process.env.COUNTER_SALT || "adn-portfolio";
-  return createHash("sha256").update(`${salt}|${ip}|${ua}`).digest("hex").slice(0, 32);
+  return createHmac("sha256", hashSecret()).update(clientIp(request)).digest("hex").slice(0, 32);
+}
+
+/** Corpo declarado acima do limite: recusado antes de qualquer trabalho. */
+export function bodyTooLarge(request: RequestLike) {
+  const length = Number(header(request, "content-length") || 0);
+  return Number.isFinite(length) && length > MAX_BODY_BYTES;
+}
+
+/** Registra a falha no log da função, sem dados do visitante, para não virar erro silencioso. */
+export function logFailure(route: string, error: unknown) {
+  console.error(`[api/${route}] redis failure: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 export function toCount(value: unknown) {
