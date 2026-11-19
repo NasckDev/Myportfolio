@@ -24,7 +24,7 @@ class MockResponse<T> {
 }
 
 const originalFetch = globalThis.fetch;
-const envNames = ["KV_REST_API_URL", "KV_REST_API_TOKEN", "UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN"] as const;
+const envNames = ["KV_REST_API_URL", "KV_REST_API_TOKEN", "UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN", "COUNTER_SALT"] as const;
 const originalEnv = Object.fromEntries(envNames.map((n) => [n, process.env[n]]));
 const headers = { "x-forwarded-for": "203.0.113.7, 10.0.0.1", "user-agent": "test-agent" };
 
@@ -98,12 +98,16 @@ test("visits: GET reads the total without counting", async () => {
   assert.deepEqual(calls[0].command, ["GET", "adn:visits"]);
 });
 
-test("visits: falls back when Redis fails", async () => {
+test("visits: answers 503 and logs when Redis fails", async (t) => {
+  const log = t.mock.method(console, "error", () => undefined);
   mockRedis(new Error("network down"));
   const res = new MockResponse<VisitsApiResponse>();
   await visitsHandler({ method: "POST", headers }, res);
-  assert.equal(res.statusCode, 200);
+  assert.equal(res.statusCode, 503);
   assert.deepEqual(res.body, { available: false });
+  assert.equal(log.mock.callCount(), 1);
+  assert.match(String(log.mock.calls[0].arguments[0]), /network down/);
+  assert.ok(!String(log.mock.calls[0].arguments[0]).includes("203.0.113.7"), "log must not contain the visitor IP");
 });
 
 test("votes: GET returns totals and the visitor's current vote", async () => {
@@ -160,4 +164,82 @@ test("votes: accepts Upstash-native environment variable names", async () => {
   await votesHandler({ method: "GET", headers }, res);
   assert.deepEqual(res.body, { available: true, likes: 0, dislikes: 0, vote: null });
   assert.equal(calls[0].auth, "Bearer upstash-token");
+});
+
+test("visitorId: same IP with another browser is the same visitor (user-agent is ignored)", () => {
+  const a = visitorId({ headers: { "x-real-ip": "198.51.100.4", "user-agent": "Chrome" } });
+  const b = visitorId({ headers: { "x-real-ip": "198.51.100.4", "user-agent": "Firefox" } });
+  assert.equal(a, b);
+  assert.match(a, /^[0-9a-f]{32}$/);
+});
+
+test("visitorId: trusts Vercel headers over a client-forged x-forwarded-for", () => {
+  const real = visitorId({ headers: { "x-vercel-forwarded-for": "198.51.100.4" } });
+  const forged = visitorId({ headers: { "x-vercel-forwarded-for": "198.51.100.4", "x-forwarded-for": "1.2.3.4" } });
+  const otherForged = visitorId({ headers: { "x-vercel-forwarded-for": "198.51.100.4", "x-forwarded-for": "5.6.7.8" } });
+  assert.equal(forged, real);
+  assert.equal(otherForged, real);
+  assert.equal(visitorId({ headers: { "x-real-ip": "198.51.100.4", "x-forwarded-for": "1.2.3.4" } }), real);
+});
+
+test("visitorId: keyed by a server secret, so changing COUNTER_SALT changes every id", () => {
+  const h = { "x-real-ip": "198.51.100.4" };
+  const withToken = visitorId({ headers: h });
+  process.env.COUNTER_SALT = "a-long-random-secret-for-tests-0001";
+  const withSalt = visitorId({ headers: h });
+  process.env.COUNTER_SALT = "a-long-random-secret-for-tests-0002";
+  assert.notEqual(withSalt, withToken);
+  assert.notEqual(visitorId({ headers: h }), withSalt);
+});
+
+test("votes: answers 503 and logs when Redis fails, on GET and POST", async (t) => {
+  const log = t.mock.method(console, "error", () => undefined);
+  mockRedis(new Error("timeout"), new Error("timeout"));
+  const get = new MockResponse<VotesApiResponse>();
+  await votesHandler({ method: "GET", headers }, get);
+  const post = new MockResponse<VotesApiResponse>();
+  await votesHandler({ method: "POST", headers, body: { vote: "up" } }, post);
+  for (const res of [get, post]) {
+    assert.equal(res.statusCode, 503);
+    assert.deepEqual(res.body, { available: false });
+    assert.equal(res.headers.get("cache-control"), "no-store");
+  }
+  assert.equal(log.mock.callCount(), 2);
+});
+
+test("votes: an Upstash error payload is treated as a failure", async (t) => {
+  t.mock.method(console, "error", () => undefined);
+  calls = [];
+  globalThis.fetch = (async () =>
+    new Response(JSON.stringify({ error: "ERR wrong number of arguments" }), { status: 200, headers: { "content-type": "application/json" } })) as typeof fetch;
+  const res = new MockResponse<VotesApiResponse>();
+  await votesHandler({ method: "GET", headers }, res);
+  assert.equal(res.statusCode, 503);
+});
+
+test("votes: refuses a body larger than 1 KB before touching Redis", async () => {
+  mockRedis();
+  const res = new MockResponse<VotesApiResponse>();
+  await votesHandler({ method: "POST", headers: { ...headers, "content-length": "5000" }, body: { vote: "up" } }, res);
+  assert.equal(res.statusCode, 413);
+  assert.deepEqual(res.body, { available: false, reason: "too_large" });
+  assert.equal(calls.length, 0);
+});
+
+test("votes: rejects every malformed body shape without calling Redis", async () => {
+  for (const body of ["not json", null, [], {}, { vote: 1 }, { vote: "UP" }, '{"vote":"sideways"}']) {
+    mockRedis();
+    const res = new MockResponse<VotesApiResponse>();
+    await votesHandler({ method: "POST", headers, body }, res);
+    assert.equal(res.statusCode, 400, `body ${JSON.stringify(body)}`);
+    assert.equal(calls.length, 0);
+  }
+});
+
+test("both routes send no-store and nosniff, including on errors", async () => {
+  const res = new MockResponse<VotesApiResponse>();
+  await votesHandler({ method: "PUT", headers }, res);
+  assert.equal(res.statusCode, 405);
+  assert.equal(res.headers.get("cache-control"), "no-store");
+  assert.equal(res.headers.get("x-content-type-options"), "nosniff");
 });

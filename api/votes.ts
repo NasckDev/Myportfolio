@@ -1,10 +1,10 @@
-import { KEY_PREFIX, noStore, redis, redisConfig, toCount, visitorId, type RequestLike, type ResponseLike } from "./_redis.js";
+import { bodyTooLarge, KEY_PREFIX, logFailure, noStore, redis, redisConfig, toCount, visitorId, type RequestLike, type ResponseLike } from "./_redis.js";
 
 export type Vote = "up" | "down" | null;
 
 export type VotesApiResponse =
   | { available: true; likes: number; dislikes: number; vote: Vote }
-  | { available: false; reason?: "invalid" | "rate_limited" };
+  | { available: false; reason?: "invalid" | "too_large" | "rate_limited" };
 
 const LIKES_KEY = `${KEY_PREFIX}likes`;
 const DISLIKES_KEY = `${KEY_PREFIX}dislikes`;
@@ -77,6 +77,7 @@ export default async function handler(request: RequestLike, response: ResponseLi
       return response.status(200).json({ available: true, likes: toCount(likes), dislikes: toCount(dislikes), vote: asVote(vote) });
     }
 
+    if (bodyTooLarge(request)) return response.status(413).json({ available: false, reason: "too_large" });
     const vote = parseVote(request.body);
     if (vote === undefined) return response.status(400).json({ available: false, reason: "invalid" });
 
@@ -84,7 +85,8 @@ export default async function handler(request: RequestLike, response: ResponseLi
     const [likes, dislikes, current] = (await redis(["EVAL", SET_VOTE, 4, voteKey, LIKES_KEY, DISLIKES_KEY, rateKey, vote ?? "", VOTE_TTL_SECONDS, RATE_LIMIT, RATE_WINDOW_SECONDS])) as unknown[];
     if (likes === -1) return response.status(429).json({ available: false, reason: "rate_limited" });
     return response.status(200).json({ available: true, likes: toCount(likes), dislikes: toCount(dislikes), vote: asVote(current) });
-  } catch {
-    return response.status(200).json({ available: false });
+  } catch (error) {
+    logFailure("votes", error);
+    return response.status(503).json({ available: false });
   }
 }
