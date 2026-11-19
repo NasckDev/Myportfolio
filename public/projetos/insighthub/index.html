@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="InsightHub: workspace de pesquisa com síntese assistida por IA e citações rastreáveis. Demo com dados fictícios."
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>InsightHub</title>
+    <script>
+      try {
+        var stored = localStorage.getItem('insighthub-theme');
+        var dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      } catch (e) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    </script>
+    <script type="module" crossorigin src="./assets/index-C-twJ3as.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CQWDTL5i.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePortfolio } from "@/context/PortfolioContext";
 import { allSkills, skillGroups } from "@/data/portfolio";
 import { normalize } from "@/lib/text";
@@ -8,10 +8,17 @@ import { CopyIcon, SearchIcon, skillGroupIcons } from "@/components/ui/icons";
 
 const rgba = (hex: string, a: number) => `rgba(${parseInt(hex.slice(1, 3), 16)},${parseInt(hex.slice(3, 5), 16)},${parseInt(hex.slice(5, 7), 16)},${a})`;
 
+/** Abaixo desta largura os grupos viram um carrossel de deslizar, para a seção não ocupar três telas no celular. */
+const SWIPE_MAX_W = 640;
+/** Margem lateral do carrossel (px-5), igual ao respiro do container no celular. */
+const RAIL_GUTTER_PX = 20;
+
 export function Skills() {
-  const { openModal, copySkills } = usePortfolio();
+  const { vp, motion, openModal, copySkills } = usePortfolio();
   const [query, setQuery] = useState("");
+  const railRef = useRef<HTMLDivElement>(null);
   const q = normalize(query.trim());
+  const swipe = vp.w < SWIPE_MAX_W;
   let hits = 0;
   const groups = skillGroups.map((g, gi) => {
     const items = g.items.map((it) => {
@@ -21,6 +28,16 @@ export function Skills() {
     });
     return { ...g, gi, items, any: !q || items.some((i) => i.match) };
   });
+  const firstHit = q ? groups.findIndex((g) => g.items.some((i) => i.hl)) : -1;
+
+  // No carrossel, a busca leva até o primeiro grupo com resultado; senão ele ficaria fora da tela.
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!swipe || !rail || firstHit < 0) return;
+    const card = rail.children[firstHit] as HTMLElement | undefined;
+    if (card) rail.scrollTo({ left: card.offsetLeft - RAIL_GUTTER_PX, behavior: motion ? "smooth" : "auto" });
+  }, [swipe, firstHit, motion]);
+
   const count = q ? (hits ? hits + (hits === 1 ? " resultado" : " resultados") : "Nenhum resultado") : allSkills.length + " habilidades";
 
   return (
@@ -66,11 +83,27 @@ export function Skills() {
           Copiar lista
         </button>
       </Reveal>
-      <div className="grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))" }}>
+      <div
+        ref={railRef}
+        role={swipe ? "region" : undefined}
+        aria-label={swipe ? "Grupos de habilidades, deslize para o lado" : undefined}
+        className={swipe ? "no-scrollbar relative -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-1" : "grid gap-3.5"}
+        style={swipe ? undefined : { gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))" }}
+      >
         {groups.map((g) => {
           const Icon = skillGroupIcons[g.gi];
-          return (
-            <Reveal key={g.title} delay={g.gi * 60} className="flex">
+          // No carrossel, os cards fora da tela nunca cruzariam o observer do Reveal; por isso entram sem animação.
+          const wrap = (card: ReactNode) =>
+            swipe ? (
+              <div key={g.title} className="flex w-[86%] shrink-0 snap-start">
+                {card}
+              </div>
+            ) : (
+              <Reveal key={g.title} delay={g.gi * 60} className="flex">
+                {card}
+              </Reveal>
+            );
+          return wrap(
               <div
                 data-spot="1"
                 className="spot-bg relative flex w-full flex-col gap-3.5 overflow-hidden rounded-[22px] border border-line px-5 pb-5 pt-[22px] hover:[transform:translateY(-3px)]"
@@ -108,13 +141,12 @@ export function Skills() {
                     </button>
                   ))}
                 </div>
-              </div>
-            </Reveal>
+              </div>,
           );
         })}
       </div>
       <Reveal as="p" className="mt-3.5 flex items-center gap-2 text-[14px] text-muted">
-        Toque em uma habilidade para ver onde ela foi aplicada.
+        {swipe ? `Deslize para ver os ${groups.length} grupos. Toque em uma habilidade para ver onde ela foi aplicada.` : "Toque em uma habilidade para ver onde ela foi aplicada."}
       </Reveal>
     </section>
   );

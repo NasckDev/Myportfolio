@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import * as data from "@/data/portfolio";
 import { caseFilters, cases, footerLinks, jobs, navItems, paletteNav, repos, roadmap, sectionIds, skillGroups, webDesigns } from "@/data/portfolio";
@@ -51,6 +53,31 @@ describe("cases", () => {
     for (const c of cases) {
       expect(c.decisions.length, c.id).toBeGreaterThan(0);
       expect(new Set(c.decisions).size, c.id).toBe(c.decisions.length);
+    }
+  });
+});
+
+/** Caminho público ("/assets/...") para o arquivo dentro de public/. */
+const inPublic = (url: string) => resolve(import.meta.dirname, "../../public", url.replace(/^\/+/, ""));
+
+describe("demos e prints dos projetos", () => {
+  it("toda demo executável tem um index.html publicado em public/", () => {
+    for (const c of cases.filter((k) => k.demoUrl)) {
+      expect(existsSync(inPublic(`${c.demoUrl}index.html`)), c.id).toBe(true);
+    }
+  });
+
+  it("todo print existe em public/ e tem texto alternativo e legenda", () => {
+    for (const shot of cases.flatMap((c) => c.shots ?? [])) {
+      expect(existsSync(inPublic(shot.src)), shot.src).toBe(true);
+      expect(shot.alt.length).toBeGreaterThan(5);
+      expect(shot.caption.length).toBeGreaterThan(5);
+    }
+  });
+
+  it("projeto com prints tem pelo menos um print de desktop para a capa do card", () => {
+    for (const c of cases.filter((k) => k.shots?.length)) {
+      expect(c.shots?.some((s) => s.device === "desktop"), c.id).toBe(true);
     }
   });
 });
