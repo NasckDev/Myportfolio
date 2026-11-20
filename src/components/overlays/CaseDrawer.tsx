@@ -10,7 +10,7 @@ import { CloseIcon, LinkIcon } from "@/components/ui/icons";
 
 export function CaseDrawer() {
   const { vp, caseOpen, lastCase, openCase, closeCase, showToast } = usePortfolio();
-  const asideRef = useRef<HTMLElement>(null);
+  const asideRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const open = caseOpen >= 0;
   const cur = cases[lastCase];
@@ -42,8 +42,9 @@ export function CaseDrawer() {
         className="fixed inset-0 z-[90]"
         style={{ background: "rgba(4,14,28,.5)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", opacity: open ? 1 : 0, pointerEvents: open ? "auto" : "none", transition: "opacity .35s" }}
       />
-      <aside
+      <div
         ref={asideRef}
+        data-case-drawer=""
         role="dialog"
         aria-modal="true"
         aria-label={cur.name}
@@ -64,14 +65,14 @@ export function CaseDrawer() {
       >
         <div className="glass-blur sticky top-0 z-[2] flex items-center justify-between gap-3 border-b border-line bg-glass py-3.5 pl-6 pr-4">
           <span className="mono text-[12.5px] text-muted">
-            case {cur.num} / {String(cases.length).padStart(2, "0")} · {cur.eta ? "em construção" : cur.read}
+            case {cur.num} / {String(cases.length).padStart(2, "0")} · {cur.demoUrl ? "demo no ar" : cur.eta ? "em construção" : cur.read}
           </span>
           <div className="flex items-center gap-2">
-            <button type="button" onClick={copyLink} aria-label="Copiar link do case" className="flex h-[42px] cursor-pointer items-center gap-2 rounded-full border border-line bg-bg2 px-3.5 text-[13.5px] font-semibold text-head hover:border-brand">
+            <button type="button" onClick={copyLink} aria-label="Copiar link do case" className="flex h-11 cursor-pointer items-center gap-2 rounded-full border border-line bg-bg2 px-3.5 text-[13.5px] font-semibold text-head hover:border-brand">
               <LinkIcon size={16} />
               {vp.w >= 420 && "Copiar link"}
             </button>
-            <button ref={closeRef} type="button" onClick={closeCase} aria-label="Fechar case" className="grid size-[42px] cursor-pointer place-items-center rounded-full border border-line bg-bg2 text-head">
+            <button ref={closeRef} type="button" onClick={closeCase} aria-label="Fechar case" className="grid size-11 cursor-pointer place-items-center rounded-full border border-line bg-bg2 text-head">
               <CloseIcon size={18} sw={2.2} />
             </button>
           </div>
@@ -87,11 +88,14 @@ export function CaseDrawer() {
             <p className="text-[17px] text-muted">{cur.summary}</p>
           </div>
           {cur.eta ? (
-            <div className="flex items-start gap-3 rounded-2xl px-4 py-3.5" style={{ background: "rgba(245,184,46,.14)", boxShadow: "inset 0 0 0 1px rgba(245,184,46,.5)" }}>
-              <span className="mt-1.5 size-2.5 shrink-0 rounded-full" style={{ background: "#F5B82E" }} aria-hidden="true" />
+            <div
+              className="flex items-start gap-3 rounded-2xl px-4 py-3.5"
+              style={cur.demoUrl ? { background: "rgba(31,157,85,.1)", boxShadow: "inset 0 0 0 1px rgba(31,157,85,.4)" } : { background: "rgba(245,184,46,.14)", boxShadow: "inset 0 0 0 1px rgba(245,184,46,.5)" }}
+            >
+              {cur.demoUrl ? <span className="live-dot mt-2" aria-hidden="true" /> : <span className="mt-1.5 size-2.5 shrink-0 rounded-full" style={{ background: "#F5B82E" }} aria-hidden="true" />}
               <p className="text-[15.5px]">
-                <strong className="text-head">Em construção.</strong> Agora: {cur.stage?.toLowerCase()}.{" "}
-                {cur.demoUrl ? "A primeira versão já roda aqui embaixo. A versão 1.0, com estudo de caso completo, está prevista para " : "Código, demo e estudo completo previstos para "}
+                <strong className="text-head">{cur.demoUrl ? "Demo no ar." : "Em construção."}</strong> Agora: {cur.stage?.toLowerCase()}.{" "}
+                {cur.demoUrl ? "Dá para usar o app agora, logo abaixo. A versão 1.0, com estudo de caso completo, está prevista para " : "Código, demo e estudo completo previstos para "}
                 <strong className="text-head">{cur.eta}</strong>.
               </p>
             </div>
@@ -168,7 +172,7 @@ export function CaseDrawer() {
             </button>
           </div>
         </div>
-      </aside>
+      </div>
     </>
   );
 }

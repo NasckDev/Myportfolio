@@ -90,10 +90,10 @@ function Portfolio() {
       <Navbar />
       <main id="conteudo">
         <Hero />
-        <Skills />
         <Cases />
         <PlayVespera />
         <Experience />
+        <Skills />
         <OpenSource />
         <About />
         <Contact />

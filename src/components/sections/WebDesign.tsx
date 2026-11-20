@@ -40,7 +40,7 @@ function WebDesignCard({ piece }: { piece: WebDesignPiece }) {
             <ArrowUpRightIcon size={16} sw={2.2} />
           </span>
           {piece.repo ? (
-            <a href={piece.repo} target="_blank" rel="noopener noreferrer" className="relative z-[1] flex items-center gap-2 text-[15px] font-semibold">
+            <a href={piece.repo} target="_blank" rel="noopener noreferrer" className="relative z-[1] flex min-h-11 items-center gap-2 text-[15px] font-semibold">
               <GithubIcon size={16} sw={2} />
               Código
               <span className="sr-only"> do {piece.name} (abre em nova aba)</span>

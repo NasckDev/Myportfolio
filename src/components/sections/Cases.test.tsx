@@ -16,19 +16,22 @@ function cardOf(name: string): HTMLElement {
 }
 
 describe("Cases", () => {
-  it("marca cada projeto sem código publicado como 'Em construção' com a previsão de entrega", () => {
+  it("marca cada projeto com demo como 'Demo no ar', sem selo de construção, com a versão 1.0 prevista", () => {
     // Arrange
-    const emConstrucao = cases.filter((c) => c.eta);
+    const comDemo = cases.filter((c) => c.demoUrl && c.eta);
+    expect(comDemo.length).toBeGreaterThan(0);
 
     // Act
     renderWithPortfolio(<Cases />);
 
     // Assert
-    for (const c of emConstrucao) {
+    for (const c of comDemo) {
       const card = cardOf(c.name);
-      expect(within(card).getByText("Em construção")).toBeInTheDocument();
-      expect(within(card).getByText(`Previsto · ${c.eta}`)).toBeInTheDocument();
-      expect(within(card).getByText(new RegExp(`entrega prevista para ${c.eta}`))).toBeInTheDocument();
+      expect(within(card).getAllByText("Demo no ar").length).toBeGreaterThan(0);
+      expect(within(card).getByText(`versão 1.0 em ${c.eta?.toLowerCase()}`)).toBeInTheDocument();
+      expect(within(card).queryByText("Em construção")).not.toBeInTheDocument();
+      // Pelo texto: nos cases extras (bloco aria-hidden até "Ver mais projetos") o nome acessível fica vazio.
+      expect(within(card).getByText("Ver a demo", { selector: "button" })).toBeInTheDocument();
     }
   });
 

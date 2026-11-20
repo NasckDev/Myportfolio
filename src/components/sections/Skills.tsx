@@ -43,7 +43,7 @@ export function Skills() {
   return (
     <section id="habilidades" className="container-x section-pad">
       <div className="mb-7 flex max-w-[640px] flex-col gap-3.5">
-        <SectionLabel>01 — HABILIDADES</SectionLabel>
+        <SectionLabel>03 — HABILIDADES</SectionLabel>
         <Reveal as="h2" className="stretch-115 font-bold text-head" style={{ fontSize: "clamp(26px,3vw,36px)", lineHeight: 1.15, letterSpacing: "-.02em" }}>
           Tecnologias e práticas que uso no dia a dia.
         </Reveal>
@@ -87,7 +87,7 @@ export function Skills() {
         ref={railRef}
         role={swipe ? "region" : undefined}
         aria-label={swipe ? "Grupos de habilidades, deslize para o lado" : undefined}
-        className={swipe ? "no-scrollbar relative -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-1" : "grid gap-3.5"}
+        className={swipe ? "no-scrollbar relative -mx-5 flex items-start snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-1" : "grid gap-3.5"}
         style={swipe ? undefined : { gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))" }}
       >
         {groups.map((g) => {

@@ -32,7 +32,7 @@ describe("CaseDrawer", () => {
     // Assert
     const dialog = screen.getByRole("dialog", { name: "InsightHub" });
     expect(within(dialog).getByRole("heading", { name: "Decisões" })).toBeInTheDocument();
-    expect(within(dialog).getByText("Em construção.")).toBeInTheDocument();
+    expect(within(dialog).getByText("Demo no ar.")).toBeInTheDocument();
     expect(within(dialog).getByText("Fev 2027")).toBeInTheDocument();
     const repo = within(dialog).getByRole("link", { name: /Código no GitHub/ });
     expect(repo).toHaveAttribute("href", "https://github.com/NasckDev/insighthub");
@@ -55,6 +55,7 @@ describe("CaseDrawer", () => {
 
     const dialog = screen.getByRole("dialog", { name: "Myportfolio" });
     expect(within(dialog).getByRole("heading", { name: "Decisões" })).toBeInTheDocument();
+    expect(within(dialog).queryByText("Demo no ar.")).not.toBeInTheDocument();
     expect(within(dialog).queryByText("Em construção.")).not.toBeInTheDocument();
     expect(within(dialog).getByRole("link", { name: /Código no GitHub/ })).toHaveAttribute("href", "https://github.com/NasckDev/Myportfolio");
   });
@@ -85,14 +86,38 @@ describe("CaseDrawer", () => {
     const { user } = renderCasesWithDrawer();
     await user.click(screen.getByRole("button", { name: "Ver a demo do OpsFlow" }));
     const dialog = screen.getByRole("dialog", { name: "OpsFlow" });
+    // A gaveta leva o foco para "Fechar case" logo ao abrir; espera isso antes de agir, como uma pessoa faria.
+    await waitFor(() => expect(within(dialog).getByRole("button", { name: "Fechar case" })).toHaveFocus());
     expect(within(dialog).queryByTitle("Demo do OpsFlow")).not.toBeInTheDocument();
     expect(within(dialog).getByRole("list", { name: "Prints do OpsFlow" })).toBeInTheDocument();
 
     // Act
-    await user.click(within(dialog).getByRole("button", { name: "Rodar a demo aqui" }));
+    await user.click(within(dialog).getByRole("button", { name: "Rodar a demo" }));
 
     // Assert
-    expect(within(dialog).getByTitle("Demo do OpsFlow")).toHaveAttribute("src", "/projetos/opsflow/");
-    expect(within(dialog).getByRole("link", { name: /Abrir em tela cheia/ })).toHaveAttribute("href", "/projetos/opsflow/");
+    // A demo abre em tela cheia, num diálogo próprio por cima da gaveta.
+    const demo = screen.getByRole("dialog", { name: "Demo do OpsFlow" });
+    expect(within(demo).getByTitle("Demo do OpsFlow")).toHaveAttribute("src", "/projetos/opsflow/");
+    expect(within(demo).getByRole("link", { name: /Abrir em nova aba/ })).toHaveAttribute("href", "/projetos/opsflow/");
+    await waitFor(() => expect(within(demo).getByRole("button", { name: "Fechar demo" })).toHaveFocus());
+  });
+
+  it("Esc fecha só a demo, mantém a gaveta aberta e devolve o foco ao botão que abriu", async () => {
+    // Arrange
+    const { user } = renderCasesWithDrawer();
+    await user.click(screen.getByRole("button", { name: "Ver a demo do OpsFlow" }));
+    const drawer = screen.getByRole("dialog", { name: "OpsFlow" });
+    await waitFor(() => expect(within(drawer).getByRole("button", { name: "Fechar case" })).toHaveFocus());
+    const rodar = within(drawer).getByRole("button", { name: "Rodar a demo" });
+    await user.click(rodar);
+    expect(screen.getByRole("dialog", { name: "Demo do OpsFlow" })).toBeInTheDocument();
+
+    // Act
+    await user.keyboard("{Escape}");
+
+    // Assert
+    expect(screen.queryByRole("dialog", { name: "Demo do OpsFlow" })).not.toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "OpsFlow" })).toBeInTheDocument();
+    await waitFor(() => expect(rodar).toHaveFocus());
   });
 });

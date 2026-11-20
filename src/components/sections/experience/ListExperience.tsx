@@ -58,7 +58,7 @@ export function ListExperience() {
   return (
     <div className="container-x grid items-start gap-x-[72px] gap-y-10" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,380px),1fr))" }}>
       <div className="top-[120px] flex flex-col gap-4" style={{ position: vp.w >= 900 ? "sticky" : "static" }}>
-        <SectionLabel>03 — EXPERIÊNCIA</SectionLabel>
+        <SectionLabel>02 — EXPERIÊNCIA</SectionLabel>
         <Reveal as="h2" className="stretch-115 font-bold text-head" style={{ fontSize: "clamp(26px,3vw,36px)", lineHeight: 1.15, letterSpacing: "-.02em" }}>
           Trajetória profissional.
         </Reveal>

@@ -115,6 +115,11 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     meta?.setAttribute("content", theme === "dark" ? "#06121F" : "#FAFBFD");
   }, [theme]);
 
+  // Animações só de CSS (ex.: .live-dot) leem esta marca para respeitar a escolha "animações: off".
+  useEffect(() => {
+    document.body.dataset.motion = motion ? "on" : "off";
+  }, [motion]);
+
   const showToast = useCallback((msg: string) => {
     setToast({ msg, on: true });
     window.clearTimeout(toastTimer.current);
