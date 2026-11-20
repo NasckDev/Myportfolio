@@ -1,1 +1,0 @@
-var e=e=>typeof e==`object`&&!!e;function t(t){return e(t)&&`offsetHeight`in t&&!(`ownerSVGElement`in t)}export{t};

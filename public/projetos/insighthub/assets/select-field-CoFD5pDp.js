@@ -1,0 +1,1 @@
+import{t as e}from"./select-Ce43VuQM.js";import{r as t}from"./vendor-react-CvdC6zOt.js";var n=t(),r={sm:`small`,md:`middle`,lg:`large`};function i({options:t,size:i=`md`,error:a=!1,onChange:o,...s}){return(0,n.jsx)(e,{size:r[i],status:a?`error`:void 0,options:t,onChange:e=>o?.(e),...s})}export{i as default};

@@ -1,0 +1,1 @@
+import{r as e}from"./rolldown-runtime-XKyaHtl9.js";import{i as t}from"./vendor-react-CvdC6zOt.js";var n=e(t(),1),r=null,i=[];function a(e){if(r=e,e)for(let t of i.splice(0))e(t)}function o(){return(0,n.useCallback)(e=>{r?r(e):i.push(e)},[])}export{o as n,a as t};

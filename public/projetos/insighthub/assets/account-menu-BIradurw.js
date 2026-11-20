@@ -1,0 +1,1 @@
+import{t as e}from"./app-dropdown-fWrfKlI6.js";import{t}from"./account-button-gv5499d7.js";import{r as n}from"./vendor-react-CvdC6zOt.js";var r=n();function i({items:n}){return(0,r.jsx)(e,{items:n,children:(0,r.jsx)(t,{})})}export{i as default};
