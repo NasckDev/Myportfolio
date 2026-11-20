@@ -159,7 +159,7 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "juntos", num: "05", kind: "Produto · full stack", read: "6 min", name: "Juntos", tagline: "Household Finance for One or Two", tags: ["Dados", "Acessibilidade"],
-    title: "A planilha de finanças de um casal virando um app mobile-first, com contas que se lançam sozinhas e divisão justa.", eta: "Jul 2027", stage: "App full stack com login, contas fixas, planejamento, divisão, importação e exportação da planilha e notificações push funcionando; falta publicar", repoUrl: JUNTOS_REPO_URL,
+    title: "A planilha de finanças de um casal virando um app mobile-first, com contas que se lançam sozinhas e divisão justa.", eta: "Jul 2027", stage: "App full stack com login, contas fixas, planejamento, divisão, importação e exportação da planilha e notificações push no ar", repoUrl: JUNTOS_REPO_URL, liveUrl: "https://juntos-phi.vercel.app",
     shots: shotsOf("juntos/app", [
       ["juntos-inicio-computador.webp", "desktop", "Início: quanto deve sobrar até o fim do mês, o que entrou e saiu e os próximos vencimentos"],
       ["juntos-divisao-computador.webp", "desktop", "Divisão proporcional à renda: quanto cada pessoa pagou e quem deve quanto a quem"],
@@ -294,7 +294,7 @@ export const juntos: JuntosProject = {
   ],
   stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "Drizzle ORM", "PostgreSQL · Neon", "Better Auth", "ExcelJS", "Web Push", "Vitest", "Playwright + axe"],
   repoUrl: JUNTOS_REPO_URL,
-  appUrl: undefined,
+  appUrl: "https://juntos-phi.vercel.app",
   shots: {
     desktop: {
       src: juntosShot("juntos-inicio-computador.webp"),
