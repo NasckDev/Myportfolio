@@ -1,0 +1,17 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{n as t,t as n}from"./DownOutlined-BQ35YADT.js";import{n as r,t as i}from"./dropdown-2fRykI2G.js";import{n as a,t as o}from"./button-BqUMVrmA.js";import{i as s,r as c}from"./shared-caNgZEEa.js";import{o as l}from"./iframe-BpuUmYWF.js";function u({items:e,label:t,trigger:r=`click`,placement:a=`bottomLeft`,disabled:c=!1,icon:l,onSelect:u}){return(0,d.jsx)(i,{trigger:[r],placement:a,disabled:c,menu:{items:e.map(e=>({key:e.key,label:e.label,icon:s(e.icon),danger:e.danger,disabled:e.disabled})),onClick:({key:e})=>u?.(e)},children:(0,d.jsxs)(o,{icon:s(l),disabled:c,children:[t,(0,d.jsx)(n,{})]})})}var d;function f(){return(f=e((()=>{t(),a(),r(),c(),d=l(),u.__docgenInfo={description:``,methods:[],displayName:`AppDropdown`,props:{items:{required:!0,tsType:{name:`Array`,elements:[{name:`MenuItem`}],raw:`MenuItem[]`},description:``},label:{required:!0,tsType:{name:`string`},description:``},trigger:{required:!1,tsType:{name:`union`,raw:`'click' | 'hover'`,elements:[{name:`literal`,value:`'click'`},{name:`literal`,value:`'hover'`}]},description:``,defaultValue:{value:`'click'`,computed:!1}},placement:{required:!1,tsType:{name:`union`,raw:`'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'`,elements:[{name:`literal`,value:`'bottomLeft'`},{name:`literal`,value:`'bottomRight'`},{name:`literal`,value:`'topLeft'`},{name:`literal`,value:`'topRight'`}]},description:``,defaultValue:{value:`'bottomLeft'`,computed:!1}},disabled:{required:!1,tsType:{name:`boolean`},description:``,defaultValue:{value:`false`,computed:!1}},icon:{required:!1,tsType:{name:`IconName`},description:``},onSelect:{required:!1,tsType:{name:`signature`,type:`function`,raw:`(key: string) => void`,signature:{arguments:[{type:{name:`string`},name:`key`}],return:{name:`void`}}},description:``}}}})))()}var p,m,h,g,_,v,y,b;function x(){return(x=e((()=>{f(),p=l(),{fn:m}=__STORYBOOK_MODULE_TEST__,h={title:`Componentes/AppDropdown`,component:u,args:{items:[{key:`editar`,label:`Editar cliente`,icon:`edit`},{key:`exportar`,label:`Exportar dados`,icon:`download`},{key:`arquivar`,label:`Arquivar`,disabled:!0},{key:`excluir`,label:`Excluir cliente`,icon:`delete`,danger:!0}],label:`Ações`,onSelect:m()},argTypes:{trigger:{control:`inline-radio`,options:[`click`,`hover`]},placement:{control:`select`,options:[`bottomLeft`,`bottomRight`,`topLeft`,`topRight`]}},decorators:[e=>(0,p.jsx)(`div`,{style:{minHeight:240},children:(0,p.jsx)(e,{})})]},g={name:`Padrão`},_={name:`Com ícone`,args:{icon:`setting`,label:`Configurar`}},v={args:{disabled:!0}},y={args:{items:[]}},b=[`Padrao`,`ComIcone`,`Desabilitado`,`Vazio`],g.parameters={...g.parameters,docs:{...g.parameters?.docs,source:{originalSource:`{
+  name: 'Padrão'
+}`,...g.parameters?.docs?.source}}},_.parameters={..._.parameters,docs:{..._.parameters?.docs,source:{originalSource:`{
+  name: 'Com ícone',
+  args: {
+    icon: 'setting',
+    label: 'Configurar'
+  }
+}`,..._.parameters?.docs?.source}}},v.parameters={...v.parameters,docs:{...v.parameters?.docs,source:{originalSource:`{
+  args: {
+    disabled: true
+  }
+}`,...v.parameters?.docs?.source}}},y.parameters={...y.parameters,docs:{...y.parameters?.docs,source:{originalSource:`{
+  args: {
+    items: []
+  }
+}`,...y.parameters?.docs?.source}}}})))()}x();export{_ as ComIcone,v as Desabilitado,g as Padrao,y as Vazio,b as __namedExportsOrder,h as default};

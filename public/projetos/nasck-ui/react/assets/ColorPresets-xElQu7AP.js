@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{t}from"./react-DlPsW1c0.js";import{i as n,r}from"./color-DkD4R9UY.js";var i;function a(){return(a=e((()=>{t(),r(),i=(e,t)=>{let{r,g:i,b:a,a:o}=e.toRgb(),s=new n(e.toRgbString()).onBackground(t).toHsv();return o<=.5?s.v>.5:r*.299+i*.587+a*.114>192}})))()}export{i as n,a as t};
