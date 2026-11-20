@@ -75,20 +75,24 @@ const shotsOf = (id: string, list: [file: string, device: CaseShot["device"], ca
 export const cases: CaseStudy[] = [
   {
     id: "insighthub", num: "01", kind: "React · dados", read: "6 min", name: "InsightHub", tagline: "Research & AI Insights Workspace", tags: ["React", "Dados", "Acessibilidade"],
-    title: "Um workspace de insights para reduzir a distância entre dados e decisão.", eta: "Fev 2027", stage: "Workspace rodando no navegador e API com 16 testes; faltam E2E e OpenAPI", repoUrl: "https://github.com/NasckDev/insighthub", liveUrl: "https://nasckdev.github.io/insighthub/",
+    title: "Um workspace de insights para reduzir a distância entre dados e decisão.", eta: "Fev 2027", stage: "Painel, respostas, temas, comparar, síntese com IA e quadro rodando, com 272 testes e 31 E2E", repoUrl: "https://github.com/NasckDev/insighthub", liveUrl: "https://nasckdev.github.io/insighthub/",
     demoUrl: `${base}projetos/insighthub/`,
     shots: shotsOf("insighthub", [
-      ["insighthub-visao-geral-desktop.png", "desktop", "Visão geral: NPS, distribuição das notas e evolução semanal"],
-      ["insighthub-comparar-amostra-pequena-desktop.png", "desktop", "Comparação de segmentos com aviso de amostra pequena"],
-      ["insighthub-sintese-citacao-desktop.png", "desktop", "Síntese com citação aberta na resposta de origem"],
-      ["insighthub-visao-geral-celular.png", "mobile", "Visão geral no celular"],
-      ["insighthub-sintese-celular.png", "mobile", "Síntese com citações clicáveis no celular"],
+      ["insighthub-visao-geral-desktop.png", "desktop", "Painel: NPS em medidor, evolução semanal e distribuição das notas"],
+      ["insighthub-temas-desktop.png", "desktop", "Mapa de temas com sentimento e as falas de quem citou"],
+      ["insighthub-comparar-amostra-pequena-desktop.png", "desktop", "Comparar segmentos, com aviso de amostra pequena"],
+      ["insighthub-sintese-citacao-desktop.png", "desktop", "Síntese com citações que abrem a resposta de origem"],
+      ["insighthub-quadro-desktop.png", "desktop", "Quadro de insights com edição, exportação e link compartilhável"],
+      ["insighthub-visao-geral-escuro-desktop.png", "desktop", "Tema escuro"],
+      ["insighthub-visao-geral-celular.png", "mobile", "Painel no celular"],
+      ["insighthub-filtros-celular.png", "mobile", "Filtros em folha inferior no celular"],
+      ["insighthub-sintese-celular.png", "mobile", "Síntese no celular"],
     ]),
     summary: "Workspace para explorar pesquisas, comparar segmentos e gerar sínteses assistidas por IA com rastreabilidade.",
     role: "Concepção, arquitetura e frontend", skills: ["React", "TypeScript", "TanStack", "IA"],
     problem: "Times de pesquisa e produto precisam transformar respostas, segmentos e indicadores em insights acionáveis. A experiência costuma ser fragmentada entre filtros complexos, tabelas, gráficos, comentários e geração de sínteses.",
     decisions: ["Filtros persistidos na URL para visões compartilháveis", "TanStack Query para estado de servidor, cache e invalidação", "IA com cancelamento, retry e indicação da fonte usada"],
-    a11y: "Gráficos com alternativa em tabela, contraste AA nos dois temas e navegação completa por teclado.", tests: "76 testes: regras de NPS e schemas no core, API com SQLite em memória e interface com filtros na URL, estados e citações. Playwright + axe é o próximo passo.",
+    a11y: "Diálogos em portal com foco preso e Esc por camada, gráficos com tabela equivalente, alvos de 44 px no toque e axe sem violações nos dois temas.", tests: "272 testes no core, na API e na interface, e 31 E2E com Playwright e axe, incluindo a geometria dos diálogos no celular.",
   },
   {
     id: "opsflow", num: "02", kind: "Angular · corporativo", read: "7 min", name: "OpsFlow", tagline: "Enterprise Workflow & Approval Console", tags: ["Angular", "Acessibilidade"],
@@ -314,7 +318,7 @@ export const skillGroups: SkillGroup[] = rawSkillGroups.map(([title, items], gi)
 
 export const repos = [
   { slug: "nasckdev/nasck-ui", name: "Nasck UI", problem: "Sistema de interface acessível usado pelos outros projetos.", quality: "230 testes · 57 E2E · axe", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/nasck-ui" },
-  { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "Hono · Drizzle · TanStack · CI", status: "Demo no ar · v1 fev 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/insighthub" },
+  { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "272 testes · 31 E2E · axe", status: "Demo no ar · v1 fev 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/insighthub" },
   { slug: "nasckdev/fiscotrack", name: "FiscoTrack", problem: "Evolução do minersCalculator: cálculo explicável e testável.", quality: "180 testes · E2E · axe", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/fiscotrack" },
   { slug: "nasckdev/opsflow", name: "OpsFlow", problem: "Workflow de aprovações em Angular com máquina de estados, RBAC e auditoria.", quality: "275 testes · 52 E2E · axe", status: "Demo no ar · v1 mar 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/opsflow" },
   { slug: "nasckdev/web-design", name: "Web design", problem: "Estudos visuais com 3D e movimento, com código, prints e README.", quality: "Páginas ao vivo · prints · README", status: "Publicado", dot: "#28C840", href: WEB_DESIGN_REPO_URL },
