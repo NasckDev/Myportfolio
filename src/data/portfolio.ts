@@ -3,6 +3,7 @@ export const LINKEDIN_URL = "https://www.linkedin.com/in/alexandre-diogo-nascime
 export const GITHUB_URL = "https://github.com/NasckDev";
 export const GITHUB_REPOS_URL = "https://github.com/NasckDev?tab=repositories";
 export const WEB_DESIGN_REPO_URL = "https://github.com/NasckDev/web-design";
+export const JUNTOS_REPO_URL = "https://github.com/NasckDev/juntos";
 
 /** Endereço oficial do portfólio (Vercel), usado em canonical, sitemap e na versão em texto para robôs. */
 export const SITE_URL = "https://nasck-myportifolio.vercel.app";
@@ -158,16 +159,17 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "juntos", num: "05", kind: "Produto · full stack", read: "6 min", name: "Juntos", tagline: "Household Finance for One or Two", tags: ["Dados", "Acessibilidade"],
-    title: "A planilha de finanças de um casal virando um app mobile-first, com contas que se lançam sozinhas e divisão justa.", eta: "Jul 2027", stage: "Protótipo completo no ar com 12 testes de ponta a ponta; app full stack em planejamento", repoUrl: "https://github.com/NasckDev/juntos",
-    demoUrl: `${base}projetos/juntos/`,
-    shots: shotsOf("juntos", [
-      ["juntos-inicio-computador.webp", "desktop", "Início: quanto deve sobrar até o fim do mês, próximos vencimentos e para onde foi o dinheiro"],
-      ["juntos-divisao-computador.webp", "desktop", "Divisão de contas: quem pagou o quê e quanto falta acertar"],
-      ["juntos-orcamento-computador.webp", "desktop", "Orçamento por categoria, com sugestão pela média de três meses"],
-      ["juntos-lancamentos-computador.webp", "desktop", "Lançamentos agrupados em atrasados, em aberto e concluídos"],
-      ["juntos-exportar-computador.webp", "desktop", "Exportação para Excel no modelo da planilha, PDF e CSV, com filtros"],
+    title: "A planilha de finanças de um casal virando um app mobile-first, com contas que se lançam sozinhas e divisão justa.", eta: "Jul 2027", stage: "App full stack com login, contas fixas, planejamento, divisão, importação e exportação da planilha e notificações push funcionando; falta publicar", repoUrl: JUNTOS_REPO_URL,
+    shots: shotsOf("juntos/app", [
+      ["juntos-inicio-computador.webp", "desktop", "Início: quanto deve sobrar até o fim do mês, o que entrou e saiu e os próximos vencimentos"],
+      ["juntos-divisao-computador.webp", "desktop", "Divisão proporcional à renda: quanto cada pessoa pagou e quem deve quanto a quem"],
+      ["juntos-lancamentos-computador.webp", "desktop", "Lançamentos do mês agrupados em atrasados, em aberto e concluídos, com a parcela \"5 de 54\""],
+      ["juntos-orcamento-computador.webp", "desktop", "Orçamento por categoria, com limites sugeridos pela média de três meses"],
+      ["juntos-metas-computador.webp", "desktop", "Metas com progresso, depósitos e previsão de quando chegam"],
+      ["juntos-importar-computador.webp", "desktop", "Importação da planilha com revisão linha a linha do que já existe"],
+      ["juntos-inicio-computador-escuro.webp", "desktop", "Início no tema escuro"],
       ["juntos-inicio-celular.webp", "mobile", "Início no celular"],
-      ["juntos-lancamentos-celular.webp", "mobile", "Lançamentos no celular"],
+      ["juntos-novo-lancamento-celular.webp", "mobile", "Novo lançamento na folha de baixo, no celular"],
       ["juntos-divisao-celular.webp", "mobile", "Divisão no celular"],
     ]),
     summary: "Finanças da casa, sozinho ou a dois: contas fixas e parcelas automáticas, divisão justa, orçamento, metas e a planilha do Excel de volta.",
@@ -179,7 +181,7 @@ export const cases: CaseStudy[] = [
       "Repositório público sem dados reais: varredura de privacidade no CI e no build, CSP restrita e segredos só em variáveis de ambiente",
     ],
     a11y: "Barra inferior e alvos de 44 px no celular, validação embaixo de cada campo, atalhos de teclado, 4 tamanhos de letra e gráficos com a frase completa para leitor de tela.",
-    tests: "12 testes Playwright no celular (390 px) e no computador (1440 px), com a mesma CSP da produção: entrada, resumo, lançamento, validação, exportação para Excel e nenhuma tela rolando para o lado.",
+    tests: "231 testes do núcleo de regras (99% das linhas) e 308 do app, com o servidor em PGlite na memória, mais 22 cenários de ponta a ponta com Playwright e axe no celular (390 px) e no computador (1440 px).",
   },
   {
     id: "myportfolio", num: "06", kind: "Produto · engenharia", read: "4 min", name: "Myportfolio", tagline: "Este portfólio como case de engenharia", tags: ["React", "Acessibilidade"],
@@ -254,7 +256,58 @@ export const game = {
   video: { webm: `${base}vespera/video/hero-540.webm`, mp4: `${base}vespera/video/hero-540.mp4`, poster: `${base}vespera/video/hero-poster.webp` },
 };
 
-export const caseFilters = ["Todos", "React", "Angular", "Dados", "Design System"] as const;
+/** Juntos: app de finanças da casa, full stack e de código aberto. Os prints vêm do app real, com dados fictícios. */
+const juntosShot = (file: string) => `${base}assets/projetos/juntos/app/${file}`;
+
+export type JuntosHighlightIcon = "repeat" | "split" | "plan" | "sheet";
+
+export interface JuntosHighlight {
+  icon: JuntosHighlightIcon;
+  title: string;
+  text: string;
+}
+
+export interface JuntosProject {
+  name: string;
+  label: string;
+  tagline: string;
+  problem: string;
+  highlights: JuntosHighlight[];
+  stack: string[];
+  repoUrl: string;
+  /** Endereço público do app. Sem ele, o botão "Abrir o app" não aparece. */
+  appUrl?: string;
+  shots: { desktop: { src: string; alt: string }; phone: { src: string; alt: string } };
+}
+
+export const juntos: JuntosProject = {
+  name: "Juntos",
+  label: "APP AUTORAL · FULL STACK",
+  tagline: "As contas da casa, em um lugar só. Sozinho ou a dois.",
+  problem:
+    "Um casal organizava o ano numa planilha do Excel, uma aba por mês: redigitava toda conta fixa, não sabia quanto ia sobrar e dividia as contas de cabeça. O Juntos faz o que a planilha fazia, resolve isso e devolve a planilha no mesmo modelo.",
+  highlights: [
+    { icon: "repeat", title: "Contas que se lançam sozinhas", text: "Fixas, anuais e parcelas (\"5 de 54\") entram todo mês, sem digitar de novo." },
+    { icon: "split", title: "Divisão justa", text: "Partes iguais, proporcional à renda ou personalizada, com quem deve quanto a quem." },
+    { icon: "plan", title: "Quanto vai sobrar", text: "Sobra prevista do mês, orçamento por categoria, metas e os próximos seis meses." },
+    { icon: "sheet", title: "A planilha de volta", text: "Importa a planilha do Excel com revisão linha a linha e exporta no mesmo modelo, em PDF e CSV." },
+  ],
+  stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "Drizzle ORM", "PostgreSQL · Neon", "Better Auth", "ExcelJS", "Web Push", "Vitest", "Playwright + axe"],
+  repoUrl: JUNTOS_REPO_URL,
+  appUrl: undefined,
+  shots: {
+    desktop: {
+      src: juntosShot("juntos-inicio-computador.webp"),
+      alt: "Início do Juntos no computador: quanto deve sobrar até o fim do mês, o que entrou e saiu, próximos vencimentos e para onde foi o dinheiro",
+    },
+    phone: {
+      src: juntosShot("juntos-divisao-celular.webp"),
+      alt: "Divisão do Juntos no celular: quanto cada pessoa pagou no mês e quem deve quanto a quem",
+    },
+  },
+};
+
+export const caseFilters =["Todos", "React", "Angular", "Dados", "Design System"] as const;
 export type CaseFilter = (typeof caseFilters)[number];
 
 export const interfaceStates = ["loading", "empty", "error", "partial", "success"];
@@ -341,13 +394,13 @@ export const workModes = [
   { t: "100% remoto", d: "Para empresas de qualquer lugar do Brasil", tag: "remoto", remote: true },
 ];
 
-export const navItems: [id: string, label: string][] = [["cases", "Projetos"], ["jogo", "Jogo"], ["experiencia", "Experiência"], ["habilidades", "Habilidades"], ["sobre", "Sobre"], ["contato", "Contato"]];
+export const navItems: [id: string, label: string][] = [["cases", "Projetos"], ["juntos", "Juntos"], ["jogo", "Jogo"], ["experiencia", "Experiência"], ["habilidades", "Habilidades"], ["sobre", "Sobre"], ["contato", "Contato"]];
 
-export const footerLinks: [id: string, label: string][] = [["cases", "Projetos"], ["jogo", "Jogue Véspera"], ["experiencia", "Experiência"], ["habilidades", "Habilidades"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
+export const footerLinks: [id: string, label: string][] = [["cases", "Projetos"], ["juntos", "Juntos"], ["jogo", "Jogue Véspera"], ["experiencia", "Experiência"], ["habilidades", "Habilidades"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
 
-export const paletteNav: [id: string, label: string][] = [["cases", "Projetos"], ["jogo", "Jogue Véspera"], ["experiencia", "Experiência"], ["habilidades", "Habilidades"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
+export const paletteNav: [id: string, label: string][] = [["cases", "Projetos"], ["juntos", "Juntos"], ["jogo", "Jogue Véspera"], ["experiencia", "Experiência"], ["habilidades", "Habilidades"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
 
-export const sectionIds = ["topo", "cases", "jogo", "experiencia", "habilidades", "engenharia", "sobre", "contato"];
+export const sectionIds = ["topo", "cases", "juntos", "jogo","experiencia", "habilidades", "engenharia", "sobre", "contato"];
 
 export const MAIL_SUBJECT = "Oportunidade frontend";
 export const MAIL_HREF = `mailto:${EMAIL}?subject=${encodeURIComponent(MAIL_SUBJECT)}`;

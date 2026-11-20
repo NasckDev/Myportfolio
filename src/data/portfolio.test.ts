@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import * as data from "@/data/portfolio";
-import { caseFilters, cases, footerLinks, jobs, navItems, paletteNav, repos, sectionIds, skillGroups, webDesigns } from "@/data/portfolio";
+import { caseFilters, cases, footerLinks, jobs, juntos, navItems, paletteNav, repos, sectionIds, skillGroups, webDesigns } from "@/data/portfolio";
 
 /** Coleta recursivamente toda string de um valor (objetos, arrays) com o caminho, para varrer links. */
 function collectStrings(value: unknown, path: string, out: { path: string; value: string }[] = []) {
@@ -72,6 +72,13 @@ describe("demos e prints dos projetos", () => {
       expect(existsSync(inPublic(shot.src)), shot.src).toBe(true);
       expect(shot.alt.length).toBeGreaterThan(5);
       expect(shot.caption.length).toBeGreaterThan(5);
+    }
+  });
+
+  it("os prints da seção do Juntos existem em public/ e têm texto alternativo", () => {
+    for (const shot of [juntos.shots.desktop, juntos.shots.phone]) {
+      expect(existsSync(inPublic(shot.src)), shot.src).toBe(true);
+      expect(shot.alt.length).toBeGreaterThan(20);
     }
   });
 
