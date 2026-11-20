@@ -133,21 +133,24 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "nasckui", num: "04", kind: "Design System", read: "5 min", name: "Nasck UI", tagline: "Accessible Product Interface System", tags: ["React", "Design System"],
-    title: "Padrões recorrentes em um sistema de interface acessível e governável.", eta: "Jan 2027", stage: "14 componentes, tokens e playground rodando, com 100 testes e 99% de cobertura", repoUrl: "https://github.com/NasckDev/nasck-ui", liveUrl: "https://nasckdev.github.io/nasck-ui/",
+    title: "Padrões recorrentes em um sistema de interface acessível e governável.", eta: "Jan 2027", stage: "20 componentes, documentação viva e construtor de tema, com 230 testes, 57 E2E e instalação provada via GitHub", repoUrl: "https://github.com/NasckDev/nasck-ui", liveUrl: "https://nasckdev.github.io/nasck-ui/",
     demoUrl: `${base}projetos/nasck-ui/`,
     shots: shotsOf("nasckui", [
-      ["nasckui-desktop-visao-geral.png", "desktop", "Playground: visão geral, princípios e navegação por componente"],
-      ["nasckui-desktop-componente-button.png", "desktop", "Página do Button: variantes, tamanhos e código copiável"],
-      ["nasckui-desktop-tokens-escuro.png", "desktop", "Tokens no tema escuro, com a paleta e o contraste"],
-      ["nasckui-mobile-visao-geral.png", "mobile", "Playground no celular"],
-      ["nasckui-mobile-exemplo-composto.png", "mobile", "Tela de configurações montada só com a lib, com erro de validação"],
-      ["nasckui-mobile-menu.png", "mobile", "Menu de componentes no celular"],
+      ["nasckui-desktop-visao-geral.png", "desktop", "Home da documentação, com vitrine viva dos componentes"],
+      ["nasckui-desktop-componente-combobox.png", "desktop", "Playground do Combobox: props editáveis e código gerado que roda colado"],
+      ["nasckui-desktop-construtor-tema.png", "desktop", "Construtor de tema: escala OKLCH, contraste ao vivo e CSS exportado"],
+      ["nasckui-desktop-modelo-painel.png", "desktop", "Modelo de painel montado só com a biblioteca"],
+      ["nasckui-desktop-modelo-configuracoes.png", "desktop", "Modelo de configurações com validação"],
+      ["nasckui-desktop-tokens-escuro.png", "desktop", "Tokens no tema escuro"],
+      ["nasckui-mobile-exemplo-composto.png", "mobile", "Modelo de painel no celular"],
+      ["nasckui-mobile-modelo-login.png", "mobile", "Modelo de login no celular"],
+      ["nasckui-mobile-menu.png", "mobile", "Navegação da documentação no celular"],
     ]),
     summary: "Design system com componentes React acessíveis, tokens, construtor de tema e documentação viva.",
     role: "Arquitetura de componentes e documentação", skills: ["Design System", "Tokens", "a11y", "Vitest"],
     problem: "Padrões recorrentes eram reimplementados em cada projeto, com estados, foco e acessibilidade inconsistentes.",
-    decisions: ["Tokens de cor, tipografia, espaço e movimento exportáveis", "Teclado e acessibilidade documentados por componente", "Changelog com Changesets e CI que barra tokens desatualizados"],
-    a11y: "Foco visível em fundo claro e escuro, suporte a forced-colors e axe em todos os componentes.", tests: "100 testes de teclado, axe e contraste WCAG dos tokens; 99% de cobertura e CI a cada push.",
+    decisions: ["Tokens de cor, tipografia, espaço e movimento exportáveis", "Teclado e acessibilidade documentados por componente", "Exemplos que rodam colados: cada snippet é compilado contra os tipos reais no CI"],
+    a11y: "Pilha de camadas (Esc fecha só a de cima), forced-colors, alvos de 44 px no toque e axe com contraste ligado, inclusive com menus e diálogos abertos.", tests: "230 testes de teclado, foco e contraste (99% de cobertura) e 57 E2E com Playwright e axe em 11 rotas, nos dois temas.",
   },
   {
     id: "juntos", num: "05", kind: "Produto · full stack", read: "6 min", name: "Juntos", tagline: "Household Finance for One or Two", tags: ["Dados", "Acessibilidade"],
@@ -310,7 +313,7 @@ export const skillGroups: SkillGroup[] = rawSkillGroups.map(([title, items], gi)
 }));
 
 export const repos = [
-  { slug: "nasckdev/nasck-ui", name: "Nasck UI", problem: "Sistema de interface acessível usado pelos outros projetos.", quality: "100 testes · axe · Pages", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/nasck-ui" },
+  { slug: "nasckdev/nasck-ui", name: "Nasck UI", problem: "Sistema de interface acessível usado pelos outros projetos.", quality: "230 testes · 57 E2E · axe", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/nasck-ui" },
   { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "Hono · Drizzle · TanStack · CI", status: "Demo no ar · v1 fev 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/insighthub" },
   { slug: "nasckdev/fiscotrack", name: "FiscoTrack", problem: "Evolução do minersCalculator: cálculo explicável e testável.", quality: "180 testes · E2E · axe", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/fiscotrack" },
   { slug: "nasckdev/opsflow", name: "OpsFlow", problem: "Workflow de aprovações em Angular com máquina de estados, RBAC e auditoria.", quality: "275 testes · 52 E2E · axe", status: "Demo no ar · v1 mar 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/opsflow" },
