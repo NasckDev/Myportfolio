@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { Skills } from "@/components/sections/Skills";
 import { Cases } from "@/components/sections/Cases";
+import { Juntos } from "@/components/sections/Juntos";
 import { PlayVespera } from "@/components/sections/PlayVespera";
 import { Experience } from "@/components/sections/Experience";
 import { OpenSource } from "@/components/sections/OpenSource";
@@ -91,6 +92,7 @@ function Portfolio() {
       <main id="conteudo">
         <Hero />
         <Cases />
+        <Juntos />
         <PlayVespera />
         <Experience />
         <Skills />

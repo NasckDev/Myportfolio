@@ -23,8 +23,9 @@ export function Navbar() {
   flags.current.caseOpen = caseOpen;
   flags.current.w = vp.w;
 
-  const wide = vp.w >= 860;
-  const compact = vp.w < 860;
+  // Com 7 destinos, a navegação completa só cabe ao lado da busca, do tema e do CV a partir de 960 px.
+  const wide = vp.w >= 960;
+  const compact = vp.w < 960;
   const searchPill = vp.w >= 1100;
   const showName = vp.w >= 420;
   const showLast = vp.w >= 1100;

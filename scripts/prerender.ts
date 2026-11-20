@@ -17,6 +17,7 @@ import {
   game,
   GITHUB_URL,
   jobs,
+  juntos,
   LINKEDIN_URL,
   profile,
   repos,
@@ -58,6 +59,9 @@ function snapshotHtml(): string {
         `<p>Papel: ${esc(c.role)}. Tecnologias: ${esc(c.skills.join(", "))}.</p>${list(c.decisions)}` +
         `<p>Acessibilidade: ${esc(c.a11y)} Testes: ${esc(c.tests)}</p>${links(c)}</article>`,
     ),
+    `</section><section id="juntos"><h2>${esc(juntos.name)}</h2><p><strong>${esc(juntos.tagline)}</strong></p><p>${esc(juntos.problem)}</p>` +
+      list(juntos.highlights.map((h) => `${h.title}: ${h.text}`)) +
+      `<p>Feito com ${esc(juntos.stack.join(", "))}.</p><p>${juntos.appUrl ? `<a href="${juntos.appUrl}">Abrir o app</a> · ` : ""}<a href="${juntos.repoUrl}">Código no GitHub</a></p>`,
     `</section><section id="web-design"><h2>Web design</h2><p>Estudos visuais publicados como páginas reais. Código aberto em <a href="${WEB_DESIGN_REPO_URL}">${WEB_DESIGN_REPO_URL}</a>.</p>`,
     ...webDesigns.map(
       (w) =>
@@ -99,6 +103,13 @@ function llmsTxt(): string {
     "",
     "## Projetos (em construção, com dados fictícios)",
     ...cases.map((c) => `- ${c.name} (${c.tagline})${c.eta ? ` [em construção, previsto para ${c.eta}]` : ""}: ${c.summary} Tecnologias: ${c.skills.join(", ")}.${c.demoUrl ? ` Demo: ${abs(c.demoUrl)}` : ""}${c.repoUrl ? ` Código: ${c.repoUrl}` : ""}`),
+    "",
+    `## App: ${juntos.name}`,
+    `${juntos.tagline} ${juntos.problem}`,
+    ...juntos.highlights.map((h) => `- ${h.title}: ${h.text}`),
+    `- Feito com: ${juntos.stack.join(", ")}`,
+    ...(juntos.appUrl ? [`- App: ${juntos.appUrl}`] : []),
+    `- Código: ${juntos.repoUrl}`,
     "",
     "## Web design",
     `Código aberto: ${WEB_DESIGN_REPO_URL}`,
