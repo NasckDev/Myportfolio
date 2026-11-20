@@ -1,1 +1,0 @@
-import{T as e,w as t}from"./index-18qI54Y8.js";import{g as n}from"./ui-BtT9Zxmu.js";var r=n(),i=.06;function a({index:n=0,className:a,children:o}){return e()??!1?(0,r.jsx)(`div`,{className:a,children:o}):(0,r.jsx)(t.div,{className:a,initial:{opacity:0,y:14},animate:{opacity:1,y:0},transition:{duration:.28,delay:Math.min(n,10)*i,ease:[.2,0,0,1]},children:o})}export{a as t};

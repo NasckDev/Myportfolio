@@ -1,0 +1,1 @@
+import{o as e}from"./src-Dgak_BUt.js";import{r as t}from"./AppTypography-BTBucXDA.js";import{l as n}from"./AppThemeProvider-BZMqDPh7.js";var r=n();function i({cents:n,signed:i=!1,...a}){return(0,r.jsx)(t,{mono:!0,tone:i?n<0?`loss`:n>0?`gain`:void 0:void 0,...a,children:e(n)})}export{i as t};
