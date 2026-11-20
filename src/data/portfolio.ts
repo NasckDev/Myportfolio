@@ -143,7 +143,7 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "juntos", num: "05", kind: "Produto · full stack", read: "6 min", name: "Juntos", tagline: "Household Finance for One or Two", tags: ["Dados", "Acessibilidade"],
-    title: "A planilha de finanças de um casal virando um app mobile-first, com contas que se lançam sozinhas e divisão justa.", eta: "Jul 2027", stage: "Protótipo completo no ar com 12 testes de ponta a ponta; app full stack (Next.js, Postgres, Better Auth) em planejamento", repoUrl: "https://github.com/NasckDev/juntos",
+    title: "A planilha de finanças de um casal virando um app mobile-first, com contas que se lançam sozinhas e divisão justa.", eta: "Jul 2027", stage: "Protótipo completo no ar com 12 testes de ponta a ponta; app full stack em planejamento", repoUrl: "https://github.com/NasckDev/juntos",
     demoUrl: `${base}projetos/juntos/`,
     shots: shotsOf("juntos", [
       ["juntos-inicio-computador.webp", "desktop", "Início: quanto deve sobrar até o fim do mês, próximos vencimentos e para onde foi o dinheiro"],
