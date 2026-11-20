@@ -6,13 +6,15 @@ interface BlueprintCoverProps {
   eta: string;
   /** Print real da interface; sem ele, a capa mostra a planta técnica animada. */
   shot?: { src: string; alt: string };
+  /** O projeto já tem demo executável: a capa diz "Demo no ar" em vez de "Em construção". */
+  live?: boolean;
 }
 
 /** Capa de projeto em construção: planta técnica animada da interface, com previsão de entrega. */
-export function BlueprintCover({ name, eta, shot }: BlueprintCoverProps) {
+export function BlueprintCover({ name, eta, shot, live = false }: BlueprintCoverProps) {
   const { motion } = usePortfolio();
   return (
-    <div className={`bp-cover size-full${motion ? "" : " no-motion"}`} role="img" aria-label={`${shot ? shot.alt + ". " : ""}${name}: em construção, previsto para ${eta}`}>
+    <div className={`bp-cover size-full${motion ? "" : " no-motion"}`} role="img" aria-label={`${shot ? shot.alt + ". " : ""}${name}: ${live ? "demo no ar" : `em construção, previsto para ${eta}`}`}>
       {shot ? (
         <img src={shot.src} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover object-top" />
       ) : (
@@ -30,10 +32,19 @@ export function BlueprintCover({ name, eta, shot }: BlueprintCoverProps) {
         </>
       )}
       <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 px-3.5 pb-3 pt-6" style={{ background: "linear-gradient(0deg,rgba(7,26,46,.92),transparent)" }}>
-        <span className="mono whitespace-nowrap text-[12.5px] font-semibold text-white">Em construção</span>
-        <span className="mono whitespace-nowrap rounded-full px-2.5 py-1 text-[12.5px] font-semibold" style={{ background: "#F5B82E", color: "#0a2742" }}>
-          Previsto · {eta}
-        </span>
+        {live ? (
+          <span className="mono flex items-center gap-2 whitespace-nowrap rounded-full px-2.5 py-1 text-[12.5px] font-semibold" style={{ background: "#E7F8EE", color: "#0B5132" }}>
+            <span className="live-dot" aria-hidden="true" />
+            Demo no ar
+          </span>
+        ) : (
+          <>
+            <span className="mono whitespace-nowrap text-[12.5px] font-semibold text-white">Em construção</span>
+            <span className="mono whitespace-nowrap rounded-full px-2.5 py-1 text-[12.5px] font-semibold" style={{ background: "#F5B82E", color: "#0a2742" }}>
+              Previsto · {eta}
+            </span>
+          </>
+        )}
       </div>
     </div>
   );

@@ -115,7 +115,7 @@ export function useReveal<T extends HTMLElement>(kind: RevealKind = "blur", dela
 }
 
 type RevealProps = HTMLAttributes<HTMLElement> & {
-  as?: "div" | "p" | "h1" | "h2" | "h3" | "span" | "article" | "section" | "li";
+  as?: "div" | "p" | "h1" | "h2" | "h3" | "span" | "article" | "section" | "ul" | "li";
   kind?: RevealKind;
   delay?: number;
   hero?: boolean;

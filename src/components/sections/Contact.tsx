@@ -166,7 +166,6 @@ export function Contact() {
               <button
                 type="button"
                 onClick={copyEmail}
-                aria-label={`Copiar e-mail ${EMAIL}`}
                 className="flex min-w-0 cursor-pointer flex-wrap items-center justify-between gap-x-3 gap-y-2.5 border-0 bg-transparent p-0 text-left text-head hover:text-accent-text"
               >
                 <span className="stretch-112 min-w-0 font-bold tracking-[-.01em]" style={{ fontSize: "clamp(16px,2.2vw,24px)" }}>

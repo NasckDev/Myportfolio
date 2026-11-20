@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+/* Fontes variáveis auto-hospedadas (public/fonts, licença OFL). Subconjunto latino: cobre todo o português. */
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  src: url("/fonts/archivo-variable-latin.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 800;
+  src: url("/fonts/jetbrains-mono-variable-latin.woff2") format("woff2-variations");
+}
+
 @theme inline {
   --color-bg: var(--bg);
   --color-bg2: var(--bg2);
@@ -303,3 +320,16 @@ body[data-theme="dark"] {
   0%, 30%, 85%, 100% { transform: translate3d(0, 6px, 1px); }
   45%, 65% { transform: translate3d(0, -9px, 1px); }
 }
+
+/* Ponto "ao vivo": verde com um anel que pulsa. Sem movimento, fica só o ponto. */
+.live-dot { position: relative; display: inline-block; width: 8px; height: 8px; flex-shrink: 0; border-radius: 999px; background: #1F9D55; }
+.live-dot::after { content: ""; position: absolute; inset: -3px; border-radius: inherit; border: 2px solid #1F9D55; opacity: 0; animation: live-ping 1.8s cubic-bezier(0, 0, .2, 1) infinite; }
+@keyframes live-ping { 0% { transform: scale(.6); opacity: .7; } 100% { transform: scale(1.8); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .live-dot::after { animation: none; } }
+body[data-motion="off"] .live-dot::after { animation: none; }
+
+/* Carregamento da demo em tela cheia. */
+.demo-spinner { width: 34px; height: 34px; border-radius: 999px; border: 3px solid var(--line); border-top-color: var(--brand, #1783C1); animation: demo-spin .8s linear infinite; }
+@keyframes demo-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .demo-spinner { animation-duration: 2.4s; } }
+body[data-motion="off"] .demo-spinner { animation-duration: 2.4s; }

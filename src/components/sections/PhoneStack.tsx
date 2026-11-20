@@ -96,26 +96,26 @@ function UiLayer() {
       </div>
       <div className="mt-[14px] flex h-[30px] items-center justify-between">
         <span className="text-[19px] font-extrabold tracking-tight">Insights</span>
-        <span className="grid size-[24px] place-items-center rounded-full text-[9px] font-bold text-white" style={{ background: "#1783C1" }}>AN</span>
+        <span className="grid size-[24px] place-items-center rounded-full text-[9px] font-bold text-white" style={{ background: "#0F5F8F" }}>AN</span>
       </div>
       <div className="mt-[8px] flex h-[24px] items-center rounded-full bg-bg2 px-3 text-[9.5px] text-muted">Buscar segmento…</div>
       <div className="mt-[8px] grid h-[56px] grid-cols-2 gap-[6px]">
         <div className="rounded-xl px-2 py-1.5" style={{ background: "var(--chip)", boxShadow: "inset 0 0 0 1.2px #1783C1" }}>
           <div className="text-[8.5px] font-semibold text-muted">NPS</div>
           <div className="text-[18px] font-extrabold leading-tight">+42</div>
-          <div className={`${mono} text-[7.5px] font-semibold`} style={{ color: "#1A9B5E" }}>▲ 4 pts</div>
+          <div className={`${mono} text-[7.5px] font-semibold`} style={{ color: "var(--ps-up)" }}>▲ 4 pts</div>
         </div>
         <div className="rounded-xl bg-bg2 px-2 py-1.5">
           <div className="text-[8.5px] font-semibold text-muted">Respostas</div>
           <div className="text-[18px] font-extrabold leading-tight">12,4k</div>
-          <div className={`${mono} text-[7.5px] font-semibold`} style={{ color: "#1A9B5E" }}>▲ 8%</div>
+          <div className={`${mono} text-[7.5px] font-semibold`} style={{ color: "var(--ps-up)" }}>▲ 8%</div>
         </div>
       </div>
       <div className="relative mt-[8px] h-[104px] rounded-xl bg-bg2 px-2 pt-1.5">
         <div className="flex items-center justify-between text-[9px] font-bold">
           Tendência · 30 dias
-          <span className={`${mono} flex items-center gap-1 text-[7.5px] font-semibold`} style={{ color: "#1A9B5E" }}>
-            <svg width="6" height="6" aria-hidden="true"><circle className="ps-pulse" cx="3" cy="3" r="2.5" fill="#1A9B5E" /></svg>
+          <span className={`${mono} flex items-center gap-1 text-[7.5px] font-semibold`} style={{ color: "var(--ps-up)" }}>
+            <svg width="6" height="6" aria-hidden="true"><circle className="ps-pulse" cx="3" cy="3" r="2.5" fill="var(--ps-up)" /></svg>
             ao vivo
           </span>
         </div>

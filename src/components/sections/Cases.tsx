@@ -34,7 +34,7 @@ function CaseCard({ c, index, match }: { c: CaseStudy; index: number; match: boo
       } as CSSProperties}
     >
       <div className="relative mx-2.5 mt-2.5 aspect-[16/10] overflow-hidden rounded-[18px] bg-bg2">
-        {c.eta ? <BlueprintCover name={c.name} eta={c.eta} shot={coverShot(c)} /> : <ImageSlot src={c.image} alt={`Tela do ${c.name}`} placeholder={`Tela do ${c.name}`} objectPosition="top" />}
+        {c.eta ? <BlueprintCover name={c.name} eta={c.eta} shot={coverShot(c)} live={!!c.demoUrl} /> : <ImageSlot src={c.image} alt={`Tela do ${c.name}`} placeholder={`Tela do ${c.name}`} objectPosition="top" />}
         <span className="mono pointer-events-none absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-glass px-2.5 py-1.5 text-[12px] font-medium text-head leading-normal" style={{ backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
           {c.num} · {c.kind}
         </span>
@@ -45,7 +45,16 @@ function CaseCard({ c, index, match }: { c: CaseStudy; index: number; match: boo
           {c.eta ? null : <span className="mono whitespace-nowrap text-[12px] text-muted">{c.read}</span>}
         </div>
         <p className="text-[16px] leading-[1.55] text-ink">{c.summary}</p>
-        {c.eta ? (
+        {c.demoUrl && c.eta ? (
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] text-muted">
+            <span className="flex items-center gap-2 font-semibold text-head">
+              <span className="live-dot" aria-hidden="true" />
+              Demo no ar
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>versão 1.0 em {c.eta.toLowerCase()}</span>
+          </p>
+        ) : c.eta ? (
           <p className="mono text-[13px] leading-[1.5] text-muted">
             <span className="mr-2 inline-block size-2 rounded-full align-middle" style={{ background: "#F5B82E" }} aria-hidden="true" />
             Agora: {c.stage} · entrega prevista para {c.eta}
@@ -92,12 +101,12 @@ export function Cases() {
     <section id="cases" className="container-x section-pad">
       <div className="mb-9 flex flex-wrap items-end justify-between gap-x-12 gap-y-6">
         <div className="flex max-w-[640px] flex-col gap-3.5">
-          <SectionLabel>02 — PROJETOS</SectionLabel>
+          <SectionLabel>01 — PROJETOS</SectionLabel>
           <Reveal as="h2" className="stretch-115 font-bold text-head" style={{ fontSize: "clamp(26px,3vw,36px)", lineHeight: 1.15, letterSpacing: "-.02em" }}>
             Projetos que mostram como eu penso e entrego.
           </Reveal>
           <Reveal as="p" delay={80} className="max-w-[58ch] text-[17px] text-muted">
-            Os projetos já têm código aberto e demos que rodam aqui dentro do portfólio: abra um card e clique em "Rodar a demo". A versão 1.0 de cada um, com estudo de caso completo, chega entre janeiro e março de 2027. Todos os dados são fictícios, para não expor informações de empregadores.
+            Produtos completos, cada um com identidade própria, testes, acessibilidade e versão para celular. Abra um card e clique em "Rodar a demo": o app roda aqui dentro, em tela cheia. Os dados são fictícios, para não expor informações de empregadores.
           </Reveal>
         </div>
         <Reveal
@@ -114,7 +123,7 @@ export function Cases() {
                 type="button"
                 onClick={() => setFilter(f)}
                 aria-pressed={on}
-                className="shrink-0 cursor-pointer whitespace-nowrap rounded-full border-0 px-3.5 py-2 text-[14px] font-medium"
+                className="min-h-11 shrink-0 cursor-pointer whitespace-nowrap rounded-full border-0 px-4 py-2 text-[14px] font-medium"
                 style={{
                   background: on ? "var(--surface)" : "transparent",
                   color: on ? "var(--head)" : "var(--muted)",

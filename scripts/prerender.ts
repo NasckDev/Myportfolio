@@ -51,7 +51,7 @@ function snapshotHtml(): string {
   const parts = [
     `<header><h1>${esc(profile.name)}</h1><p><strong>${esc(profile.role)}</strong></p><p>${esc(profile.intro)}</p>`,
     `<p><a href="mailto:${EMAIL}">${EMAIL}</a> · <a href="${LINKEDIN_URL}">LinkedIn</a> · <a href="${GITHUB_URL}">GitHub</a> · <a href="${abs(CV_FULL_URL)}">Currículo (PDF)</a></p></header>`,
-    `<section><h2>Projetos</h2><p>Projetos em construção, com código aberto e demos que rodam no próprio portfólio. A versão 1.0 de cada um, com estudo de caso completo, sai entre janeiro e março de 2027. Todos os dados são fictícios.</p>`,
+    `<section><h2>Projetos</h2><p>Produtos completos, com código aberto, testes e demo que roda no próprio portfólio. Cada um tem identidade visual própria, acessibilidade WCAG AA e versão para celular. Todos os dados são fictícios.</p>`,
     ...cases.map(
       (c) =>
         `<article><h3>${esc(c.name)} · ${esc(c.tagline)}</h3><p>${c.eta ? `<strong>Em construção</strong> (${esc(c.stage ?? "")}), previsto para ${esc(c.eta)}. ` : ""}${esc(c.summary)}</p><p>${esc(c.problem)}</p>` +

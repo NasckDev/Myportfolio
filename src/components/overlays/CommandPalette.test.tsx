@@ -1,6 +1,7 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { CommandPalette } from "@/components/overlays/CommandPalette";
+import { paletteNav } from "@/data/portfolio";
 import { renderWithPortfolio } from "@/test/render";
 
 const PALETTE = { name: "Busca e comandos" } as const;
@@ -61,7 +62,8 @@ describe("CommandPalette", () => {
 
     const ativa = within(dialog).getByRole("option", { selected: true });
     expect(busca).toHaveAttribute("aria-activedescendant", ativa.id);
-    expect(ativa).toHaveTextContent("Projetos");
+    // A segunda entrada da navegação (a primeira já começa ativa).
+    expect(ativa).toHaveTextContent(paletteNav[1][1]);
   });
 
   it("avisa quando a busca não encontra nada", async () => {

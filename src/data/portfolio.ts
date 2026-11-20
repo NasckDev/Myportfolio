@@ -10,11 +10,14 @@ export const SITE_URL = "https://nasck-myportifolio.vercel.app";
 // `?.` permite importar este arquivo fora do Vite (script de prerender em Node), onde import.meta.env não existe.
 const base = import.meta.env?.BASE_URL ?? "/";
 
+/** Anos de experiência profissional; usado no texto de abertura e nos números do topo. */
+export const YEARS_EXPERIENCE = 6;
+
 export const profile = {
   name: "Alexandre Diogo Nascimento",
-  role: "Software Engineer · Frontend & Fullstack",
+  role: "Engenheiro de Software Sênior · Frontend & Fullstack",
   intro:
-    "Construo interfaces web rápidas, acessíveis e fáceis de manter. São 6 anos transformando regras de negócio complexas em produtos claros, na MindMiners, na EY e em projeto para a Vivo.",
+    `Construo interfaces web rápidas, acessíveis e fáceis de manter. São ${YEARS_EXPERIENCE} anos transformando regras de negócio complexas em produtos claros, na MindMiners, na EY e em projeto para a Vivo.`,
   aboutTitle: "Trabalho entre engenharia, produto e design.",
   about: [
     "Entendo a regra de negócio, modelo os estados da interface e entrego componentes que o time consegue manter. Gosto de trabalhar perto de Produto e Design, questionando requisitos e propondo caminhos mais simples.",
@@ -135,7 +138,7 @@ export const cases: CaseStudy[] = [
       ["nasckui-mobile-exemplo-composto.png", "mobile", "Tela de configurações montada só com a lib, com erro de validação"],
       ["nasckui-mobile-menu.png", "mobile", "Menu de componentes no celular"],
     ]),
-    summary: "Biblioteca de componentes acessíveis usada pelos outros projetos, com tokens, playground e governança.",
+    summary: "Design system com componentes React acessíveis, tokens, construtor de tema e documentação viva.",
     role: "Arquitetura de componentes e documentação", skills: ["Design System", "Tokens", "a11y", "Vitest"],
     problem: "Padrões recorrentes eram reimplementados em cada projeto, com estados, foco e acessibilidade inconsistentes.",
     decisions: ["Tokens de cor, tipografia, espaço e movimento exportáveis", "Teclado e acessibilidade documentados por componente", "Changelog com Changesets e CI que barra tokens desatualizados"],
@@ -180,6 +183,13 @@ export const cases: CaseStudy[] = [
     a11y: "Skip link, foco visível, alvos de toque de 44 px e respeito a prefers-reduced-motion.", tests: "ESLint com jsx-a11y, testes de componente com Vitest e Testing Library, testes das Functions e build de produção a cada deploy.",
     image: `${base}og-image.jpg`, repoUrl: "https://github.com/NasckDev/Myportfolio", liveUrl: SITE_URL,
   },
+];
+
+/** Provas rápidas no topo do site: tudo derivado dos dados acima, nada digitado à mão. */
+export const heroStats: { value: number | string; unit?: string; label: string }[] = [
+  { value: YEARS_EXPERIENCE, unit: "anos", label: "em produto, na EY e na MindMiners" },
+  { value: cases.filter((c) => c.demoUrl).length, unit: "produtos", label: "com demo que roda aqui dentro" },
+  { value: "React · Angular", label: "com TypeScript e acessibilidade" },
 ];
 
 export interface WebDesignPiece {
@@ -319,13 +329,13 @@ export const workModes = [
   { t: "100% remoto", d: "Para empresas de qualquer lugar do Brasil", tag: "remoto", remote: true },
 ];
 
-export const navItems: [id: string, label: string][] = [["habilidades", "Habilidades"], ["cases", "Projetos"], ["jogo", "Jogo"], ["experiencia", "Experiência"], ["sobre", "Sobre"], ["contato", "Contato"]];
+export const navItems: [id: string, label: string][] = [["cases", "Projetos"], ["jogo", "Jogo"], ["experiencia", "Experiência"], ["habilidades", "Habilidades"], ["sobre", "Sobre"], ["contato", "Contato"]];
 
-export const footerLinks: [id: string, label: string][] = [["habilidades", "Habilidades"], ["cases", "Projetos"], ["jogo", "Jogue Véspera"], ["experiencia", "Experiência"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
+export const footerLinks: [id: string, label: string][] = [["cases", "Projetos"], ["jogo", "Jogue Véspera"], ["experiencia", "Experiência"], ["habilidades", "Habilidades"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
 
-export const paletteNav: [id: string, label: string][] = [["habilidades", "Habilidades"], ["cases", "Projetos"], ["jogo", "Jogue Véspera"], ["experiencia", "Experiência"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
+export const paletteNav: [id: string, label: string][] = [["cases", "Projetos"], ["jogo", "Jogue Véspera"], ["experiencia", "Experiência"], ["habilidades", "Habilidades"], ["engenharia", "Código aberto"], ["sobre", "Sobre mim"], ["contato", "Contato"]];
 
-export const sectionIds = ["topo", "habilidades", "cases", "jogo", "experiencia", "engenharia", "sobre", "contato"];
+export const sectionIds = ["topo", "cases", "jogo", "experiencia", "habilidades", "engenharia", "sobre", "contato"];
 
 export const MAIL_SUBJECT = "Oportunidade frontend";
 export const MAIL_HREF = `mailto:${EMAIL}?subject=${encodeURIComponent(MAIL_SUBJECT)}`;

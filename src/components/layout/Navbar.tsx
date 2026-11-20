@@ -169,7 +169,12 @@ export function Navbar() {
           {showName && (
             <span className="flex items-baseline gap-1.5 whitespace-nowrap text-[15px] leading-none">
               <span className="stretch-118 font-bold">Alexandre</span>
-              {showLast && <span className="font-normal text-muted">Nascimento</span>}
+              {showLast && (
+                <>
+                  {" "}
+                  <span className="font-normal text-muted">Nascimento</span>
+                </>
+              )}
             </span>
           )}
         </a>
@@ -215,7 +220,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={openPalette}
-            aria-label="Abrir busca e comandos"
+            aria-label={`${showLast ? "Buscar " : ""}${kbd}, abrir busca e comandos`}
             aria-haspopup="dialog"
             className="flex h-11 shrink-0 cursor-pointer items-center gap-2.5 rounded-full border border-line bg-bg2 pl-3.5 pr-2.5 text-[14px] font-medium text-muted transition-[border-color] duration-200 hover:border-accent"
           >
@@ -229,7 +234,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={openPalette}
-              aria-label="Abrir menu de navegação"
+              aria-label="Menu"
               aria-haspopup="dialog"
               aria-expanded={palette}
               className="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-line bg-bg2 text-head hover:border-accent"

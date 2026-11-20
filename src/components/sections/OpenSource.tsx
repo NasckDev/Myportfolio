@@ -45,11 +45,14 @@ export function OpenSource() {
           {/* Cursor piscando em CSS (compositor); parado e visível com animações desligadas. */}
           <span aria-hidden="true" className={"h-[17px] w-2" + (motion ? " caret-blink" : "")} style={{ background: "#6CC0EE" }} />
         </div>
-        <div className="p-2">
+        {/* Grade compacta: a descrição de cada projeto já está na seção Projetos; aqui ficam só o repositório, a qualidade e o status. */}
+        <ul className="grid list-none gap-1.5 p-2" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,300px),1fr))" }}>
           {repos.map((r, i) => (
-            <RepoRow key={r.slug} r={r} delay={300 + i * 140} />
+            <li key={r.slug}>
+              <RepoRow r={r} delay={200 + i * 90} />
+            </li>
           ))}
-        </div>
+        </ul>
       </Reveal>
     </section>
   );
@@ -57,13 +60,13 @@ export function OpenSource() {
 
 /** Repositório publicado vira link; o que ainda não existe aparece como linha informativa, sem destino falso. */
 function RepoRow({ r, delay }: { r: (typeof repos)[number]; delay: number }) {
-  const rowClass = "grid items-center gap-x-7 gap-y-2.5 rounded-2xl px-4 py-[18px] no-underline";
-  const rowStyle = { gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,200px),1fr))", color: "#DCE6F0" };
+  const rowClass = "flex h-full flex-col gap-2 rounded-2xl border px-4 py-3.5 no-underline";
+  const rowStyle = { borderColor: "#12304F", color: "#DCE6F0" };
   const body = <RepoRowBody r={r} />;
   return (
-    <Reveal kind="line" delay={delay}>
+    <Reveal kind="line" delay={delay} className="h-full">
       {r.href ? (
-        <a href={r.href} target="_blank" rel="noopener noreferrer" className={`${rowClass} transition-[background] duration-200 hover:bg-[#0C223D]`} style={rowStyle}>
+        <a href={r.href} target="_blank" rel="noopener noreferrer" className={`${rowClass} transition-[background,border-color] duration-200 hover:border-[#2A5C8F] hover:bg-[#0C223D]`} style={rowStyle}>
           {body}
         </a>
       ) : (
@@ -78,30 +81,27 @@ function RepoRow({ r, delay }: { r: (typeof repos)[number]; delay: number }) {
 function RepoRowBody({ r }: { r: (typeof repos)[number] }) {
   return (
     <>
-        <span className="flex flex-col gap-1">
-          <span className="mono text-[12.5px]" style={{ color: "#6CC0EE" }}>
+      <span className="flex items-start justify-between gap-3">
+        <span className="flex min-w-0 flex-col gap-0.5">
+          <span className="stretch-118 text-[18px] font-bold text-white">{r.name}</span>
+          <span className="mono truncate text-[12.5px]" style={{ color: "#6CC0EE" }}>
             {r.slug}
           </span>
-          <span className="stretch-118 text-[20px] font-bold text-white">{r.name}</span>
         </span>
-        <span className="text-[15px] leading-[1.55]" style={{ color: "#C4D3E2" }}>
-          {r.problem}
-        </span>
-        <span className="mono text-[12.5px]" style={{ color: "#9FB3C8" }}>
-          {r.quality}
-        </span>
-        <span className="flex items-center justify-between gap-3">
-          <span className="mono flex items-center gap-2 text-[12.5px] text-white">
-            <span className="size-2 rounded-full" style={{ background: r.dot, boxShadow: `0 0 12px ${r.dot}` }} />
-            {r.status}
-          </span>
-          {r.href ? (
-            <>
-              <ArrowUpRightIcon size={18} stroke="#6CC0EE" />
-              <span className="sr-only">(abre em nova aba)</span>
-            </>
-          ) : null}
-        </span>
+        {r.href ? (
+          <>
+            <ArrowUpRightIcon size={18} stroke="#6CC0EE" className="mt-1 shrink-0" />
+            <span className="sr-only">(abre em nova aba)</span>
+          </>
+        ) : null}
+      </span>
+      <span className="mono text-[12.5px]" style={{ color: "#9FB3C8" }}>
+        {r.quality}
+      </span>
+      <span className="mono mt-auto flex items-center gap-2 text-[12.5px] text-white">
+        <span className="size-2 rounded-full" style={{ background: r.dot, boxShadow: `0 0 12px ${r.dot}` }} />
+        {r.status}
+      </span>
     </>
   );
 }

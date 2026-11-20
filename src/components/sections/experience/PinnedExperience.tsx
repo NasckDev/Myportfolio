@@ -161,7 +161,7 @@ export function PinnedExperience() {
           style={{ padding: "clamp(84px,12vh,124px) clamp(20px,4vw,40px) clamp(16px,4vh,40px)", gap: "clamp(10px,2.6vh,26px)" }}
         >
           <div className="flex max-w-[560px] flex-col" style={{ gap: "clamp(6px,1.2vh,10px)" }}>
-            <SectionLabel>03 — EXPERIÊNCIA</SectionLabel>
+            <SectionLabel>02 — EXPERIÊNCIA</SectionLabel>
             <h2 className="stretch-120 font-bold text-head" style={{ fontSize: "clamp(26px,min(3.4vw,5.4vh),44px)", lineHeight: 1.08, letterSpacing: "-.025em" }}>
               Trajetória profissional.
             </h2>
