@@ -1,0 +1,1 @@
+var e=`[a-z0-9-]{1,40}`,t=RegExp(`^${e}$`);export{t as n,e as t};
