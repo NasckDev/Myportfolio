@@ -118,7 +118,7 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "fiscotrack", num: "03", kind: "Domínio · testes", read: "5 min", name: "FiscoTrack", tagline: "Investment Tax Calculator & Reporting", tags: ["React", "Dados"],
-    title: "Regras financeiras em um motor de cálculo testável e explicável.", eta: "Jan 2027", stage: "Início, carteira, apuração, DARFs, importação e backup rodando, com 180 testes e E2E com axe", repoUrl: "https://github.com/NasckDev/fiscotrack", liveUrl: "https://nasckdev.github.io/fiscotrack/",
+    title: "Regras financeiras em um motor de cálculo testável e explicável.", eta: "Jan 2027", stage: "Interface em Ant Design e ECharts sobre wrappers próprios, com Storybook, 270 testes e E2E com axe", repoUrl: "https://github.com/NasckDev/fiscotrack", liveUrl: "https://nasckdev.github.io/fiscotrack/",
     demoUrl: `${base}projetos/fiscotrack/`,
     shots: shotsOf("fiscotrack", [
       ["fiscotrack-painel-mensal-desktop.webp", "desktop", "Início: próximo DARF com contagem, patrimônio, resultado e gráficos"],
@@ -131,10 +131,10 @@ export const cases: CaseStudy[] = [
       ["fiscotrack-operacoes-mobile.webp", "mobile", "Operações no celular, em cards"],
     ]),
     summary: "IR de renda variável sem susto: carteira, apuração mensal, DARFs com vencimento e cada valor explicado com a fonte legal.",
-    role: "Modelagem de domínio e testes", skills: ["React", "Funções puras", "Vitest"],
+    role: "Modelagem de domínio e testes", skills: ["React", "Ant Design", "ECharts", "Vitest"],
     problem: "Investidores precisam organizar operações, calcular resultados por período e compreender regras aplicadas, sem depender de uma planilha opaca.",
     decisions: ["Motor de cálculo em funções puras, fora da UI, com ordem determinística das operações do mesmo dia", "Regras versionadas por data, com fonte legal em cada passo do cálculo", "Dados só no navegador (IndexedDB), com backup, desfazer e sincronização entre abas"],
-    a11y: "Gráficos com tabela equivalente, foco correto nos diálogos e na paleta, h1 por tela e axe sem violações nos dois temas.", tests: "73 testes do motor (99% de cobertura) e 107 de interface, mais E2E com Playwright e axe nos fluxos de exemplo, importação, backup e desfazer.",
+    a11y: "Tema do Ant Design com contraste AA calculado nos dois temas, gráficos com tabela equivalente e axe sem violações em 360 e 1440 px.", tests: "73 testes do motor e 197 de interface, E2E com Playwright e axe, e cerca de 45 wrappers com stories no Storybook.",
   },
   {
     id: "nasckui", num: "04", kind: "Design System", read: "5 min", name: "Nasck UI", tagline: "Accessible Product Interface System", tags: ["React", "Design System"],
@@ -372,7 +372,7 @@ export const skillGroups: SkillGroup[] = rawSkillGroups.map(([title, items], gi)
 export const repos = [
   { slug: "nasckdev/nasck-ui", name: "Nasck UI", problem: "Sistema de interface acessível usado pelos outros projetos.", quality: "230 testes · 57 E2E · axe", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/nasck-ui" },
   { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "272 testes · 31 E2E · axe", status: "Demo no ar · v1 fev 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/insighthub" },
-  { slug: "nasckdev/fiscotrack", name: "FiscoTrack", problem: "Evolução do minersCalculator: cálculo explicável e testável.", quality: "180 testes · E2E · axe", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/fiscotrack" },
+  { slug: "nasckdev/fiscotrack", name: "FiscoTrack", problem: "Evolução do minersCalculator: cálculo explicável e testável.", quality: "Ant Design · Storybook · 270 testes", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/fiscotrack" },
   { slug: "nasckdev/opsflow", name: "OpsFlow", problem: "Workflow de aprovações em Angular com máquina de estados, RBAC e auditoria.", quality: "275 testes · 52 E2E · axe", status: "Demo no ar · v1 mar 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/opsflow" },
   { slug: "nasckdev/web-design", name: "Web design", problem: "Estudos visuais com 3D e movimento, com código, prints e README.", quality: "Páginas ao vivo · prints · README", status: "Publicado", dot: "#28C840", href: WEB_DESIGN_REPO_URL },
   { slug: "nasckdev/vespera", name: "Véspera", problem: "Meu jogo: RPG de ação 2D em pixel art, com co-op local.", quality: "Godot 4 · C# · testes automatizados", status: "Beta", dot: "#FEBC2E", href: VESPERA_REPO_URL },
