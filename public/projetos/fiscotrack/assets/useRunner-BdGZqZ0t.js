@@ -1,0 +1,1 @@
+import{_ as e,b as t}from"./ui-BtT9Zxmu.js";import{g as n,u as r}from"./index-18qI54Y8.js";var i=t(e(),1);function a(){let e=r();return(0,i.useCallback)(async(t,r)=>{try{return await t(),!0}catch(t){return e.show(n(t,r),{tone:`danger`}),!1}},[e])}export{a as t};
