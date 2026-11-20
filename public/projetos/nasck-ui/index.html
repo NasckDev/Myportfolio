@@ -1,30 +1,582 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Nasck UI: wrappers de referência sobre Ant Design e NG-ZORRO</title>
     <meta
       name="description"
-      content="Nasck UI: design system React acessível, com 20 componentes, tokens, construtor de tema, modelos de telas e documentação viva de teclado e ARIA."
+      content="Biblioteca de componentes App* sobre Ant Design (React) e NG-ZORRO (Angular), com a mesma API nos dois frameworks, tema central e Storybook."
     />
-    <meta name="color-scheme" content="light dark" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <script>
-      // Apply the saved theme before first paint, so there is no flash of the wrong theme.
-      try {
-        var saved = localStorage.getItem('nasck-ui-theme');
-        if (saved === 'light' || saved === 'dark') {
-          document.documentElement.setAttribute('data-theme', saved);
-        }
-      } catch (error) {
-        /* storage blocked: the system preference applies */
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <style>
+      @font-face {
+        font-family: 'Space Grotesk Variable';
+        font-weight: 300 700;
+        font-display: swap;
+        src: url('./fonts/space-grotesk-latin-wght-normal.woff2') format('woff2-variations');
       }
-    </script>
-    <title>Nasck UI · Design system acessível</title>
-    <script type="module" crossorigin src="./assets/index-CzJNKntm.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-M_V-7de0.css">
+      @font-face {
+        font-family: 'DM Sans Variable';
+        font-weight: 100 1000;
+        font-display: swap;
+        src: url('./fonts/dm-sans-latin-wght-normal.woff2') format('woff2-variations');
+      }
+      @font-face {
+        font-family: 'Space Mono';
+        font-weight: 400;
+        font-display: swap;
+        src: url('./fonts/space-mono-latin-400-normal.woff2') format('woff2');
+      }
+
+      :root {
+        --bg: #ffffff;
+        --bg-soft: #f5f5f5;
+        --ink: #0a0a0a;
+        --ink-soft: #3d3d3d;
+        --line: #d9d9d9;
+        --accent: #ff5b14;
+        --accent-ink: #0a0a0a;
+        --link: #b8400c;
+        --grid: rgba(10, 10, 10, 0.06);
+        --font-head: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
+        --font-body: 'DM Sans Variable', 'DM Sans', system-ui, sans-serif;
+        --font-mono: 'Space Mono', ui-monospace, Consolas, monospace;
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #0a0a0a;
+          --bg-soft: #141414;
+          --ink: #f5f5f5;
+          --ink-soft: #c4c4c4;
+          --line: #3a3a3a;
+          --link: #ff8a54;
+          --grid: rgba(255, 255, 255, 0.07);
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme='dark'] {
+        --bg: #0a0a0a;
+        --bg-soft: #141414;
+        --ink: #f5f5f5;
+        --ink-soft: #c4c4c4;
+        --line: #3a3a3a;
+        --link: #ff8a54;
+        --grid: rgba(255, 255, 255, 0.07);
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-size: 17px;
+        line-height: 1.55;
+        background-image:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 48px 48px;
+        background-position: -1px -1px;
+      }
+      a {
+        color: var(--link);
+      }
+      :focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 3px;
+      }
+      .skip {
+        position: absolute;
+        left: 16px;
+        top: -64px;
+        background: var(--accent);
+        color: var(--accent-ink);
+        padding: 10px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        z-index: 10;
+      }
+      .skip:focus {
+        top: 16px;
+      }
+      .wrap {
+        width: min(1120px, 100% - 32px);
+        margin-inline: auto;
+      }
+      header.top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 20px 0;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--font-head);
+        font-weight: 700;
+        font-size: 22px;
+        color: var(--ink);
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .brand svg {
+        width: 32px;
+        height: 32px;
+      }
+      nav.links {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      nav.links a,
+      .toggle {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+        border-radius: 4px;
+        color: var(--ink);
+        text-decoration: none;
+        font-weight: 500;
+      }
+      nav.links a:hover,
+      .toggle:hover {
+        background: var(--bg-soft);
+      }
+      .toggle {
+        border: 1px solid var(--line);
+        background: var(--bg);
+        font: inherit;
+        cursor: pointer;
+      }
+      .hero {
+        padding: 56px 0 40px;
+      }
+      .eyebrow {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin: 0 0 16px;
+      }
+      .eyebrow b {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background: var(--accent);
+        margin-right: 8px;
+      }
+      h1 {
+        font-family: var(--font-head);
+        font-size: clamp(2.3rem, 6vw, 4.1rem);
+        line-height: 1.02;
+        letter-spacing: -0.03em;
+        margin: 0 0 20px;
+        max-width: 19ch;
+      }
+      h1 em {
+        font-style: normal;
+        box-shadow: inset 0 -0.32em 0 var(--accent);
+      }
+      .lead {
+        font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+        max-width: 56ch;
+        color: var(--ink-soft);
+        margin: 0 0 28px;
+      }
+      .cta {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        max-width: 720px;
+      }
+      .card-link {
+        display: block;
+        padding: 20px;
+        background: var(--bg);
+        border: 1px solid var(--ink);
+        border-radius: 4px;
+        color: var(--ink);
+        text-decoration: none;
+        box-shadow: 6px 6px 0 var(--accent);
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+      .card-link:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0 var(--accent);
+      }
+      .card-link strong {
+        display: block;
+        font-family: var(--font-head);
+        font-size: 1.35rem;
+      }
+      .card-link span {
+        display: block;
+        color: var(--ink-soft);
+        font-size: 0.95rem;
+        margin-top: 4px;
+      }
+      .card-link code {
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        color: var(--link);
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        border: 1px solid var(--line);
+        background: var(--bg);
+        margin: 40px 0;
+      }
+      .stats div {
+        padding: 18px 20px;
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        margin: 0 -1px -1px 0;
+      }
+      .stats dt {
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+        order: 2;
+      }
+      .stats dd {
+        margin: 0;
+        font-family: var(--font-head);
+        font-size: 2.2rem;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+      .stats div {
+        display: flex;
+        flex-direction: column;
+      }
+      section.block {
+        padding: 36px 0;
+      }
+      h2 {
+        font-family: var(--font-head);
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        letter-spacing: -0.02em;
+        margin: 0 0 12px;
+      }
+      .features {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+      .feature {
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 20px;
+      }
+      .feature h3 {
+        margin: 0 0 6px;
+        font-family: var(--font-head);
+        font-size: 1.15rem;
+      }
+      .feature p {
+        margin: 0;
+        color: var(--ink-soft);
+      }
+      .compare {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      }
+      figure {
+        margin: 0;
+      }
+      figcaption {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        color: var(--ink-soft);
+        margin-bottom: 6px;
+      }
+      pre {
+        margin: 0;
+        padding: 16px;
+        overflow: auto;
+        background: var(--bg-soft);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 13.5px;
+        line-height: 1.6;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0;
+        list-style: none;
+        margin: 16px 0 0;
+      }
+      .chips li {
+        padding: 6px 12px;
+        border: 1px solid var(--line);
+        background: var(--bg);
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+      }
+      footer {
+        border-top: 1px solid var(--line);
+        margin-top: 40px;
+        padding: 28px 0 48px;
+        color: var(--ink-soft);
+        font-size: 0.95rem;
+      }
+      @media (max-width: 560px) {
+        header.top {
+          flex-wrap: wrap;
+          padding: 14px 0 6px;
+        }
+        nav.links {
+          width: 100%;
+          gap: 2px;
+        }
+        nav.links a,
+        .toggle {
+          padding: 0 10px;
+          font-size: 15px;
+        }
+        body {
+          font-size: 16px;
+        }
+        .hero {
+          padding-top: 32px;
+        }
+        .card-link {
+          box-shadow: 4px 4px 0 var(--accent);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+    <div class="wrap">
+      <header class="top">
+        <a class="brand" href="./" aria-label="Nasck UI, início">
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <rect width="32" height="32" rx="3" fill="#0a0a0a" />
+            <path d="M8 24V8h3.6l8.8 11V8H24v16h-3.6L11.6 13v11z" fill="#ff5b14" />
+          </svg>
+          Nasck UI
+        </a>
+        <nav class="links" aria-label="Principal">
+          <a href="#api">Mesma API</a>
+          <a href="#componentes">Componentes</a>
+          <a href="https://github.com/NasckDev/nasck-ui">GitHub</a>
+          <button class="toggle" type="button" id="theme-toggle" aria-pressed="false">
+            <span id="theme-label">Tema escuro</span>
+          </button>
+        </nav>
+      </header>
+
+      <main id="conteudo">
+        <section class="hero" aria-labelledby="titulo">
+          <p class="eyebrow"><b></b>Biblioteca de referência · React e Angular</p>
+          <h1 id="titulo">A camada de componentes, <em>uma API só</em>.</h1>
+          <p class="lead">
+            Wrappers <code>App*</code> sobre o Ant Design e o NG-ZORRO, com os mesmos nomes e as
+            mesmas props nos dois frameworks, tema central com contraste AA verificado e Storybook
+            com todos os estados.
+          </p>
+          <div class="cta">
+            <a class="card-link" href="./react/index.html">
+              <strong>Storybook React</strong>
+              <span>Wrappers sobre o Ant Design 6 e ECharts.</span>
+              <span><code>react/</code></span>
+            </a>
+            <a class="card-link" href="./angular/index.html">
+              <strong>Storybook Angular</strong>
+              <span>Wrappers standalone sobre o NG-ZORRO 22 e ngx-echarts.</span>
+              <span><code>angular/</code></span>
+            </a>
+          </div>
+          <dl class="stats" aria-label="Números do projeto">
+            <div>
+              <dt>componentes no contrato</dt>
+              <dd>28</dd>
+            </div>
+            <div>
+              <dt>stories no total</dt>
+              <dd>246</dd>
+            </div>
+            <div>
+              <dt>presets de paleta</dt>
+              <dd>4</dd>
+            </div>
+            <div>
+              <dt>ícones compartilhados</dt>
+              <dd>22</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="block" aria-labelledby="porque">
+          <h2 id="porque">Por que wrappers?</h2>
+          <div class="features">
+            <div class="feature">
+              <h3>Telas nunca tocam a biblioteca</h3>
+              <p>
+                O app usa só <code>AppButton</code>, <code>AppTable</code> e companhia. Trocar ou
+                atualizar o Ant Design vira uma mudança em um lugar, e o lint barra o import direto.
+              </p>
+            </div>
+            <div class="feature">
+              <h3>Contrato testado nos dois lados</h3>
+              <p>
+                Um teste lê o código do React e do Angular e falha se um nome de prop ou de input
+                divergir do contrato.
+              </p>
+            </div>
+            <div class="feature">
+              <h3>Tema central, contraste calculado</h3>
+              <p>
+                Preset de paleta vira tokens do antd e variáveis do NG-ZORRO. O construtor de tema
+                verifica o contraste AA nos dois modos antes de exportar.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="api" aria-labelledby="mesma-api">
+          <h2 id="mesma-api">Mesmos nomes, mesmas props</h2>
+          <div class="compare">
+            <figure>
+              <figcaption>React</figcaption>
+              <pre><code>&lt;AppButton
+  variant="primary"
+  icon="plus"
+  loading={saving}
+  onClick={save}
+&gt;
+  Novo cliente
+&lt;/AppButton&gt;</code></pre>
+            </figure>
+            <figure>
+              <figcaption>Angular</figcaption>
+              <pre><code>&lt;app-button
+  variant="primary"
+  icon="plus"
+  [loading]="saving()"
+  (clicked)="save()"
+&gt;
+  Novo cliente
+&lt;/app-button&gt;</code></pre>
+            </figure>
+          </div>
+        </section>
+
+        <section class="block" id="componentes" aria-labelledby="lista">
+          <h2 id="lista">Componentes</h2>
+          <p>
+            Cada um tem os estados padrão, desabilitado, carregando, erro e vazio, com controles nas
+            props.
+          </p>
+          <ul class="chips" aria-label="Lista de componentes">
+            <li>AppThemeProvider</li>
+            <li>AppButton</li>
+            <li>AppIconButton</li>
+            <li>AppInput</li>
+            <li>AppSelect</li>
+            <li>AppCheckbox</li>
+            <li>AppSwitch</li>
+            <li>AppDatePicker</li>
+            <li>AppForm</li>
+            <li>AppFormItem</li>
+            <li>AppTable</li>
+            <li>AppCard</li>
+            <li>AppStatistic</li>
+            <li>AppTag</li>
+            <li>AppStatus</li>
+            <li>AppModal</li>
+            <li>AppDrawer</li>
+            <li>AppTabs</li>
+            <li>AppSteps</li>
+            <li>AppEmpty</li>
+            <li>AppSkeleton</li>
+            <li>AppAlert</li>
+            <li>AppTooltip</li>
+            <li>AppDropdown</li>
+            <li>AppMenu</li>
+            <li>AppAvatar</li>
+            <li>AppPagination</li>
+            <li>AppChart</li>
+          </ul>
+          <p style="margin-top: 24px">
+            <a href="./react/index.html?path=/story/tema-construtor-de-tema--construtor">
+              Abrir o construtor de tema
+            </a>
+          </p>
+        </section>
+      </main>
+
+      <footer>
+        <p>
+          Nasck UI · MIT · <a href="https://github.com/NasckDev/nasck-ui">código no GitHub</a>. Os
+          dados dos exemplos são fictícios.
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var button = document.getElementById('theme-toggle');
+        var label = document.getElementById('theme-label');
+        var KEY = 'nasck-ui-theme';
+        function systemDark() {
+          return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        function apply(mode) {
+          root.setAttribute('data-theme', mode);
+          var dark = mode === 'dark';
+          button.setAttribute('aria-pressed', String(dark));
+          label.textContent = dark ? 'Tema claro' : 'Tema escuro';
+        }
+        var saved = null;
+        try {
+          saved = localStorage.getItem(KEY);
+        } catch (error) {
+          saved = null;
+        }
+        apply(saved === 'dark' || saved === 'light' ? saved : systemDark() ? 'dark' : 'light');
+        button.addEventListener('click', function () {
+          var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          apply(next);
+          try {
+            localStorage.setItem(KEY, next);
+          } catch (error) {
+            /* sem armazenamento: o tema vale só nesta visita */
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
