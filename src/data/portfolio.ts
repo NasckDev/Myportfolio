@@ -97,7 +97,7 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "opsflow", num: "02", kind: "Angular · corporativo", read: "7 min", name: "OpsFlow", tagline: "Enterprise Workflow & Approval Console", tags: ["Angular", "Acessibilidade"],
-    title: "Um workflow corporativo com permissões, auditoria e evolução incremental.", eta: "Mar 2027", stage: "Caixa de entrada, quadro, análises e RBAC rodando, com 275 testes e 52 E2E; faltam filtros na URL", repoUrl: "https://github.com/NasckDev/opsflow", liveUrl: "https://nasckdev.github.io/opsflow/",
+    title: "Um workflow corporativo com permissões, auditoria e evolução incremental.", eta: "Mar 2027", stage: "Interface em NG-ZORRO e ECharts sobre wrappers próprios, com Storybook, 323 testes e 79 E2E", repoUrl: "https://github.com/NasckDev/opsflow", liveUrl: "https://nasckdev.github.io/opsflow/",
     demoUrl: `${base}projetos/opsflow/`,
     shots: shotsOf("opsflow", [
       ["opsflow-caixa-entrada-desktop.webp", "desktop", "Caixa de entrada do Aprovador, com prazo (SLA) em contagem regressiva"],
@@ -111,10 +111,10 @@ export const cases: CaseStudy[] = [
       ["opsflow-mais-mobile.webp", "mobile", "Menu Mais no celular"],
     ]),
     summary: "Console de aprovações com caixa de entrada por papel, quadro kanban, aprovação em lote, análises e auditoria.",
-    role: "Estados, formulários e RBAC", skills: ["Angular", "RxJS", "RBAC", "i18n"],
+    role: "Estados, formulários e RBAC", skills: ["Angular", "NG-ZORRO", "ECharts", "RBAC"],
     problem: "Operações corporativas precisam criar, revisar e aprovar solicitações com várias etapas, papéis, documentos, prazos e trilha de auditoria. Interfaces frágeis aumentam retrabalho, erros e tempo de decisão.",
     decisions: ["Workflow modelado como máquina de estados, validada também na API simulada (403, 409, 422)", "Concorrência otimista e janela de desfazer de 6 s nas decisões", "Matriz de permissões testada por papel, com segregação de funções"],
-    a11y: "Atalhos j/k/a/r com foco real, quadro com alternativa ao arrastar, axe sem violações em 7 telas nos dois temas.", tests: "275 testes unitários e de componente, e 52 E2E com Playwright e axe, incluindo 360 px e tema escuro.",
+    a11y: "Atalhos j/k/a/r com foco real, quadro com alternativa ao arrastar, axe sem violações em 7 telas nos dois temas.", tests: "323 testes unitários, 79 E2E com Playwright e axe (360 e 1440 px, dois temas) e 129 stories no Storybook Angular.",
   },
   {
     id: "fiscotrack", num: "03", kind: "Domínio · testes", read: "5 min", name: "FiscoTrack", tagline: "Investment Tax Calculator & Reporting", tags: ["React", "Dados"],
@@ -373,7 +373,7 @@ export const repos = [
   { slug: "nasckdev/nasck-ui", name: "Nasck UI", problem: "Sistema de interface acessível usado pelos outros projetos.", quality: "230 testes · 57 E2E · axe", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/nasck-ui" },
   { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "272 testes · 31 E2E · axe", status: "Demo no ar · v1 fev 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/insighthub" },
   { slug: "nasckdev/fiscotrack", name: "FiscoTrack", problem: "Evolução do minersCalculator: cálculo explicável e testável.", quality: "Ant Design · Storybook · 270 testes", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/fiscotrack" },
-  { slug: "nasckdev/opsflow", name: "OpsFlow", problem: "Workflow de aprovações em Angular com máquina de estados, RBAC e auditoria.", quality: "275 testes · 52 E2E · axe", status: "Demo no ar · v1 mar 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/opsflow" },
+  { slug: "nasckdev/opsflow", name: "OpsFlow", problem: "Workflow de aprovações em Angular com máquina de estados, RBAC e auditoria.", quality: "NG-ZORRO · Storybook · 79 E2E", status: "Demo no ar · v1 mar 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/opsflow" },
   { slug: "nasckdev/web-design", name: "Web design", problem: "Estudos visuais com 3D e movimento, com código, prints e README.", quality: "Páginas ao vivo · prints · README", status: "Publicado", dot: "#28C840", href: WEB_DESIGN_REPO_URL },
   { slug: "nasckdev/vespera", name: "Véspera", problem: "Meu jogo: RPG de ação 2D em pixel art, com co-op local.", quality: "Godot 4 · C# · testes automatizados", status: "Beta", dot: "#FEBC2E", href: VESPERA_REPO_URL },
   { slug: "nasckdev/myportfolio", name: "Myportfolio", problem: "Este portfólio, documentado como case de engenharia.", quality: "ESLint · Vitest · CI · prerender", status: "Publicado", dot: "#28C840", href: "https://github.com/NasckDev/Myportfolio" },

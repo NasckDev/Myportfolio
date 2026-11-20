@@ -1,1 +1,0 @@
-var e={create:`plusCircle`,migrate:`history`,submit:`send`,resubmit:`send`,return:`undo`,approve:`checkCircle`,reject:`xCircle`,complete:`check`};var r={submit:`btn-primary`,resubmit:`btn-primary`,complete:`btn-primary`,approve:`btn-success`,reject:`btn-danger`,return:``};export{r as n,e as t};
