@@ -1,0 +1,1 @@
+import{t as e}from"./app-button-mi8sZl9B.js";import{r as t}from"./vendor-react-CvdC6zOt.js";var n=t();function r({label:t,icon:r,variant:i=`ghost`,size:a=`md`,...o}){return(0,n.jsx)(e,{variant:i,size:a,icon:r,"aria-label":t,title:t,...o})}export{r as t};

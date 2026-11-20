@@ -76,7 +76,7 @@ const shotsOf = (id: string, list: [file: string, device: CaseShot["device"], ca
 export const cases: CaseStudy[] = [
   {
     id: "insighthub", num: "01", kind: "React · dados", read: "6 min", name: "InsightHub", tagline: "Research & AI Insights Workspace", tags: ["React", "Dados", "Acessibilidade"],
-    title: "Um workspace de insights para reduzir a distância entre dados e decisão.", eta: "Fev 2027", stage: "Painel, respostas, temas, comparar, síntese com IA e quadro rodando, com 272 testes e 31 E2E", repoUrl: "https://github.com/NasckDev/insighthub", liveUrl: "https://nasckdev.github.io/insighthub/",
+    title: "Um workspace de insights para reduzir a distância entre dados e decisão.", eta: "Fev 2027", stage: "Interface em Ant Design e ECharts sobre wrappers próprios, com Storybook, 305 testes e 43 E2E", repoUrl: "https://github.com/NasckDev/insighthub", liveUrl: "https://nasckdev.github.io/insighthub/",
     demoUrl: `${base}projetos/insighthub/`,
     shots: shotsOf("insighthub", [
       ["insighthub-visao-geral-desktop.png", "desktop", "Painel: NPS em medidor, evolução semanal e distribuição das notas"],
@@ -90,10 +90,10 @@ export const cases: CaseStudy[] = [
       ["insighthub-sintese-celular.png", "mobile", "Síntese no celular"],
     ]),
     summary: "Workspace para explorar pesquisas, comparar segmentos e gerar sínteses assistidas por IA com rastreabilidade.",
-    role: "Concepção, arquitetura e frontend", skills: ["React", "TypeScript", "TanStack", "IA"],
+    role: "Concepção, arquitetura e frontend", skills: ["React", "Ant Design", "ECharts", "IA"],
     problem: "Times de pesquisa e produto precisam transformar respostas, segmentos e indicadores em insights acionáveis. A experiência costuma ser fragmentada entre filtros complexos, tabelas, gráficos, comentários e geração de sínteses.",
     decisions: ["Filtros persistidos na URL para visões compartilháveis", "TanStack Query para estado de servidor, cache e invalidação", "IA com cancelamento, retry e indicação da fonte usada"],
-    a11y: "Diálogos em portal com foco preso e Esc por camada, gráficos com tabela equivalente, alvos de 44 px no toque e axe sem violações nos dois temas.", tests: "272 testes no core, na API e na interface, e 31 E2E com Playwright e axe, incluindo a geometria dos diálogos no celular.",
+    a11y: "Diálogos em portal com foco preso e Esc por camada, gráficos com tabela equivalente, alvos de 44 px no toque e axe sem violações nos dois temas.", tests: "305 testes no core, na API e na interface, 43 E2E com Playwright e axe e 130 stories no Storybook.",
   },
   {
     id: "opsflow", num: "02", kind: "Angular · corporativo", read: "7 min", name: "OpsFlow", tagline: "Enterprise Workflow & Approval Console", tags: ["Angular", "Acessibilidade"],
@@ -371,7 +371,7 @@ export const skillGroups: SkillGroup[] = rawSkillGroups.map(([title, items], gi)
 
 export const repos = [
   { slug: "nasckdev/nasck-ui", name: "Nasck UI", problem: "Sistema de interface acessível usado pelos outros projetos.", quality: "230 testes · 57 E2E · axe", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/nasck-ui" },
-  { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "272 testes · 31 E2E · axe", status: "Demo no ar · v1 fev 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/insighthub" },
+  { slug: "nasckdev/insighthub", name: "InsightHub", problem: "Workspace de pesquisa com filtros, gráficos e sínteses assistidas.", quality: "Ant Design · Storybook · 305 testes", status: "Demo no ar · v1 fev 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/insighthub" },
   { slug: "nasckdev/fiscotrack", name: "FiscoTrack", problem: "Evolução do minersCalculator: cálculo explicável e testável.", quality: "Ant Design · Storybook · 270 testes", status: "Demo no ar · v1 jan 2027", dot: "#FEBC2E", href: "https://github.com/NasckDev/fiscotrack" },
   { slug: "nasckdev/opsflow", name: "OpsFlow", problem: "Workflow de aprovações em Angular com máquina de estados, RBAC e auditoria.", quality: "NG-ZORRO · Storybook · 79 E2E", status: "Demo no ar · v1 mar 2027", dot: "#6CC0EE", href: "https://github.com/NasckDev/opsflow" },
   { slug: "nasckdev/web-design", name: "Web design", problem: "Estudos visuais com 3D e movimento, com código, prints e README.", quality: "Páginas ao vivo · prints · README", status: "Publicado", dot: "#28C840", href: WEB_DESIGN_REPO_URL },

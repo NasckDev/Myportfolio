@@ -1,0 +1,1 @@
+import{t as e}from"./app-avatar-CZTVFhM_.js";import{t}from"./app-button-mi8sZl9B.js";import{L as n}from"./icons-CQgg5NLg.js";import{r}from"./vendor-react-CvdC6zOt.js";var i=r(),a=`Menu da conta`;function o(r){return(0,i.jsx)(t,{...r,variant:`ghost`,"aria-label":a,icon:(0,i.jsx)(e,{size:`sm`,background:`var(--ih-primary)`,children:(0,i.jsx)(n,{})})})}export{o as t};
