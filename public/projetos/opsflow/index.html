@@ -1,13 +1,26 @@
 <!doctype html>
-<html lang="en" data-beasties-container>
+<html lang="pt-BR" data-beasties-container>
 <head>
   <meta charset="utf-8">
-  <title>Opsflow</title>
+  <title>OpsFlow · Console de workflow e aprovações</title>
   <base href="./">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="OpsFlow: console de workflow e aprovações com RBAC, SLA e trilha de auditoria (demo com dados fictícios).">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-<style>:root{--space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1.25rem;--radius:8px;--font-sans:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;--font-mono:ui-monospace, "Cascadia Code", Consolas, monospace;--bg:#f5f7fb;--surface:#ffffff;--surface-muted:#eef1f6;--border:#d5dae3;--text:#1a2233;--text-muted:#4f5b6e;--primary:#2449c9;--on-primary:#ffffff;--focus:#b0461a;--danger:#b42318;--danger-bg:#fde8e7;--warning-bg:#fff2cc;--warning-text:#6b4a00;--success-bg:#dff5e6;--success-text:#135c2f;--info-bg:#e2eafc;--info-text:#1d3a8f;color-scheme:light}*,*:before,*:after{box-sizing:border-box}body{margin:0;font-family:var(--font-sans);line-height:1.5;background:var(--bg);color:var(--text)}</style><link rel="stylesheet" href="styles-BKJ46PU2.css" media="print" data-beasties-media="all"><noscript><link rel="stylesheet" href="styles-BKJ46PU2.css"></noscript></head>
+  <script>
+    // Aplica o tema antes do primeiro paint para evitar o flash claro/escuro.
+    try {
+      var stored = localStorage.getItem('opsflow.theme');
+      var dark = stored ? stored === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    } catch (e) {
+      /* sem storage: o app define o tema ao iniciar */
+    }
+  </script>
+<style>:root{--ox-font-family-sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;--ox-font-family-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;--ox-font-size-xs:.75rem;--ox-font-size-sm:.875rem;--ox-font-size-md:1rem;--ox-font-size-lg:1.125rem;--ox-font-size-xl:1.375rem;--ox-font-size-xxl:1.75rem;--ox-font-weight-regular:400;--ox-font-weight-medium:500;--ox-font-weight-semibold:600;--ox-font-weight-bold:700;--ox-font-line-height-tight:1.25;--ox-font-line-height-normal:1.5;--ox-space-0:0;--ox-space-1:.25rem;--ox-space-2:.5rem;--ox-space-3:.75rem;--ox-space-4:1rem;--ox-space-5:1.25rem;--ox-space-6:1.5rem;--ox-space-8:2rem;--ox-space-10:2.5rem;--ox-space-12:3rem;--ox-radius-sm:4px;--ox-radius-md:6px;--ox-radius-lg:8px;--ox-radius-full:9999px;--ox-motion-duration-fast:.12s;--ox-motion-duration-normal:.2s;--ox-motion-duration-slow:.28s;--ox-motion-easing-standard:cubic-bezier(.2, 0, 0, 1);--ox-z-index-popover:1100;--ox-z-index-dialog:1200;--ox-z-index-toast:1300}:root{color-scheme:light;--ox-color-bg:#f6f7f9;--ox-color-surface:#eef0f4;--ox-color-surface-raised:#ffffff;--ox-color-border:#d8dde5;--ox-color-border-strong:#7a8494;--ox-color-text:#111418;--ox-color-text-muted:#4a5565;--ox-color-text-on-accent:#ffffff;--ox-color-brand:#2f6bff;--ox-color-accent:#2a63f0;--ox-color-accent-hover:#1f4fd0;--ox-color-accent-surface:#e8efff;--ox-color-accent-text:#1f4fd0;--ox-color-cyan:#0e8f99;--ox-color-success:#047857;--ox-color-success-surface:#e3f5ec;--ox-color-warning:#92400e;--ox-color-warning-surface:#fef3c7;--ox-color-danger:#b42318;--ox-color-danger-surface:#fdecea;--ox-color-danger-solid:#c4301f;--ox-color-step-idle:#5a6677;--ox-color-violet:#6d28d9;--ox-color-violet-surface:#efeafe;--ox-color-info:#1d4ed8;--ox-color-info-surface:#e7eeff;--ox-color-focus-ring:#1d4ed8;--ox-color-overlay:rgb(17 20 24 / .55);--ox-color-skeleton:#e3e7ed;--ox-shadow-sm:0 1px 2px rgb(17 20 24 / .06), 0 0 0 1px rgb(17 20 24 / .02);--ox-shadow-md:0 4px 14px rgb(17 20 24 / .1);--ox-shadow-lg:0 18px 44px rgb(17 20 24 / .2)}:root{--ox-row-h:2.5rem;--ox-body-size:.8125rem}@media(prefers-reduced-motion:reduce){:root{--ox-motion-duration-fast:0ms;--ox-motion-duration-normal:0ms;--ox-motion-duration-slow:0ms}}:root{--ox-sidebar-w:14.5rem;--ox-topbar-h:3.25rem;--ox-bottomnav-h:3.75rem;--ox-banner-h:1.75rem;--ox-tap:2.75rem;--ox-safe-bottom:env(safe-area-inset-bottom, 0px);--ox-safe-top:env(safe-area-inset-top, 0px);--ox-font-size-2xs:.6875rem;--ox-hover:color-mix(in srgb, var(--ox-color-text) 5%, transparent);--ox-hairline:color-mix(in srgb, var(--ox-color-border) 65%, transparent);--ox-ease:var(--ox-motion-easing-standard);--ox-page:var(--ox-color-bg);--ox-card:var(--ox-color-surface-raised);--ox-sidebar:var(--ox-color-surface-raised);--ox-neutral-surface:color-mix(in srgb, var(--ox-color-text) 7%, transparent)}*,*:before,*:after{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0;font-family:var(--ox-font-family-sans);font-size:var(--ox-body-size);line-height:var(--ox-font-line-height-normal);background:var(--ox-page);color:var(--ox-color-text);-webkit-font-smoothing:antialiased}@media(max-width:959px){body{font-size:.9375rem}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}</style><link rel="stylesheet" href="styles-76JTOEZI.css" media="print" data-beasties-media="all"><noscript><link rel="stylesheet" href="styles-76JTOEZI.css"></noscript></head>
 <body>
   <app-root></app-root>
-<script src="main-O75FGT6E.js" type="module"></script><script>document.querySelectorAll('link[data-beasties-media]').forEach(function(l){l.media=l.getAttribute('data-beasties-media');l.removeAttribute('data-beasties-media')})</script></body>
+<script src="main-ZCQ6PTDY.js" type="module"></script><script>document.querySelectorAll('link[data-beasties-media]').forEach(function(l){l.media=l.getAttribute('data-beasties-media');l.removeAttribute('data-beasties-media')})</script></body>
 </html>
