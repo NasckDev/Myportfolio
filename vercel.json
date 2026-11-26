@@ -4,6 +4,10 @@
   "installCommand": "npm ci",
   "buildCommand": "npm run verify",
   "outputDirectory": "dist",
+  "functions": {
+    "api/coverlist.ts": { "maxDuration": 30 },
+    "api/nba.ts": { "maxDuration": 30 }
+  },
   "headers": [
     {
       "source": "/(.*)",

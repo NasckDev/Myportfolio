@@ -1,0 +1,8 @@
+.lab-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+.study{background:var(--card); border-radius:var(--r-xl); padding:10px; display:flex; flex-direction:column}
+.study .pic{border-radius:var(--r-lg); overflow:hidden; aspect-ratio:16/10; background:var(--soft)}
+.study .pic img{width:100%; height:100%; object-fit:cover; transition:transform .8s var(--ease)}
+.study:hover .pic img{transform:scale(1.035)}
+.study .tx{padding:16px 12px 12px; display:grid; gap:10px}
+@media (max-width:860px){ .lab-grid{grid-template-columns:1fr} .hud{grid-template-columns:1fr} }
+.study .chips{margin-top:2px}

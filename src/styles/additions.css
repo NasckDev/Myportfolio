@@ -1,0 +1,58 @@
+/* ───────── Acréscimos da versão de produção (fora do protótipo) ───────── */
+
+
+/* página carregando (só aparece se o chunk da rota demorar) */
+.page-loading{min-height:70vh}
+
+/* estudo de caso: acessibilidade e testes lado a lado */
+.case-grid.two-even{grid-template-columns:1fr 1fr}
+@media (max-width:860px){ .case-grid.two-even{grid-template-columns:1fr} }
+
+/* armadilha para robôs no contato */
+.hp{position:absolute; left:0; top:0; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap}
+.composer{position:relative}
+.field input[aria-invalid="true"]{border-color:var(--warn)}
+
+/* 404 */
+.nf .view-head{gap:18px}
+.nf .chap-k{margin:0}
+.nf .repo-list{margin-top:8px}
+
+/* alvos de toque de 44 px no celular */
+@media (pointer:coarse){
+  .seg button,.fbtn,.xchip,.side-proj a,.code-bar button{min-height:44px}
+  .vt button{height:44px; width:46px}
+  .note-bar .icon-btn{width:44px; height:44px}
+  .note-bar .btn{min-height:44px}
+}
+
+/* lightbox: imagem nunca maior que a tela */
+#lightbox .lb img{width:auto; height:auto}
+
+/* foco visível também sobre fundos coloridos dos cartões */
+.prow:focus-visible,.pcard:focus-visible,.jobc:focus-visible{outline:3px solid var(--ink); outline-offset:3px}
+.spot-stage .btn:focus-visible{outline-color:var(--pf)}
+
+/* o contador de visitas e a dica de atalho somem em telas estreitas para a linha não quebrar demais */
+@media (max-width:520px){ .foot .kbd-hint{display:none} }
+
+/* atributos width/height só reservam proporção; o tamanho vem do CSS */
+.me img{height:auto}
+
+/* aviso de movimento: compacto, no canto, sem cobrir o conteúdo principal; some sozinho */
+.note-bar{left:auto; right:16px; bottom:calc(env(safe-area-inset-bottom,0px) + 16px); transform:none; width:auto; max-width:min(440px,calc(100vw - 32px)); gap:8px; padding:8px 8px 8px 16px; border-radius:var(--r-md); font-size:14px; justify-content:flex-start; flex-wrap:nowrap; box-shadow:0 12px 32px rgba(0,0,0,.25)}
+.note-bar .icon-btn{width:38px; height:38px; flex:none}
+.note-bar .btn{min-height:38px; flex:none}
+@media (max-width:900px){ .note-bar{left:12px; right:12px; max-width:none; bottom:calc(env(safe-area-inset-bottom,0px) + 92px)} }
+
+/* telas estreitas (320 a 414 px): nada pode empurrar a largura da página */
+.about > *,.xp > *,.xp-body > *,.states > *,.mock > *{min-width:0}
+.row{grid-template-columns:44px minmax(0,1fr) auto}
+.row b,.row small{overflow-wrap:anywhere}
+@media (max-width:420px){
+  .mock{padding:14px}
+  .row{gap:8px; padding:8px; grid-template-columns:38px minmax(0,1fr) auto}
+  .row .d{width:38px; height:38px; font-size:17px}
+  .row .v{font-size:14px}
+  .mock-h{flex-wrap:wrap}
+}

@@ -6,3 +6,6 @@ dist
 .playwright-cli
 tmp
 output
+test-results
+playwright-report
+.playwright-mcp

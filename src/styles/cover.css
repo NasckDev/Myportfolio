@@ -1,0 +1,38 @@
+/* ───────── Capa de projeto: janela de navegador + celular, inteiros e alinhados ─────────
+   Tudo em unidades do contêiner (cqw = 1% da largura da capa), então a composição é a mesma em
+   qualquer tamanho de cartão. Altura da capa: 65cqw (16/10,4). Janela: 76cqw de largura, barra de
+   2,8cqw + tela 16:10 (47,5cqw) = 50,3cqw, centralizada na vertical. Celular: 18cqw, 390:844. */
+.cover{position:relative; overflow:hidden; container-type:inline-size; background:var(--pc,var(--accent)); color:var(--pf,#fff); border-radius:var(--r-lg); aspect-ratio:16/10.4}
+.cv-browser{position:absolute; left:12cqw; top:7.35cqw; width:76cqw; border-radius:1.4cqw; background:#E4E6EA; box-shadow:0 1.6cqw 4.8cqw rgba(0,0,0,.30); overflow:hidden; transition:transform .6s var(--ease)}
+.cover.has-phone .cv-browser{left:6cqw}
+.cv-bar{height:2.8cqw; display:flex; align-items:center; gap:.7cqw; padding:0 1.4cqw}
+.cv-bar i{width:.9cqw; height:.9cqw; border-radius:50%; background:#A9AFB8}
+.cv-screen{position:relative; aspect-ratio:16/10; overflow:hidden; background:#fff}
+.cv-screen img,.cv-screen video{position:absolute; inset:0; width:100%; height:100%; max-width:none; object-fit:cover; object-position:top center}
+.cv-video{opacity:0; transition:opacity .35s var(--ease); pointer-events:none}
+.cv-video.on{opacity:1}
+.cv-phone{position:absolute; right:5cqw; bottom:5cqw; width:18cqw; aspect-ratio:390/844; border-radius:2.8cqw; border:.85cqw solid #0c0c0e; background:#0c0c0e; overflow:hidden; box-shadow:0 1.6cqw 4.4cqw rgba(0,0,0,.42); transition:transform .6s var(--ease) .04s}
+.cv-phone img{width:100%; height:100%; max-width:none; object-fit:cover; object-position:top center}
+.cover-word{position:absolute; inset:0; display:grid; place-items:center; font-stretch:118%; font-weight:850; font-size:22cqw; letter-spacing:-.03em}
+
+/* hover: leve subida, sem rotação; parado fica reto */
+.pcard:hover .cv-browser,.pcard:focus-visible .cv-browser{transform:translateY(-1cqw)}
+.pcard:hover .cv-phone,.pcard:focus-visible .cv-phone{transform:translateY(-1.6cqw)}
+:root[data-motion="soft"] .cv-browser,:root[data-motion="soft"] .cv-phone{transition:none; transform:none!important}
+:root[data-motion="soft"] .cv-video{display:none}
+
+/* dentro de blocos que já têm a cor do projeto, a capa não repete o fundo */
+.jspot .cover,.spot-stage .cover{background:transparent; align-self:center; width:100%}
+
+/* entrada dos cartões e troca da vitrine */
+.pcard[data-rv] .cv-browser{transform:translateY(6cqw)}
+.pcard[data-rv].in .cv-browser{transform:none; transition:transform 1.1s var(--ease) calc(var(--d,0)*80ms + 120ms)}
+:root[data-motion="soft"] .pcard[data-rv] .cv-browser{transform:none}
+.spot-stage.go .cv-browser{animation:cv-in .9s var(--ease) both}
+.spot-stage.go .cv-phone{animation:cv-in .9s var(--ease) .1s both}
+@keyframes cv-in{from{transform:translateY(5cqw); opacity:0}}
+:root[data-motion="soft"] .spot-stage.go .cv-browser,:root[data-motion="soft"] .spot-stage.go .cv-phone{animation:none}
+
+/* prévia que segue o cursor na lista */
+#peek{container-type:inline-size}
+#peek .cv-browser{left:8cqw; top:3.6cqw; width:84cqw}

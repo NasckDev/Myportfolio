@@ -1,17 +1,19 @@
 import "@testing-library/jest-dom/vitest";
-import { cleanup } from "@testing-library/react";
+import { cleanup, configure } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
+import { reloadPrefs } from "@/lib/prefs";
 import { jsonResponse } from "./http";
 
-/**
- * APIs de navegador que o jsdom não implementa e que o app usa ao montar.
- * Ficam no módulo de setup porque PortfolioContext lê matchMedia já na importação.
- */
+/** Consultas de mídia simuladas: por padrão, desktop com mouse e sem pedido de menos movimento. */
+export const media = { hover: true, reduced: false };
 
-/** Simula um desktop com mouse: só "(pointer: fine)" casa; nada de reduced-motion nem toque. */
 function matchMediaMock(query: string): MediaQueryList {
+  const matches =
+    (query.includes("hover: hover") && media.hover) ||
+    (query.includes("pointer: fine") && media.hover) ||
+    (query.includes("prefers-reduced-motion") && media.reduced);
   return {
-    matches: query.includes("pointer: fine"),
+    matches,
     media: query,
     onchange: null,
     addListener: vi.fn(),
@@ -39,31 +41,51 @@ class ResizeObserverMock implements ResizeObserver {
   disconnect = vi.fn();
 }
 
+/** O teste do pré-render roda em ambiente Node (sem DOM). */
+const isDom = typeof window !== "undefined";
+
 function installBrowserMocks() {
+  if (!isDom) return;
   vi.stubGlobal("matchMedia", vi.fn(matchMediaMock));
   vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
   vi.stubGlobal("ResizeObserver", ResizeObserverMock);
-  vi.stubGlobal("requestIdleCallback", vi.fn((cb: IdleRequestCallback) => window.setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 }), 0)));
-  vi.stubGlobal("cancelIdleCallback", vi.fn((id: number) => window.clearTimeout(id)));
-  // Por padrão a API de contadores está "fora do ar"; cada teste sobrescreve quando precisa.
   vi.stubGlobal("fetch", vi.fn(async () => jsonResponse({ available: false })));
   window.scrollTo = vi.fn() as typeof window.scrollTo;
-  Element.prototype.scrollTo = vi.fn() as typeof Element.prototype.scrollTo;
   Element.prototype.scrollIntoView = vi.fn();
+  // jsdom não implementa <dialog> modal nem mídia.
+  HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogElement) {
+    this.setAttribute("open", "");
+  };
+  HTMLDialogElement.prototype.close = function close(this: HTMLDialogElement) {
+    if (!this.hasAttribute("open")) return;
+    this.removeAttribute("open");
+    this.dispatchEvent(new Event("close"));
+  };
+  HTMLMediaElement.prototype.play = vi.fn(() => Promise.resolve());
+  HTMLMediaElement.prototype.pause = vi.fn();
+  HTMLMediaElement.prototype.load = vi.fn();
 }
 
-// Primeira instalação antes de qualquer import de teste (módulos que leem matchMedia no carregamento).
 installBrowserMocks();
+// Páginas são carregadas sob demanda (lazy); a primeira transformação no jsdom pode passar de 1 s.
+configure({ asyncUtilTimeout: 15_000 });
 
 beforeEach(() => {
+  if (!isDom) return;
+  media.hover = true;
+  media.reduced = false;
   installBrowserMocks();
   localStorage.clear();
   sessionStorage.clear();
-  // O provider grava #case-<id> na URL e, ao montar, abre o case do hash: sem limpar, um teste reabre a gaveta do anterior.
+  // A abertura (boot) só aparece na primeira visita da sessão; nos testes, já foi vista.
+  sessionStorage.setItem("nasck-boot", "1");
+  document.documentElement.removeAttribute("data-theme");
+  document.documentElement.dataset.motion = "full";
   history.replaceState(null, "", "/");
+  reloadPrefs();
 });
 
 afterEach(() => {
-  cleanup();
+  if (isDom) cleanup();
   vi.useRealTimers();
 });

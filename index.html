@@ -2,30 +2,30 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Portfólio de Alexandre Diogo Nascimento, Engenheiro de Software Sênior · Frontend & Fullstack. Interfaces web rápidas, acessíveis e fáceis de manter, com quatro produtos completos e demo ao vivo."
-    />
-    <meta name="theme-color" content="#FAFBFD" />
-    <meta property="og:title" content="Alexandre Diogo Nascimento — Engenheiro de Software Sênior" />
-    <meta property="og:description" content="Engenheiro de Software Sênior · Frontend & Fullstack. React, Angular, TypeScript, Design Systems e acessibilidade." />
-    <meta property="og:type" content="website" />
-    <title>Alexandre Diogo Nascimento — Engenheiro de Software Sênior</title>
-    <!-- Fontes servidas do próprio domínio e pré-carregadas: chegam antes do JS e não deslocam o layout. -->
-    <link rel="preload" href="%BASE_URL%fonts/archivo-variable-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="%BASE_URL%fonts/jetbrains-mono-variable-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <title>Alexandre Diogo, engenheiro de software</title>
+    <meta name="description" content="Portfólio de Alexandre Diogo Nascimento, engenheiro de software. Front-end com React e TypeScript, back-end com Node.js e NestJS, com produtos completos, código aberto e demonstração ao vivo." />
+    <meta name="theme-color" content="#DCE1E7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0A0C0F" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href="/" />
+    <script>
+      /* Aplica tema, cor de destaque, cantos e movimento antes da primeira pintura (sem piscar). */
+      (function () {
+        var A = { laranja: ["#FF5A12", "#140700"], lima: ["#C8F135", "#141A00"], ambar: ["#FFB31A", "#1A1000"], vermelho: ["#E5252C", "#FFFFFF"], cobalto: ["#2D5BFF", "#FFFFFF"] };
+        var r = document.documentElement, p = {};
+        try { p = JSON.parse(localStorage.getItem("nasck-prefs") || "{}") || {}; } catch (e) {}
+        if (p.theme === "light" || p.theme === "dark") r.setAttribute("data-theme", p.theme);
+        var a = A[p.accent] || A.laranja;
+        r.style.setProperty("--accent", a[0]);
+        r.style.setProperty("--on-accent", a[1]);
+        if (p.corners === "square") { r.style.setProperty("--round", ".16"); r.style.setProperty("--pill", "5px"); }
+        var less = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+        r.dataset.motion = p.motion === "reduced" || (p.motion !== "full" && less) ? "soft" : "full";
+      })();
+    </script>
   </head>
   <body>
-    <script>
-      try {
-        var t = localStorage.getItem("adn4-theme");
-        document.body.dataset.theme = t === "dark" ? "dark" : "light";
-      } catch (e) {
-        document.body.dataset.theme = "light";
-      }
-    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

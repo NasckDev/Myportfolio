@@ -1,0 +1,38 @@
+/* ───────── Código ───────── */
+.code-wrap{display:grid; grid-template-columns:330px minmax(0,1fr); gap:14px}
+.code-tabs{display:grid; gap:8px; align-content:start}
+.code-tab{text-align:left; padding:16px; border-radius:var(--r-lg); background:var(--card); display:grid; gap:4px; border:2px solid transparent; transition:border-color .2s}
+.code-tab[aria-selected="true"]{border-color:var(--ink)}
+.code-tab b{font-weight:720; line-height:1.2}
+.code-tab small{font:500 12.5px var(--mono); color:var(--muted); overflow-wrap:anywhere}
+.code-tab .pj{display:inline-flex; align-items:center; gap:7px; font-size:13.5px; font-weight:640}
+.code-tab .pj::before{content:""; width:10px; height:10px; border-radius:calc(3px*var(--round)); background:var(--pc)}
+.code-win{background:var(--tile); color:#E7E9EC; border-radius:var(--r-lg); overflow:hidden; display:flex; flex-direction:column; min-width:0}
+.code-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px 12px 20px; border-bottom:1px solid var(--tile-line); font:500 13px var(--mono); color:var(--tile-muted)}
+.code-bar span{overflow-wrap:anywhere}
+.code-bar button{font:650 13.5px var(--font); color:var(--on-tile); border:1px solid var(--tile-line); border-radius:var(--pill); padding:7px 14px; flex:none}
+pre{margin:0; padding:20px; overflow-x:auto; font:450 13.5px/1.7 var(--mono); tab-size:2}
+pre .c{color:#A3ACB8} pre .s{color:#A9E5A2} pre .k{color:#FF9D73} pre .n{color:#F6C96C} pre .t{color:#86CBFF} pre .f{color:#E3D2FF}
+.code-why{padding:18px 20px 20px; border-top:1px solid var(--tile-line); display:grid; gap:10px; color:var(--on-tile)}
+.code-why a{font-weight:680; text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:2px}
+@media (max-width:860px){ .code-wrap{grid-template-columns:1fr} .code-tabs{grid-auto-flow:column; grid-auto-columns:78%; overflow-x:auto; padding-bottom:6px} }
+/* ───────── v5: GitHub em destaque ───────── */
+.ghband{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:22px; background:var(--tile); color:var(--on-tile); border-radius:var(--r-xl); padding:clamp(22px,3.4vw,46px)}
+.ghband .display{display:block; margin-top:10px; font-size:clamp(42px,7.2vw,116px); overflow-wrap:anywhere}
+.ghband .muted{color:var(--tile-muted)}
+.ghband:hover .ar{transform:rotate(45deg)}
+.code-tab{position:relative; overflow:hidden}
+.code-tab[aria-selected="true"]{border-color:var(--pc)}
+.code-tab[aria-selected="true"]::after{content:""; position:absolute; left:0; top:0; bottom:0; width:7px; background:var(--pc)}
+.code-win{position:relative; border-top:7px solid var(--pc,var(--accent))}
+.code-proj{display:inline-flex; align-items:center; gap:8px; font:700 14px var(--font); color:var(--on-tile); margin-right:12px}
+.code-proj::before{content:""; width:10px; height:10px; background:var(--pc); border-radius:calc(3px*var(--round))}
+.code-n{font:650 12.5px var(--font); color:var(--on-tile); border:1px solid var(--tile-line); border-radius:var(--pill); padding:2px 10px; margin-right:12px}
+.codepanel .code-win{border-top:0}
+.code-bar > span{display:flex; flex-wrap:wrap; align-items:center; gap:6px 0; min-width:0}
+.code-n{white-space:nowrap}
+.code-win.changed{animation:win-in .6s var(--ease)}
+.code-win.changed::before{content:""; position:absolute; inset:0; z-index:3; background:var(--pc); transform-origin:100% 50%; animation:wipe-out .65s cubic-bezier(.72,0,.2,1) forwards; pointer-events:none}
+.code-win.changed pre,.code-win.changed .code-why{animation:up .55s var(--ease) .28s both}
+@keyframes win-in{from{transform:translateY(16px)}}
+@keyframes wipe-out{0%{transform:scaleX(1)}100%{transform:scaleX(0)}}

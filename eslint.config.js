@@ -6,7 +6,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default defineConfig([
-  globalIgnores(["dist/", "v1/", "node_modules/", "public/", "output/", "tmp/", ".playwright-cli/", ".claude/", ".remember/"]),
+  globalIgnores(["dist/", "v1/", "node_modules/", "public/", "output/", "tmp/", ".playwright-cli/", ".playwright-mcp/", "playwright-report/", "test-results/", ".claude/", ".remember/"]),
   {
     files: ["**/*.{js,ts,tsx}"],
     extends: [js.configs.recommended, tseslint.configs.recommended],
@@ -25,7 +25,7 @@ export default defineConfig([
   },
   {
     // Vercel Functions, scripts de build e arquivos de configuração rodam em Node.
-    files: ["api/**/*.ts", "scripts/**/*.ts", "*.config.{js,ts}"],
+    files: ["api/**/*.ts", "scripts/**/*.ts", "e2e/**/*.ts", "*.config.{js,ts}"],
     languageOptions: { globals: globals.node },
   },
 ]);
