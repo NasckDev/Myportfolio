@@ -1,0 +1,1 @@
+import{W as ze}from"./main-OG5JGKGE.js";var r=[{path:``,providers:[ze()],loadComponent:()=>import(`./chunk-C8okTGVO.js`).then(t=>t.RequestWizard)}];export{r as WIZARD_ROUTES};

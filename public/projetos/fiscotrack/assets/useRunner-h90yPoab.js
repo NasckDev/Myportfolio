@@ -1,1 +1,0 @@
-import{r as e}from"./rolldown-runtime-XKyaHtl9.js";import{Yr as t}from"./AppThemeProvider-BZMqDPh7.js";import{b as n,x as r}from"./index-CfsLiawK.js";var i=e(t(),1);function a(){let e=r();return(0,i.useCallback)(async(t,r)=>{try{return await t(),!0}catch(t){return e.show(n(t,r),{tone:`danger`}),!1}},[e])}export{a as t};

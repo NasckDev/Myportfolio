@@ -1,0 +1,1 @@
+import{_ as e}from"./dropdown-CXtCuE8m.js";import{r as t}from"./AppTypography-DWC2fNAb.js";import{Rr as n}from"./AppThemeProvider-wLNsIpNK.js";var r=n();function i({cents:n,signed:i=!1,...a}){return(0,r.jsx)(t,{mono:!0,tone:i?n<0?`loss`:n>0?`gain`:void 0:void 0,...a,children:e(n)})}export{i as t};
