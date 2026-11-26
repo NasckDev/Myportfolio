@@ -1,0 +1,26 @@
+/* ───────── Case ───────── */
+.back{display:inline-flex; align-items:center; gap:10px; font-weight:650; font-size:15px; min-height:44px}
+.back .c{width:38px; height:38px; border-radius:var(--pill); border:1.5px solid var(--line); display:grid; place-items:center; transition:transform .3s var(--ease)}
+.back:hover .c{transform:translateX(-4px)}
+.case-head{display:grid; gap:18px; padding-bottom:clamp(18px,2.5vw,30px)}
+.case-meta{display:flex; flex-wrap:wrap; gap:12px 26px; align-items:center}
+.case-meta .links{margin:0 0 0 auto}
+.case-grid{display:grid; grid-template-columns:5fr 7fr; gap:14px; margin-top:14px}
+.block{background:var(--card); border-radius:var(--r-lg); padding:clamp(20px,2.6vw,32px); display:grid; gap:14px; align-content:start}
+.block h2{font-stretch:78%; font-weight:780; font-size:24px; line-height:1.1}
+.dec li{display:grid; grid-template-columns:14px 1fr; gap:12px; padding:12px 0; border-top:1px solid var(--line)}
+.dec li:first-child{border-top:0; padding-top:0}
+.dec li::before{content:""; width:10px; height:10px; margin-top:8px; background:var(--pc,var(--accent)); border-radius:calc(3px*var(--round))}
+.proof{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:14px}
+.proof .tile{background:var(--tile); color:var(--on-tile)}
+.proof .tile span{color:var(--tile-muted); font-weight:560; font-size:15px; line-height:1.3}
+.gallery{display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:10px; scrollbar-width:thin}
+.gallery figure{flex:none; width:min(78vw,720px); scroll-snap-align:start; display:grid; gap:10px; align-content:start}
+.gallery figure.m{width:min(46vw,230px)}
+.gallery img{border-radius:var(--r-md); border:1px solid var(--line); width:100%}
+.gallery figcaption{font-size:14.5px; color:var(--muted)}
+.next{display:flex; justify-content:space-between; align-items:center; gap:20px; background:var(--pc); color:var(--pf); border-radius:var(--r-xl); padding:clamp(22px,3.4vw,44px); margin-top:14px}
+.next .display{font-size:clamp(44px,8vw,120px)}
+.next .go{width:64px; height:64px; border-radius:var(--pill); background:var(--pf); color:var(--pc); display:grid; place-items:center; flex:none; transition:transform .35s var(--ease)}
+.next:hover .go{transform:rotate(45deg)}
+@media (max-width:860px){ .case-grid,.proof{grid-template-columns:1fr} .case-meta .links{margin-left:0} }

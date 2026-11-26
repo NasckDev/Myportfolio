@@ -7,566 +7,284 @@
     <title>Nasck UI: wrappers de referência sobre Ant Design e NG-ZORRO</title>
     <meta
       name="description"
-      content="Biblioteca de componentes App* sobre Ant Design (React) e NG-ZORRO (Angular), com a mesma API nos dois frameworks, tema central e Storybook."
+      content="Biblioteca de componentes App* sobre Ant Design (React) e NG-ZORRO (Angular), com a mesma API nos dois frameworks, tema central com contraste AA e dois Storybooks."
     />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-    <style>
-      @font-face {
-        font-family: 'Space Grotesk Variable';
-        font-weight: 300 700;
-        font-display: swap;
-        src: url('./fonts/space-grotesk-latin-wght-normal.woff2') format('woff2-variations');
-      }
-      @font-face {
-        font-family: 'DM Sans Variable';
-        font-weight: 100 1000;
-        font-display: swap;
-        src: url('./fonts/dm-sans-latin-wght-normal.woff2') format('woff2-variations');
-      }
-      @font-face {
-        font-family: 'Space Mono';
-        font-weight: 400;
-        font-display: swap;
-        src: url('./fonts/space-mono-latin-400-normal.woff2') format('woff2');
-      }
-
-      :root {
-        --bg: #ffffff;
-        --bg-soft: #f5f5f5;
-        --ink: #0a0a0a;
-        --ink-soft: #3d3d3d;
-        --line: #d9d9d9;
-        --accent: #ff5b14;
-        --accent-ink: #0a0a0a;
-        --link: #b8400c;
-        --grid: rgba(10, 10, 10, 0.06);
-        --font-head: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
-        --font-body: 'DM Sans Variable', 'DM Sans', system-ui, sans-serif;
-        --font-mono: 'Space Mono', ui-monospace, Consolas, monospace;
-        color-scheme: light;
-      }
-      @media (prefers-color-scheme: dark) {
-        :root:not([data-theme='light']) {
-          --bg: #0a0a0a;
-          --bg-soft: #141414;
-          --ink: #f5f5f5;
-          --ink-soft: #c4c4c4;
-          --line: #3a3a3a;
-          --link: #ff8a54;
-          --grid: rgba(255, 255, 255, 0.07);
-          color-scheme: dark;
+    <script>
+      (function () {
+        var saved = null;
+        try {
+          saved = localStorage.getItem('nasck-ui-theme');
+        } catch (error) {
+          saved = null;
         }
-      }
-      :root[data-theme='dark'] {
-        --bg: #0a0a0a;
-        --bg-soft: #141414;
-        --ink: #f5f5f5;
-        --ink-soft: #c4c4c4;
-        --line: #3a3a3a;
-        --link: #ff8a54;
-        --grid: rgba(255, 255, 255, 0.07);
-        color-scheme: dark;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-      html {
-        scroll-behavior: smooth;
-      }
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--ink);
-        font-family: var(--font-body);
-        font-size: 17px;
-        line-height: 1.55;
-        background-image:
-          linear-gradient(var(--grid) 1px, transparent 1px),
-          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-        background-size: 48px 48px;
-        background-position: -1px -1px;
-      }
-      a {
-        color: var(--link);
-      }
-      :focus-visible {
-        outline: 3px solid var(--accent);
-        outline-offset: 3px;
-      }
-      .skip {
-        position: absolute;
-        left: 16px;
-        top: -64px;
-        background: var(--accent);
-        color: var(--accent-ink);
-        padding: 10px 16px;
-        border-radius: 4px;
-        font-weight: 600;
-        z-index: 10;
-      }
-      .skip:focus {
-        top: 16px;
-      }
-      .wrap {
-        width: min(1120px, 100% - 32px);
-        margin-inline: auto;
-      }
-      header.top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 20px 0;
-      }
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-family: var(--font-head);
-        font-weight: 700;
-        font-size: 22px;
-        color: var(--ink);
-        text-decoration: none;
-        white-space: nowrap;
-      }
-      .brand svg {
-        width: 32px;
-        height: 32px;
-      }
-      nav.links {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex-wrap: wrap;
-      }
-      nav.links a,
-      .toggle {
-        min-height: 44px;
-        min-width: 44px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 14px;
-        border-radius: 4px;
-        color: var(--ink);
-        text-decoration: none;
-        font-weight: 500;
-      }
-      nav.links a:hover,
-      .toggle:hover {
-        background: var(--bg-soft);
-      }
-      .toggle {
-        border: 1px solid var(--line);
-        background: var(--bg);
-        font: inherit;
-        cursor: pointer;
-      }
-      .hero {
-        padding: 56px 0 40px;
-      }
-      .eyebrow {
-        font-family: var(--font-mono);
-        font-size: 13px;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        color: var(--ink-soft);
-        margin: 0 0 16px;
-      }
-      .eyebrow b {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        background: var(--accent);
-        margin-right: 8px;
-      }
-      h1 {
-        font-family: var(--font-head);
-        font-size: clamp(2.3rem, 6vw, 4.1rem);
-        line-height: 1.02;
-        letter-spacing: -0.03em;
-        margin: 0 0 20px;
-        max-width: 19ch;
-      }
-      h1 em {
-        font-style: normal;
-        box-shadow: inset 0 -0.32em 0 var(--accent);
-      }
-      .lead {
-        font-size: clamp(1.05rem, 2.4vw, 1.3rem);
-        max-width: 56ch;
-        color: var(--ink-soft);
-        margin: 0 0 28px;
-      }
-      .cta {
-        display: grid;
-        gap: 14px;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        max-width: 720px;
-      }
-      .card-link {
-        display: block;
-        padding: 20px;
-        background: var(--bg);
-        border: 1px solid var(--ink);
-        border-radius: 4px;
-        color: var(--ink);
-        text-decoration: none;
-        box-shadow: 6px 6px 0 var(--accent);
-        transition:
-          transform 0.15s ease,
-          box-shadow 0.15s ease;
-      }
-      .card-link:hover {
-        transform: translate(-2px, -2px);
-        box-shadow: 8px 8px 0 var(--accent);
-      }
-      .card-link strong {
-        display: block;
-        font-family: var(--font-head);
-        font-size: 1.35rem;
-      }
-      .card-link span {
-        display: block;
-        color: var(--ink-soft);
-        font-size: 0.95rem;
-        margin-top: 4px;
-      }
-      .card-link code {
-        font-family: var(--font-mono);
-        font-size: 0.85rem;
-        color: var(--link);
-      }
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        border: 1px solid var(--line);
-        background: var(--bg);
-        margin: 40px 0;
-      }
-      .stats div {
-        padding: 18px 20px;
-        border-right: 1px solid var(--line);
-        border-bottom: 1px solid var(--line);
-        margin: 0 -1px -1px 0;
-      }
-      .stats dt {
-        font-size: 0.85rem;
-        color: var(--ink-soft);
-        order: 2;
-      }
-      .stats dd {
-        margin: 0;
-        font-family: var(--font-head);
-        font-size: 2.2rem;
-        font-weight: 700;
-        line-height: 1.1;
-      }
-      .stats div {
-        display: flex;
-        flex-direction: column;
-      }
-      section.block {
-        padding: 36px 0;
-      }
-      h2 {
-        font-family: var(--font-head);
-        font-size: clamp(1.6rem, 4vw, 2.2rem);
-        letter-spacing: -0.02em;
-        margin: 0 0 12px;
-      }
-      .features {
-        display: grid;
-        gap: 16px;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      }
-      .feature {
-        background: var(--bg);
-        border: 1px solid var(--line);
-        border-radius: 4px;
-        padding: 20px;
-      }
-      .feature h3 {
-        margin: 0 0 6px;
-        font-family: var(--font-head);
-        font-size: 1.15rem;
-      }
-      .feature p {
-        margin: 0;
-        color: var(--ink-soft);
-      }
-      .compare {
-        display: grid;
-        gap: 16px;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      }
-      figure {
-        margin: 0;
-      }
-      figcaption {
-        font-family: var(--font-mono);
-        font-size: 13px;
-        color: var(--ink-soft);
-        margin-bottom: 6px;
-      }
-      pre {
-        margin: 0;
-        padding: 16px;
-        overflow: auto;
-        background: var(--bg-soft);
-        border: 1px solid var(--line);
-        border-radius: 4px;
-        font-family: var(--font-mono);
-        font-size: 13.5px;
-        line-height: 1.6;
-      }
-      .chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 0;
-        list-style: none;
-        margin: 16px 0 0;
-      }
-      .chips li {
-        padding: 6px 12px;
-        border: 1px solid var(--line);
-        background: var(--bg);
-        border-radius: 4px;
-        font-family: var(--font-mono);
-        font-size: 13px;
-      }
-      footer {
-        border-top: 1px solid var(--line);
-        margin-top: 40px;
-        padding: 28px 0 48px;
-        color: var(--ink-soft);
-        font-size: 0.95rem;
-      }
-      @media (max-width: 560px) {
-        header.top {
-          flex-wrap: wrap;
-          padding: 14px 0 6px;
-        }
-        nav.links {
-          width: 100%;
-          gap: 2px;
-        }
-        nav.links a,
-        .toggle {
-          padding: 0 10px;
-          font-size: 15px;
-        }
-        body {
-          font-size: 16px;
-        }
-        .hero {
-          padding-top: 32px;
-        }
-        .card-link {
-          box-shadow: 4px 4px 0 var(--accent);
-        }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        * {
-          transition: none !important;
-          scroll-behavior: auto !important;
-        }
-      }
-    </style>
+        var dark =
+          saved === 'dark' ||
+          (saved !== 'light' &&
+            window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      })();
+    </script>
+    <style>:root{--nui-ink:#111;--nui-brand:#f0501c;--nui-on-brand:#160700;--nui-brand-text:#c73d10;--nui-brand-text-hover:#9e2f0a;--nui-paper:#fafaf7;--nui-surface:#fff;--nui-sand:#e9e6de;--nui-grid:#d9d6cf;--nui-hairline:#e2ded6;--nui-muted:#5e5a55;--nui-body:#3f3c38;--nui-radius:3px;--nui-border:1px solid var(--nui-ink);--nui-shadow-primary:4px 4px 0 var(--nui-ink);--nui-font-ui:"Geist Variable", "Geist", Arial, sans-serif;--nui-font-mono:"Geist Mono Variable", "Geist Mono", ui-monospace, monospace;--nui-panel:#111;--nui-panel-line:#3a3835;--nui-panel-text:#edeae4;--nui-panel-muted:#a8a39b;--nui-panel-soft:#cfcac1;--nui-panel-accent:#ff8a5c;--lightningcss-light:initial;--lightningcss-dark: ;color-scheme:light}:root[data-theme=dark]{--nui-ink:#fafaf7;--nui-paper:#121110;--nui-surface:#1a1917;--nui-sand:#2a2826;--nui-grid:#2a2826;--nui-hairline:#33312e;--nui-muted:#a8a39b;--nui-body:#d6d2ca;--nui-brand-text:#ff8a5c;--nui-brand-text-hover:#ffb08f;--nui-panel:#0b0a09;--lightningcss-light: ;--lightningcss-dark:initial;color-scheme:dark}*,:before,:after{box-sizing:border-box}html{scroll-behavior:smooth}body{background-color:var(--nui-paper);background-image:radial-gradient(var(--nui-grid) 1px, transparent 1px);min-height:100vh;color:var(--nui-ink);font-family:var(--nui-font-ui);-webkit-text-size-adjust:100%;background-size:20px 20px;margin:0;font-size:16px;line-height:1.55}a{color:var(--nui-brand-text);text-underline-offset:3px}a:hover{color:var(--nui-brand-text-hover)}:focus-visible{outline:3px solid var(--nui-brand);outline-offset:3px}code,pre,.mono{font-family:var(--nui-font-mono)}.skip{z-index:10;background:var(--nui-brand);color:var(--nui-on-brand);border-radius:var(--nui-radius);padding:12px 16px;font-weight:700;position:absolute;top:-80px;left:16px}.skip:focus{color:var(--nui-on-brand);top:12px}.top{background:var(--nui-paper);border-bottom:var(--nui-border);flex-wrap:wrap;align-items:center;gap:4px 28px;padding:14px clamp(16px,3vw,40px);display:flex}.brand{min-height:44px;color:var(--nui-ink);align-items:center;gap:10px;text-decoration:none;display:inline-flex}.brand:hover{color:var(--nui-ink)}.brand-name{letter-spacing:-.02em;font-size:18px;font-weight:800}.version{font:500 12px/1.4 var(--nui-font-mono);border:var(--nui-border);padding:1px 6px}.logo-box{fill:var(--nui-ink)}.logo-n{stroke:var(--nui-paper)}.nav{flex-wrap:wrap;gap:0 20px;font-size:15px;font-weight:500;display:flex}.nav a{min-height:44px;color:var(--nui-muted);align-items:center;text-decoration:none;display:inline-flex}.nav a:hover{color:var(--nui-ink);text-underline-offset:8px;text-decoration:underline;text-decoration-thickness:1px}.nav a[aria-current=page]{color:var(--nui-ink);text-decoration:underline;-webkit-text-decoration-color:var(--nui-brand);text-decoration-color:var(--nui-brand);text-underline-offset:8px;text-decoration-thickness:3px}.actions{gap:8px;margin-left:auto;display:flex}.btn{border:var(--nui-border);border-radius:var(--nui-radius);background:var(--nui-surface);min-height:48px;color:var(--nui-ink);font:600 15px/1.2 var(--nui-font-ui);cursor:pointer;justify-content:center;align-items:center;gap:10px;padding:0 18px;text-decoration:none;transition:transform .15s,box-shadow .15s;display:inline-flex}.btn:hover{color:var(--nui-ink);background:var(--nui-sand)}.btn-small{min-height:44px;padding:0 14px;font-size:14px}.btn-icon{width:44px;min-height:44px;padding:0}.btn-icon svg{width:18px;height:18px}.btn-primary{border-color:var(--nui-ink);background:var(--nui-brand);color:var(--nui-on-brand);box-shadow:var(--nui-shadow-primary);padding:0 20px;font-weight:700}.btn-primary:hover{background:var(--nui-brand);color:var(--nui-on-brand);box-shadow:5px 5px 0 var(--nui-ink);transform:translate(-1px,-1px)}.btn-primary:active{box-shadow:1px 1px 0 var(--nui-ink);transform:translate(3px,3px)}.icon-moon,[data-theme=dark] .icon-sun{display:block}.icon-sun,[data-theme=dark] .icon-moon{display:none}.page{flex-direction:column;gap:40px;max-width:1280px;margin:0 auto;padding:48px clamp(16px,3vw,40px) 56px;display:flex}.label{font:500 13px/1.4 var(--nui-font-mono);color:var(--nui-muted);text-transform:uppercase;margin:0}.hero{flex-wrap:wrap;align-items:stretch;gap:40px;display:flex}.hero-text{flex-direction:column;flex:480px;justify-content:center;gap:22px;min-width:0;display:flex}h1{letter-spacing:-.045em;text-wrap:balance;margin:0;font-size:clamp(46px,6vw,84px);font-weight:800;line-height:.95}h1 mark{background:var(--nui-brand);color:var(--nui-on-brand);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 .12em}.lead{max-width:520px;color:var(--nui-body);margin:0;font-size:18px;line-height:1.55}.cta{flex-wrap:wrap;gap:10px;display:flex}.code{border:var(--nui-border);background:var(--nui-panel);min-width:0;color:var(--nui-panel-text);flex-direction:column;flex:480px;margin:0;display:flex}.code-head{border-bottom:1px solid var(--nui-panel-line);font:500 13px/1.4 var(--nui-font-mono);color:#fafaf7;justify-content:space-between;gap:12px;padding:10px 14px;display:flex}.code-head+pre+.code-head{border-top:1px solid var(--nui-panel-line)}.code-head span:last-child{color:var(--nui-panel-muted)}.code pre{font:400 14px/1.7 var(--nui-font-mono);color:var(--nui-panel-text);margin:0;padding:18px 16px;overflow-x:auto}.code pre:focus-visible{outline-offset:-3px}.code .prop{color:var(--nui-panel-accent)}.code figcaption{border-top:1px solid var(--nui-panel-line);color:var(--nui-panel-muted);margin-top:auto;padding:12px 14px;font-size:13px}.stats{border:var(--nui-border);background:var(--nui-surface);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:0;display:grid;overflow:hidden}.stats div{border-right:var(--nui-border);border-bottom:var(--nui-border);flex-direction:column;gap:4px;margin:0 -1px -1px 0;padding:22px;display:flex}.stats dt{font:500 12px/1.4 var(--nui-font-mono);color:var(--nui-muted);text-transform:uppercase}.stats dd{margin:0;display:contents}.stats .value{letter-spacing:-.04em;font-variant-numeric:tabular-nums;font-size:52px;font-weight:800;line-height:1}.stats .note{color:var(--nui-muted);font-size:14px}.section{flex-direction:column;gap:18px;scroll-margin-top:16px;display:flex}.section-head{flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;display:flex}h2{letter-spacing:-.03em;margin:0;font-size:clamp(30px,4vw,36px);font-weight:800;line-height:1.1}.section-head a{align-items:center;min-height:44px;font-size:15px;font-weight:600;display:inline-flex}.specimens{grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px;display:grid}.specimen{background:var(--nui-surface);border:var(--nui-border);flex-direction:column;min-width:0;margin:0;display:flex}.specimen-head{border-bottom:1px solid var(--nui-hairline);font:500 13px/1.4 var(--nui-font-mono);justify-content:space-between;gap:12px;padding:10px 14px;display:flex}.specimen-head span:last-child{color:var(--nui-muted);text-align:right}.specimen-body{flex:1;min-height:120px;padding:22px 18px}.specimen-body noscript{color:var(--nui-muted);font-size:14px}.builder{border:var(--nui-border);background:var(--nui-panel);color:#fafaf7;flex-wrap:wrap;grid-column:1/-1;align-items:center;gap:20px 28px;padding:22px;display:flex}.builder-text{flex-direction:column;flex:260px;gap:8px;display:flex}.builder-text .label{color:var(--nui-panel-muted)}.builder-title{letter-spacing:-.02em;margin:0;font-size:24px;font-weight:800;line-height:1.2}.builder-text p:not(.label):not(.builder-title){color:var(--nui-panel-soft);margin:0;font-size:14px}.builder a{color:#fafaf7;min-height:44px;-webkit-text-decoration-color:var(--nui-brand);text-decoration-color:var(--nui-brand);align-self:flex-start;align-items:center;font-size:15px;font-weight:600;text-decoration-thickness:2px;display:inline-flex}.builder a:hover{color:var(--nui-panel-accent)}.swatches{flex-wrap:wrap;gap:14px;margin:0;padding:0;list-style:none;display:flex}.swatch{min-width:84px;font:500 12px/1.3 var(--nui-font-mono);text-align:center;flex-direction:column;align-items:center;gap:6px;display:flex}.swatch-chip{width:56px;height:56px;font:700 18px/1 var(--nui-font-ui);place-items:center;display:grid}.swatch.is-current .swatch-chip{outline-offset:3px;outline:2px solid #fafaf7}.swatch-name{color:var(--nui-panel-muted)}.facts{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;margin:0;padding:0;list-style:none;display:grid}.fact{background:var(--nui-surface);border:var(--nui-border);flex-direction:column;display:flex}.fact h3{border-bottom:1px solid var(--nui-hairline);font:500 13px/1.4 var(--nui-font-mono);margin:0;padding:10px 14px}.fact p{color:var(--nui-body);margin:0;padding:16px 14px 18px;font-size:15px}.chips{flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none;display:flex}.chips li{border:var(--nui-border);border-radius:var(--nui-radius);background:var(--nui-surface);font:500 13px/1.4 var(--nui-font-mono);padding:4px 10px}footer{border-top:var(--nui-border);background:var(--nui-paper)}footer p{max-width:1280px;color:var(--nui-muted);margin:0 auto;padding:24px clamp(16px,3vw,40px) 40px;font-size:14px}@media (width<=640px){.top{gap:0 16px;padding-top:10px;padding-bottom:6px}.nav{order:3;gap:0 18px;width:100%}.page{gap:32px;padding-top:32px}.hero{gap:32px}.lead{font-size:17px}.code pre{font-size:13px}.stats div{padding:18px}.stats .value{font-size:44px}.builder{padding:20px 18px}}@media (width<=360px){.version{display:none}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,:before,:after{transition:none!important;animation:none!important}}</style>
+    <script type="module" crossorigin src="./assets/index-bB54bD7l.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BleophZH.css">
   </head>
   <body>
     <a class="skip" href="#conteudo">Pular para o conteúdo</a>
-    <div class="wrap">
-      <header class="top">
-        <a class="brand" href="./" aria-label="Nasck UI, início">
-          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-            <rect width="32" height="32" rx="3" fill="#0a0a0a" />
-            <path d="M8 24V8h3.6l8.8 11V8H24v16h-3.6L11.6 13v11z" fill="#ff5b14" />
+    <header class="top">
+      <a class="brand" href="./">
+        <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" focusable="false">
+          <rect class="logo-box" width="28" height="28" rx="3" />
+          <path
+            class="logo-n"
+            d="M8 20V8l12 12V8"
+            stroke-width="2.6"
+            fill="none"
+            stroke-linejoin="round"
+          />
+          <rect x="19" y="3" width="6" height="6" fill="#F0501C" />
+        </svg>
+        <span class="brand-name">Nasck UI</span>
+        <span class="version">v1.0</span>
+      </a>
+      <nav class="nav" aria-label="Navegação do Nasck UI">
+        <a href="./" aria-current="page">Visão geral</a>
+        <a href="./react/index.html?path=/docs/componentes-appbutton--docs">Componentes</a>
+        <a href="./react/index.html?path=/story/tema-tokens--atual">Tokens</a>
+        <a href="./react/index.html?path=/story/tema-construtor-de-tema--construtor"
+          >Construtor de tema</a
+        >
+        <a href="#acessibilidade">Acessibilidade</a>
+      </nav>
+      <div class="actions">
+        <a class="btn btn-small" href="https://github.com/NasckDev/nasck-ui">GitHub</a>
+        <button
+          class="btn btn-icon"
+          type="button"
+          id="theme-toggle"
+          aria-label="Tema escuro"
+          aria-pressed="false"
+        >
+          <svg
+            class="icon-moon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" />
           </svg>
-          Nasck UI
-        </a>
-        <nav class="links" aria-label="Principal">
-          <a href="#api">Mesma API</a>
-          <a href="#componentes">Componentes</a>
-          <a href="https://github.com/NasckDev/nasck-ui">GitHub</a>
-          <button class="toggle" type="button" id="theme-toggle" aria-pressed="false">
-            <span id="theme-label">Tema escuro</span>
-          </button>
-        </nav>
-      </header>
+          <svg
+            class="icon-sun"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+            />
+          </svg>
+        </button>
+      </div>
+    </header>
 
-      <main id="conteudo">
-        <section class="hero" aria-labelledby="titulo">
-          <p class="eyebrow"><b></b>Biblioteca de referência · React e Angular</p>
-          <h1 id="titulo">A camada de componentes, <em>uma API só</em>.</h1>
+    <main id="conteudo" class="page">
+      <section class="hero" aria-labelledby="titulo">
+        <div class="hero-text">
+          <p class="label">Biblioteca de referência / React + Angular</p>
+          <h1 id="titulo">A camada de componentes, <mark>uma API só.</mark></h1>
           <p class="lead">
-            Wrappers <code>App*</code> sobre o Ant Design e o NG-ZORRO, com os mesmos nomes e as
-            mesmas props nos dois frameworks, tema central com contraste AA verificado e Storybook
-            com todos os estados.
+            Wrappers sobre o Ant Design e o NG-ZORRO com os mesmos nomes e props nos dois
+            frameworks, tema central com contraste AA verificado e todos os estados no Storybook.
           </p>
           <div class="cta">
-            <a class="card-link" href="./react/index.html">
-              <strong>Storybook React</strong>
-              <span>Wrappers sobre o Ant Design 6 e ECharts.</span>
-              <span><code>react/</code></span>
-            </a>
-            <a class="card-link" href="./angular/index.html">
-              <strong>Storybook Angular</strong>
-              <span>Wrappers standalone sobre o NG-ZORRO 22 e ngx-echarts.</span>
-              <span><code>angular/</code></span>
-            </a>
+            <a class="btn btn-primary" href="#especimes">Ver componentes</a>
+            <a class="btn" href="./react/index.html">Storybook React</a>
+            <a class="btn" href="./angular/index.html">Storybook Angular</a>
           </div>
-          <dl class="stats" aria-label="Números do projeto">
-            <div>
-              <dt>componentes no contrato</dt>
-              <dd>28</dd>
-            </div>
-            <div>
-              <dt>stories no total</dt>
-              <dd>246</dd>
-            </div>
-            <div>
-              <dt>presets de paleta</dt>
-              <dd>4</dd>
-            </div>
-            <div>
-              <dt>ícones compartilhados</dt>
-              <dd>22</dd>
-            </div>
-          </dl>
-        </section>
+        </div>
+        <figure class="code" aria-label="O mesmo botão em React e em Angular">
+          <div class="code-head"><span>React</span><span>Pedido.tsx</span></div>
+          <pre tabindex="0"><code>&lt;AppButton
+  <span class="prop">variant</span>="primary"
+  <span class="prop">size</span>="medium"
+  <span class="prop">loading</span>={salvando}
+&gt;Salvar pedido&lt;/AppButton&gt;</code></pre>
+          <div class="code-head"><span>Angular</span><span>pedido.component.html</span></div>
+          <pre tabindex="0"><code>&lt;app-button
+  <span class="prop">variant</span>="primary"
+  <span class="prop">size</span>="medium"
+  [<span class="prop">loading</span>]="salvando"
+&gt;Salvar pedido&lt;/app-button&gt;</code></pre>
+          <figcaption>
+            As mesmas props nos dois. Um teste de contrato falha se elas divergirem.
+          </figcaption>
+        </figure>
+      </section>
 
-        <section class="block" aria-labelledby="porque">
-          <h2 id="porque">Por que wrappers?</h2>
-          <div class="features">
-            <div class="feature">
-              <h3>Telas nunca tocam a biblioteca</h3>
-              <p>
-                O app usa só <code>AppButton</code>, <code>AppTable</code> e companhia. Trocar ou
-                atualizar o Ant Design vira uma mudança em um lugar, e o lint barra o import direto.
+      <dl class="stats" aria-label="Números da biblioteca">
+        <div>
+          <dt>Componentes</dt>
+          <dd>
+            <span class="value">28</span>
+            <span class="note">mesma API nos dois frameworks</span>
+          </dd>
+        </div>
+        <div>
+          <dt>Stories</dt>
+          <dd>
+            <span class="value">246</span>
+            <span class="note">todas sem violações no axe</span>
+          </dd>
+        </div>
+        <div>
+          <dt>Presets de tema</dt>
+          <dd>
+            <span class="value">4</span>
+            <span class="note">contraste AA calculado</span>
+          </dd>
+        </div>
+        <div>
+          <dt>Ícones</dt>
+          <dd>
+            <span class="value">22</span>
+            <span class="note">compartilhados</span>
+          </dd>
+        </div>
+      </dl>
+
+      <section class="section" id="especimes" aria-labelledby="especimes-titulo">
+        <div class="section-head">
+          <h2 id="especimes-titulo">Espécimes</h2>
+          <a href="./react/index.html?path=/docs/componentes-appbutton--docs"
+            >Todos os 28 componentes</a
+          >
+        </div>
+        <div class="specimens">
+          <figure class="specimen" aria-labelledby="esp-button">
+            <figcaption class="specimen-head">
+              <span id="esp-button">AppButton</span><span>5 variantes, carregando</span>
+            </figcaption>
+            <div class="specimen-body" data-specimen="button">
+              <noscript>Ative o JavaScript para ver o componente.</noscript>
+            </div>
+          </figure>
+          <figure class="specimen" aria-labelledby="esp-input">
+            <figcaption class="specimen-head">
+              <span id="esp-input">AppInput</span><span>com erro</span>
+            </figcaption>
+            <div class="specimen-body" data-specimen="input">
+              <noscript>Ative o JavaScript para ver o componente.</noscript>
+            </div>
+          </figure>
+          <figure class="specimen" aria-labelledby="esp-choice">
+            <figcaption class="specimen-head">
+              <span id="esp-choice">AppSwitch, AppCheckbox</span><span>teclado</span>
+            </figcaption>
+            <div class="specimen-body" data-specimen="choice">
+              <noscript>Ative o JavaScript para ver o componente.</noscript>
+            </div>
+          </figure>
+          <figure class="specimen" aria-labelledby="esp-tag">
+            <figcaption class="specimen-head">
+              <span id="esp-tag">AppTag, AppStatus</span><span>status</span>
+            </figcaption>
+            <div class="specimen-body" data-specimen="tag">
+              <noscript>Ative o JavaScript para ver o componente.</noscript>
+            </div>
+          </figure>
+
+          <section class="builder" aria-labelledby="construtor-titulo">
+            <div class="builder-text">
+              <p class="label">Construtor de tema</p>
+              <p class="builder-title" id="construtor-titulo">
+                Troque a cor e veja o contraste na hora.
               </p>
+              <p>Gera os tokens para React e Angular de uma vez.</p>
+              <a href="./react/index.html?path=/story/tema-construtor-de-tema--construtor"
+                >Abrir o construtor de tema</a
+              >
             </div>
-            <div class="feature">
-              <h3>Contrato testado nos dois lados</h3>
-              <p>
-                Um teste lê o código do React e do Angular e falha se um nome de prop ou de input
-                divergir do contrato.
-              </p>
-            </div>
-            <div class="feature">
-              <h3>Tema central, contraste calculado</h3>
-              <p>
-                Preset de paleta vira tokens do antd e variáveis do NG-ZORRO. O construtor de tema
-                verifica o contraste AA nos dois modos antes de exportar.
-              </p>
-            </div>
-          </div>
-        </section>
+            <ul class="swatches" aria-label="Presets e contraste do texto sobre a cor primária">
+              <li class="swatch is-current"><span class="swatch-chip" style="background:#F0501C;color:#160700" aria-hidden="true">Aa</span><span class="swatch-name">Nasck</span><span class="swatch-ratio">5,5:1 AA</span></li><li class="swatch"><span class="swatch-chip" style="background:#0F766E;color:#FFFFFF" aria-hidden="true">Aa</span><span class="swatch-name">InsightHub</span><span class="swatch-ratio">5,4:1 AA</span></li><li class="swatch"><span class="swatch-chip" style="background:#0E3B2E;color:#FFFFFF" aria-hidden="true">Aa</span><span class="swatch-name">FiscoTrack</span><span class="swatch-ratio">12,4:1 AA</span></li><li class="swatch"><span class="swatch-chip" style="background:#2967FF;color:#FFFFFF" aria-hidden="true">Aa</span><span class="swatch-name">OpsFlow</span><span class="swatch-ratio">4,6:1 AA</span></li>
+            </ul>
+          </section>
+        </div>
+      </section>
 
-        <section class="block" id="api" aria-labelledby="mesma-api">
-          <h2 id="mesma-api">Mesmos nomes, mesmas props</h2>
-          <div class="compare">
-            <figure>
-              <figcaption>React</figcaption>
-              <pre><code>&lt;AppButton
-  variant="primary"
-  icon="plus"
-  loading={saving}
-  onClick={save}
-&gt;
-  Novo cliente
-&lt;/AppButton&gt;</code></pre>
-            </figure>
-            <figure>
-              <figcaption>Angular</figcaption>
-              <pre><code>&lt;app-button
-  variant="primary"
-  icon="plus"
-  [loading]="saving()"
-  (clicked)="save()"
-&gt;
-  Novo cliente
-&lt;/app-button&gt;</code></pre>
-            </figure>
-          </div>
-        </section>
+      <section class="section" id="acessibilidade" aria-labelledby="a11y-titulo">
+        <div class="section-head">
+          <h2 id="a11y-titulo">Acessibilidade</h2>
+        </div>
+        <ul class="facts">
+          <li class="fact">
+            <h3>axe em todas as stories</h3>
+            <p>
+              O E2E abre as 125 stories do React e as 121 do Angular,
+              nos modos claro e escuro, e falha com qualquer violação WCAG 2.2 AA.
+            </p>
+          </li>
+          <li class="fact">
+            <h3>contraste calculado</h3>
+            <p>
+              Cada preset passa por 18 pares de cor nos dois modos. O texto sobre a cor
+              primária é escolhido pelo contraste, e nunca é branco sobre o laranja.
+            </p>
+          </li>
+          <li class="fact">
+            <h3>estado sem depender da cor</h3>
+            <p>
+              Erro de campo vem com texto ligado por <code>aria-describedby</code>, status vem com
+              rótulo e carregamento usa <code>aria-busy</code>.
+            </p>
+          </li>
+        </ul>
+        <ul class="chips" aria-label="Componentes do contrato">
+          <li>AppThemeProvider</li><li>AppButton</li><li>AppIconButton</li><li>AppInput</li><li>AppSelect</li><li>AppCheckbox</li><li>AppSwitch</li><li>AppDatePicker</li><li>AppForm</li><li>AppFormItem</li><li>AppTable</li><li>AppCard</li><li>AppStatistic</li><li>AppTag</li><li>AppStatus</li><li>AppModal</li><li>AppDrawer</li><li>AppTabs</li><li>AppSteps</li><li>AppEmpty</li><li>AppSkeleton</li><li>AppAlert</li><li>AppTooltip</li><li>AppDropdown</li><li>AppMenu</li><li>AppAvatar</li><li>AppPagination</li><li>AppChart</li>
+        </ul>
+      </section>
+    </main>
 
-        <section class="block" id="componentes" aria-labelledby="lista">
-          <h2 id="lista">Componentes</h2>
-          <p>
-            Cada um tem os estados padrão, desabilitado, carregando, erro e vazio, com controles nas
-            props.
-          </p>
-          <ul class="chips" aria-label="Lista de componentes">
-            <li>AppThemeProvider</li>
-            <li>AppButton</li>
-            <li>AppIconButton</li>
-            <li>AppInput</li>
-            <li>AppSelect</li>
-            <li>AppCheckbox</li>
-            <li>AppSwitch</li>
-            <li>AppDatePicker</li>
-            <li>AppForm</li>
-            <li>AppFormItem</li>
-            <li>AppTable</li>
-            <li>AppCard</li>
-            <li>AppStatistic</li>
-            <li>AppTag</li>
-            <li>AppStatus</li>
-            <li>AppModal</li>
-            <li>AppDrawer</li>
-            <li>AppTabs</li>
-            <li>AppSteps</li>
-            <li>AppEmpty</li>
-            <li>AppSkeleton</li>
-            <li>AppAlert</li>
-            <li>AppTooltip</li>
-            <li>AppDropdown</li>
-            <li>AppMenu</li>
-            <li>AppAvatar</li>
-            <li>AppPagination</li>
-            <li>AppChart</li>
-          </ul>
-          <p style="margin-top: 24px">
-            <a href="./react/index.html?path=/story/tema-construtor-de-tema--construtor">
-              Abrir o construtor de tema
-            </a>
-          </p>
-        </section>
-      </main>
-
-      <footer>
-        <p>
-          Nasck UI · MIT · <a href="https://github.com/NasckDev/nasck-ui">código no GitHub</a>. Os
-          dados dos exemplos são fictícios.
-        </p>
-      </footer>
-    </div>
+    <footer>
+      <p>
+        Nasck UI · MIT · <a href="https://github.com/NasckDev/nasck-ui">código no GitHub</a>. Os
+        dados dos exemplos são fictícios.
+      </p>
+    </footer>
 
     <script>
       (function () {
         var root = document.documentElement;
         var button = document.getElementById('theme-toggle');
-        var label = document.getElementById('theme-label');
         var KEY = 'nasck-ui-theme';
-        function systemDark() {
-          return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        }
+        var storybooks = document.querySelectorAll('a[href^="./react/"], a[href^="./angular/"]');
+        storybooks.forEach(function (link) {
+          link.setAttribute('data-href', link.getAttribute('href'));
+        });
         function apply(mode) {
-          root.setAttribute('data-theme', mode);
           var dark = mode === 'dark';
+          root.setAttribute('data-theme', mode);
           button.setAttribute('aria-pressed', String(dark));
-          label.textContent = dark ? 'Tema claro' : 'Tema escuro';
+          storybooks.forEach(function (link) {
+            var href = link.getAttribute('data-href');
+            if (!dark) {
+              link.setAttribute('href', href);
+              return;
+            }
+            var joiner = href.indexOf('?') === -1 ? '?' : '&';
+            link.setAttribute('href', href + joiner + 'globals=mode:dark');
+          });
         }
-        var saved = null;
-        try {
-          saved = localStorage.getItem(KEY);
-        } catch (error) {
-          saved = null;
-        }
-        apply(saved === 'dark' || saved === 'light' ? saved : systemDark() ? 'dark' : 'light');
+        apply(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
         button.addEventListener('click', function () {
           var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
           apply(next);

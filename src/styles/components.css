@@ -1,0 +1,96 @@
+/* ───────── Cartões de projeto ───────── */
+.pgrid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+.feat{display:grid; grid-template-columns:7fr 5fr; gap:14px}
+.feat .col{display:grid; gap:14px}
+.pcard{display:flex; flex-direction:column; background:var(--card); border-radius:var(--r-xl); padding:10px; position:relative}
+.cover-word{position:absolute; inset:0; display:grid; place-items:center; font-stretch:118%; font-weight:850; font-size:clamp(48px,9vw,130px); letter-spacing:-.03em}
+.pbody{display:flex; gap:14px; align-items:flex-start; padding:16px 12px 12px}
+.pbody .tx{flex:1; min-width:0; display:grid; gap:8px}
+.pbody .go{width:46px; height:46px; border-radius:var(--pill); border:1.5px solid var(--line); display:grid; place-items:center; flex:none; transition:background .25s,color .25s,transform .35s var(--ease)}
+.pcard:hover .go{background:var(--ink); color:var(--on-ink); transform:rotate(45deg)}
+.pname{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.pname .kind{font-size:14px; color:var(--muted); font-weight:560}
+.proofline{font-size:14.5px; font-weight:640}
+.filters{display:flex; flex-wrap:wrap; gap:8px}
+.fbtn{min-height:42px; padding:0 16px; border-radius:var(--pill); border:1.5px solid var(--line); font-weight:640; font-size:15px; transition:background .2s,color .2s}
+.fbtn[aria-pressed="true"]{background:var(--ink); color:var(--on-ink); border-color:var(--ink)}
+.fbtn span{opacity:.6; margin-left:6px; font-weight:560}
+.view-head{padding:clamp(8px,1.5vw,18px) 0 clamp(16px,2.4vw,30px); display:grid; gap:16px}
+@media (max-width:860px){ .pgrid,.feat{grid-template-columns:1fr} }
+.hud{display:grid; grid-template-columns:auto 1fr; gap:22px; align-items:center}
+.ring{width:132px; height:132px; flex:none}
+.repo-list li + li{border-top:1px solid var(--line)}
+.repo-list a{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 16px; padding:14px 6px; align-items:center; border-radius:var(--r-sm); transition:background .2s,padding .3s var(--ease)}
+.repo-list a:hover{background:var(--soft); padding-inline:14px}
+.repo-list b{font-weight:700}
+.repo-list .q{grid-column:1; color:var(--muted); font-size:14.5px}
+.repo-list .st{grid-row:1/3; grid-column:2; font-size:13.5px; font-weight:600; color:var(--muted); text-align:right}
+.teaser{display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:14px}
+.teaser a{position:relative; overflow:hidden; border-radius:var(--r-lg); aspect-ratio:4/3; display:block; color:#fff; isolation:isolate}
+.teaser a:first-child{aspect-ratio:auto}
+.teaser img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-2; transition:transform .8s var(--ease)}
+.teaser a:hover img{transform:scale(1.05)}
+.teaser a::after{content:""; position:absolute; inset:40% 0 0; z-index:-1; background:linear-gradient(transparent,rgba(0,0,0,.78))}
+.teaser span{position:absolute; left:16px; right:16px; bottom:14px; font-weight:700; line-height:1.2}
+.teaser small{display:block; font-weight:520; opacity:.85; font-size:14px}
+@media (max-width:860px){ .teaser{grid-template-columns:1fr 1fr} .teaser a:first-child{grid-column:1/-1; aspect-ratio:16/10} }
+.principles{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+.principles.two{grid-template-columns:1fr 1fr}
+.principle{background:var(--card); border-radius:var(--r-lg); padding:20px; display:grid; gap:10px; align-content:start}
+.principle .pi{width:46px; height:46px; border-radius:calc(13px*var(--round)); background:var(--accent); color:var(--on-accent); display:grid; place-items:center; transition:transform .5s var(--ease)}
+.principle:hover .pi{transform:rotate(-8deg) scale(1.08)}
+.principle b{font-stretch:80%; font-weight:760; font-size:21px; line-height:1.1}
+@media (max-width:1100px){ .principles{grid-template-columns:1fr 1fr} }
+@media (max-width:520px){ .principles,.principles.two{grid-template-columns:1fr} }
+.divider{height:1px; background:var(--line); margin:clamp(24px,3.6vw,46px) 0}
+.filters{align-items:center}
+/* ───────── v3: vitrine de apps, habilidades com prova, contato ───────── */
+.pitch{font-stretch:82%; font-weight:740; font-size:19px; line-height:1.2}
+.feats{display:grid; gap:11px}
+.feats li{display:grid; grid-template-columns:26px 1fr; gap:11px; align-items:start; line-height:1.4}
+.feats li .ck{width:26px; height:26px; border-radius:50%; background:var(--pc,var(--accent)); color:var(--pf,var(--on-accent)); display:grid; place-items:center}
+.feats li .ck svg{width:15px; height:15px; stroke-width:2.6}
+.feats b{font-weight:700}
+.feats-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin-top:14px}
+.feat-card{background:var(--card); border-radius:var(--r-lg); padding:20px; display:grid; gap:8px; align-content:start}
+.feat-card .ck{width:34px; height:34px; border-radius:50%; background:var(--pc); color:var(--pf); display:grid; place-items:center; margin-bottom:4px}
+.feat-card b{font-stretch:82%; font-weight:750; font-size:19px; line-height:1.15}
+a.principle{transition:transform .35s var(--ease),box-shadow .35s}
+a.principle:hover{transform:translateY(-5px); box-shadow:0 18px 40px rgba(15,17,20,.10)}
+a.principle .lk{margin-top:6px; font-weight:680; font-size:15px; text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:4px; text-decoration-color:var(--accent)}
+.teaser.two{grid-template-columns:1fr 1fr}
+.teaser.two a,.teaser.two a:first-child{aspect-ratio:16/10; grid-column:auto}
+.notice[data-k="ok"]{background:color-mix(in srgb,var(--ok) 18%,transparent)}
+.notice[data-k="info"]{background:var(--soft)}
+/* ───────── v8: capítulos, navegação agrupada e bloco único de código ───────── */
+.stack > .chap{margin-top:clamp(40px,5.6vw,78px)}
+.chap-head{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:18px 24px; padding:0 4px 18px; border-bottom:2px solid var(--ink)}
+.chap-head .muted{margin-top:10px; max-width:62ch}
+.chap-k{display:inline-flex; align-items:center; gap:10px; font-weight:720; font-size:15px; margin-bottom:14px}
+.chap-k b{background:var(--ink); color:var(--on-ink); border-radius:var(--pill); padding:3px 11px; font-variant-numeric:tabular-nums; font-weight:750}
+.chap-body{display:grid; gap:14px; margin-top:18px}
+.chap-head:has(.chap-k:only-child){padding-bottom:4px}
+.chap-head:has(.chap-k:only-child) .chap-k{margin-bottom:10px}
+/* ───────── v9: experiência em destaque e stack com ação ───────── */
+a.chip{transition:background .2s,color .2s,border-color .2s,transform .25s var(--ease)}
+a.chip:hover,a.chip:focus-visible{background:var(--ink); color:var(--on-ink); border-color:var(--ink); transform:translateY(-2px)}
+.fbtn.pop,.code-tab.pop,.vt button.pop{animation:pop .5s var(--ease)}
+/* ───────── v14: versão final — navegação e movimento ───────── */
+.chap-body > *,.states > *,.stack > *{min-width:0}
+.chap-head{border-bottom:0; position:relative}
+.chap-head::after{content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--ink); transform-origin:0 50%}
+.chap-head[data-rv]::after{transform:scaleX(0)}
+.chap-head[data-rv].in::after{transform:scaleX(1); transition:transform 1.1s var(--ease) .15s}
+.chap-head[data-rv] .chap-k b{transform:scale(.3); opacity:0}
+.chap-head[data-rv].in .chap-k b{transform:none; opacity:1; transition:transform .6s var(--ease) .2s,opacity .3s .2s}
+.links{display:flex; flex-wrap:wrap; gap:8px; margin-top:4px}
+.notice{font-size:14px; padding:9px 12px; border-radius:var(--r-sm); background:color-mix(in srgb,var(--warn) 16%,transparent); font-weight:560}
+.tile{border-radius:var(--r-lg); padding:20px; display:flex; flex-direction:column; gap:8px}
+.tile-card{background:var(--card)}
+.tile-dark{background:var(--tile); color:var(--on-tile)}
+.tile-dark .muted{color:var(--tile-muted)}
+.big-n{font-stretch:62%; font-weight:800; font-size:clamp(64px,6.4vw,96px); line-height:.82; letter-spacing:-.01em}
+.tile a.more{margin-top:auto; font-weight:680; font-size:15px; display:inline-flex; align-items:center; gap:6px; text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:4px; text-decoration-color:var(--accent)}
+.side-proj a{min-height:31px}
+@media (max-height:1000px) and (min-width:1181px){ body[data-route="projetos"] .side-links,body[data-route="projeto"] .side-links{display:none} }
+.small-btn{min-height:38px; padding:0 14px; font-size:14px}

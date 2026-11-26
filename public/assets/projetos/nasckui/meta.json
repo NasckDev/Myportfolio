@@ -1,0 +1,18 @@
+{
+  "shots": [
+    [
+      "desktop-1",
+      "Entrada da biblioteca: a mesma API em React e Angular, com os números do Storybook"
+    ],
+    [
+      "desktop-2",
+      "Construtor de tema no Storybook: cor primária, pré-visualização e contraste AA de cada par"
+    ],
+    [
+      "desktop-3",
+      "Modelo de painel montado só com os componentes da biblioteca"
+    ]
+  ],
+  "mobile": "Entrada da biblioteca no celular",
+  "video": true
+}

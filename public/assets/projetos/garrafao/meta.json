@@ -1,0 +1,18 @@
+{
+  "shots": [
+    [
+      "desktop-1",
+      "Jogadores: a página nas cores do time, com médias da temporada e posição entre os destaques"
+    ],
+    [
+      "desktop-2",
+      "Ao vivo: placares da rodada por quarto, atualizados a cada 15 segundos"
+    ],
+    [
+      "desktop-3",
+      "Classificação da Conferência Leste, com a linha dos playoffs e do play-in"
+    ]
+  ],
+  "mobile": "Jogadores no celular",
+  "video": true
+}

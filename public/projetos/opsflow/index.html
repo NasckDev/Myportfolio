@@ -6,35 +6,38 @@
   <base href="./">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="OpsFlow: console de workflow e aprovações com RBAC, SLA e trilha de auditoria (demo com dados fictícios).">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0d0f12">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <script>
-    // Aplica o tema antes do primeiro paint para evitar o flash claro/escuro.
+    // O OpsFlow é escuro por padrão. Aplica o tema salvo antes do primeiro paint (sem flash).
     try {
       var stored = localStorage.getItem('opsflow.theme');
-      var dark = stored ? stored === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      document.documentElement.dataset.theme = stored === 'light' ? 'light' : 'dark';
     } catch (e) {
-      /* sem storage: o app define o tema ao iniciar */
+      document.documentElement.dataset.theme = 'dark';
     }
   </script>
-<link rel="stylesheet" href="styles-UDZJHEVV.css"><link rel="stylesheet" href="theme-light-KDFKAH7Z.css"></head>
+<link rel="stylesheet" href="styles-2KQFRDPS.css"><link rel="stylesheet" href="theme-dark-HZUAWSDT.css"></head>
 <body>
   <script>
-    // Tema escuro: baixa a folha escura (depois da clara, para sobrepô-la) antes do primeiro paint.
+    // Tema claro: baixa a folha clara (depois da escura, para sobrepô-la) antes do primeiro paint.
     try {
-      if (document.documentElement.dataset.theme === 'dark') {
-        var dark = document.createElement('link');
-        dark.id = 'ox-theme-dark';
-        dark.rel = 'stylesheet';
-        dark.href = 'theme-dark.css';
-        document.head.appendChild(dark);
+      if (document.documentElement.dataset.theme === 'light') {
+        var light = document.createElement('link');
+        light.id = 'ox-theme-light';
+        light.rel = 'stylesheet';
+        light.href = 'theme-light.css';
+        // Logo depois da folha escura do NG-ZORRO e antes dos estilos do app, que a ajustam.
+        var base = document.querySelector('link[href*="theme-dark"]');
+        if (base) base.after(light);
+        else document.head.appendChild(light);
       }
     } catch (e) {
       /* sem DOM: o app ajusta ao iniciar */
     }
   </script>
   <app-root></app-root>
-<script src="main-IIQF3DAE.js" type="module"></script></body>
+<script src="main-OG5JGKGE.js" type="module"></script></body>
 </html>

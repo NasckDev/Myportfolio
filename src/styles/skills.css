@@ -1,0 +1,39 @@
+/* ───────── Cinco estados ───────── */
+.states{display:grid; grid-template-columns:1fr 1fr; gap:clamp(18px,3vw,44px); align-items:center}
+.seg{justify-self:start; display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; background:var(--soft); border-radius:calc(16px*var(--round) + 4px)}
+.seg button{min-height:40px; padding:0 14px; border-radius:calc(12px*var(--round) + 2px); font-weight:640; font-size:15px; color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--on-ink)}
+.mock{background:var(--card); border-radius:var(--r-lg); padding:20px; min-height:330px; display:flex; flex-direction:column; gap:12px; box-shadow:0 1px 0 var(--line)}
+.mock-h{display:flex; justify-content:space-between; align-items:center; gap:10px; font-weight:700}
+.mock-h code{font:500 12.5px var(--mono); color:var(--muted); background:var(--soft); padding:3px 8px; border-radius:6px}
+.rows{display:grid; gap:8px}
+.row{display:grid; grid-template-columns:44px 1fr auto; gap:12px; align-items:center; padding:10px; border:1px solid var(--line); border-radius:var(--r-md); animation:rowin .35s var(--ease) both}
+.row:nth-child(2){animation-delay:.05s}.row:nth-child(3){animation-delay:.1s}.row:nth-child(4){animation-delay:.15s}
+@keyframes rowin{from{opacity:0; transform:translateY(6px)}}
+.row .d{width:44px; height:44px; border-radius:calc(10px*var(--round)); background:var(--soft); display:grid; place-items:center; font-stretch:70%; font-weight:800; font-size:20px}
+.row b{display:block; font-weight:650; line-height:1.2}
+.row small{color:var(--muted); font-size:13.5px}
+.row .v{font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap}
+.sk{background:linear-gradient(90deg,var(--soft) 25%,color-mix(in srgb,var(--ink) 12%,transparent) 50%,var(--soft) 75%); background-size:200% 100%; animation:shim 1.2s linear infinite; border-radius:8px; height:14px}
+@keyframes shim{to{background-position:-200% 0}}
+.mock-msg{margin:auto; text-align:center; display:grid; gap:10px; justify-items:center; max-width:34ch; padding:10px 0}
+.mock-msg .ic{width:54px; height:54px; border-radius:50%; display:grid; place-items:center; background:var(--soft)}
+@media (max-width:860px){ .states{grid-template-columns:1fr} }
+.xwrap{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(300px,1fr); gap:clamp(16px,2.4vw,32px); align-items:start}
+.xgroup{padding:14px 0; border-top:1px solid var(--line); display:grid; gap:10px}
+.xgroup:first-child{border-top:0; padding-top:0}
+.xgroup h3{font-weight:700; font-size:15.5px; color:var(--muted)}
+.xchip{display:inline-flex; align-items:center; gap:8px; min-height:42px; padding:0 15px; border-radius:var(--pill); border:1.5px solid var(--line); font-weight:630; font-size:15px; transition:background .2s,color .2s,transform .25s var(--ease)}
+.xchip:hover{transform:translateY(-2px)}
+.xchip span{font-size:12.5px; font-weight:700; min-width:22px; height:22px; padding:0 6px; border-radius:11px; background:var(--soft); display:grid; place-items:center}
+.xchip[aria-pressed="true"]{background:var(--ink); color:var(--on-ink); border-color:var(--ink)}
+.xchip[aria-pressed="true"] span{background:var(--accent); color:var(--on-accent)}
+.xpanel{position:sticky; top:calc(env(safe-area-inset-top,0px) + 92px); background:var(--tile); color:var(--on-tile); border-radius:var(--r-lg); padding:24px; display:grid; gap:10px}
+.xpanel .muted{color:var(--tile-muted)}
+.xpanel .xname{font-size:clamp(30px,3.2vw,46px)}
+.xpanel .repo-list li + li{border-top-color:var(--tile-line)}
+.xpanel .repo-list a:hover{background:rgba(255,255,255,.08)}
+.xpanel .repo-list .q,.xpanel .repo-list .st{color:var(--tile-muted)}
+.xpanel.go > *{animation:up .55s var(--ease) both}
+.xpanel.go > :nth-child(2){animation-delay:.05s}.xpanel.go > :nth-child(3){animation-delay:.1s}.xpanel.go > :nth-child(4){animation-delay:.15s}.xpanel.go > :nth-child(5){animation-delay:.2s}.xpanel.go > :nth-child(6){animation-delay:.25s}
+@media (max-width:980px){ .xwrap{grid-template-columns:1fr} .xpanel{position:static; order:-1} }

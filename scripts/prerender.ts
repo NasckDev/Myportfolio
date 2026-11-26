@@ -1,182 +1,50 @@
-/// <reference types="vite/client" />
 /**
- * Roda depois do `vite build`. O site é montado por JavaScript, então robôs e IAs que não executam JS
- * (ChatGPT, Claude, prévias de LinkedIn/WhatsApp, curl) veriam a página vazia. Este script:
- *  - coloca uma versão em texto do conteúdo dentro de <div id="root"> (o React a substitui ao carregar);
- *  - adiciona canonical, Open Graph com imagem e JSON-LD de pessoa;
- *  - gera robots.txt, sitemap.xml e llms.txt.
- * Todo o texto vem de src/data/portfolio.ts, a mesma fonte do site.
+ * Roda depois do `vite build`. Gera um index.html por rota (título, descrição, canonical,
+ * Open Graph/Twitter, JSON-LD e o conteúdo em texto), 404.html, robots.txt, sitemap.xml e llms.txt.
+ * Confere no fim que a página /projetos e as demos em /projetos/<slug>/ convivem em dist/.
  */
-import { readFileSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
-import {
-  cases,
-  CV_ATS_URL,
-  CV_FULL_URL,
-  EMAIL,
-  game,
-  GITHUB_URL,
-  jobs,
-  juntos,
-  LINKEDIN_URL,
-  profile,
-  repos,
-  SITE_URL,
-  skillGroups,
-  WEB_DESIGN_REPO_URL,
-  webDesigns,
-} from "../src/data/portfolio.ts";
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import type { Route } from "../src/data/routes.ts";
+import { readProjectMedia } from "./projectMedia.ts";
+import { allRoutes, buildPage, llmsTxt, outputFile, robotsTxt, sitemapXml } from "./seo.ts";
 
-const DIST = resolve(import.meta.dirname, "../dist");
-const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+const ROOT = resolve(import.meta.dirname, "..");
+const DIST = join(ROOT, "dist");
+const BASE = (process.env.VITE_BASE_PATH || "/").replace(/\/$/, "");
 
-/** Caminhos do portfólio ("/web-design/...") viram endereços absolutos no domínio oficial. */
-const abs = (path: string): string => (/^https?:/.test(path) ? path : SITE_URL + "/" + path.replace(/^\/+/, ""));
-
-const esc = (s: string): string =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-
-const list = (items: string[]): string => `<ul>${items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>`;
-
-/** Links de um case: demo que roda no portfólio, código e página ao vivo, quando existirem. */
-const links = (c: (typeof cases)[number]): string => {
-  const l = [
-    c.demoUrl && `<a href="${abs(c.demoUrl)}">Demo executável</a>`,
-    c.repoUrl && `<a href="${c.repoUrl}">Código</a>`,
-    c.liveUrl && !c.demoUrl && `<a href="${abs(c.liveUrl)}">Ao vivo</a>`,
-  ].filter(Boolean);
-  return l.length ? `<p>${l.join(" · ")}</p>` : "";
-};
-
-function snapshotHtml(): string {
-  const parts = [
-    `<header><h1>${esc(profile.name)}</h1><p><strong>${esc(profile.role)}</strong></p><p>${esc(profile.intro)}</p>`,
-    `<p><a href="mailto:${EMAIL}">${EMAIL}</a> · <a href="${LINKEDIN_URL}">LinkedIn</a> · <a href="${GITHUB_URL}">GitHub</a> · <a href="${abs(CV_FULL_URL)}">Currículo (PDF)</a></p></header>`,
-    `<section><h2>Projetos</h2><p>Produtos completos, com código aberto, testes e demo que roda no próprio portfólio. Cada um tem identidade visual própria, acessibilidade WCAG AA e versão para celular. Todos os dados são fictícios.</p>`,
-    ...cases.map(
-      (c) =>
-        `<article><h3>${esc(c.name)} · ${esc(c.tagline)}</h3><p>${c.eta ? `<strong>Em construção</strong> (${esc(c.stage ?? "")}), previsto para ${esc(c.eta)}. ` : ""}${esc(c.summary)}</p><p>${esc(c.problem)}</p>` +
-        `<p>Papel: ${esc(c.role)}. Tecnologias: ${esc(c.skills.join(", "))}.</p>${list(c.decisions)}` +
-        `<p>Acessibilidade: ${esc(c.a11y)} Testes: ${esc(c.tests)}</p>${links(c)}</article>`,
-    ),
-    `</section><section id="juntos"><h2>${esc(juntos.name)}</h2><p><strong>${esc(juntos.tagline)}</strong></p><p>${esc(juntos.problem)}</p>` +
-      list(juntos.highlights.map((h) => `${h.title}: ${h.text}`)) +
-      `<p>Feito com ${esc(juntos.stack.join(", "))}.</p><p>${juntos.appUrl ? `<a href="${juntos.appUrl}">Abrir o app</a> · ` : ""}<a href="${juntos.repoUrl}">Código no GitHub</a></p>`,
-    `</section><section id="web-design"><h2>Web design</h2><p>Estudos visuais publicados como páginas reais. Código aberto em <a href="${WEB_DESIGN_REPO_URL}">${WEB_DESIGN_REPO_URL}</a>.</p>`,
-    ...webDesigns.map(
-      (w) =>
-        `<article><h3>${esc(w.name)} · ${esc(w.kind)}</h3><p>${esc(w.summary)}</p>` +
-        `<p><a href="${abs(w.url)}">Ver ao vivo</a>${w.repo ? ` · <a href="${w.repo}">Código</a>` : ""}</p></article>`,
-    ),
-    `</section><section id="jogo"><h2>Jogue ${esc(game.name)}</h2><p><strong>${esc(game.tagline)}</strong></p><p>${esc(game.summary)}</p>` +
-      `<p>Feito com ${esc(game.tools.join(", "))}.</p><p><a href="${abs(game.siteUrl)}">Site do jogo</a> · <a href="${game.downloadUrl}">Baixar beta grátis</a> · <a href="${game.repoUrl}">Código</a></p>`,
-    `</section><section><h2>Experiência</h2>`,
-    ...jobs.map(
-      (j) => `<article><h3>${esc(j.company)} · ${esc(j.role)}</h3><p>${esc(j.period)}. ${esc(j.context)}</p>${list(j.items)}</article>`,
-    ),
-    `</section><section><h2>Habilidades</h2>`,
-    ...skillGroups.map((g) => `<h3>${esc(g.title)}</h3><p>${esc(g.items.map((i) => i.name).join(", "))}</p>`),
-    `</section><section><h2>Código aberto</h2>`,
-    list(repos.map((r) => `${r.name} (${r.status}): ${r.problem}${r.href ? ` ${r.href}` : ""}`)),
-    `</section><section><h2>Sobre mim</h2><p><strong>${esc(profile.aboutTitle)}</strong></p>`,
-    ...profile.about.map((p) => `<p>${esc(p)}</p>`),
-    `</section>`,
-  ];
-  return `<div class="static-snapshot">${parts.join("")}</div>`;
-}
-
-function llmsTxt(): string {
-  const lines = [
-    `# ${profile.name}`,
-    "",
-    `> ${profile.role}. ${profile.intro}`,
-    "",
-    `- Site: ${SITE_URL}/`,
-    `- E-mail: ${EMAIL}`,
-    `- LinkedIn: ${LINKEDIN_URL}`,
-    `- GitHub: ${GITHUB_URL}`,
-    `- Currículo completo (PDF): ${abs(CV_FULL_URL)}`,
-    `- Currículo ATS (PDF): ${abs(CV_ATS_URL)}`,
-    "",
-    "## Experiência",
-    ...jobs.map((j) => `- ${j.period} · ${j.company} · ${j.role}: ${j.context}`),
-    "",
-    "## Projetos (em construção, com dados fictícios)",
-    ...cases.map((c) => `- ${c.name} (${c.tagline})${c.eta ? ` [em construção, previsto para ${c.eta}]` : ""}: ${c.summary} Tecnologias: ${c.skills.join(", ")}.${c.demoUrl ? ` Demo: ${abs(c.demoUrl)}` : ""}${c.repoUrl ? ` Código: ${c.repoUrl}` : ""}`),
-    "",
-    `## App: ${juntos.name}`,
-    `${juntos.tagline} ${juntos.problem}`,
-    ...juntos.highlights.map((h) => `- ${h.title}: ${h.text}`),
-    `- Feito com: ${juntos.stack.join(", ")}`,
-    ...(juntos.appUrl ? [`- App: ${juntos.appUrl}`] : []),
-    `- Código: ${juntos.repoUrl}`,
-    "",
-    "## Web design",
-    `Código aberto: ${WEB_DESIGN_REPO_URL}`,
-    ...webDesigns.map((w) => `- [${w.name}](${abs(w.url)}): ${w.summary}${w.repo ? ` Código: ${w.repo}` : ""}`),
-    "",
-    `## Jogo: ${game.name}`,
-    `${game.tagline} ${game.summary}`,
-    `- Site do jogo: ${abs(game.siteUrl)}`,
-    `- Baixar beta: ${game.downloadUrl}`,
-    `- Código: ${game.repoUrl}`,
-    "",
-    "## Habilidades",
-    ...skillGroups.map((g) => `- ${g.title}: ${g.items.map((i) => i.name).join(", ")}`),
-    "",
-    "## Sobre",
-    ...profile.about,
-    "",
-  ];
-  return lines.join("\n");
-}
-
-function headTags(): string {
-  const person = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: profile.name,
-    jobTitle: profile.role,
-    description: profile.intro,
-    url: `${SITE_URL}/`,
-    email: `mailto:${EMAIL}`,
-    sameAs: [LINKEDIN_URL, GITHUB_URL],
-  };
-  return [
-    `<link rel="canonical" href="${SITE_URL}/" />`,
-    `<meta property="og:url" content="${SITE_URL}/" />`,
-    `<meta property="og:image" content="${OG_IMAGE}" />`,
-    `<meta property="og:image:width" content="1200" />`,
-    `<meta property="og:image:height" content="630" />`,
-    `<meta name="twitter:card" content="summary_large_image" />`,
-    `<link rel="alternate" type="text/plain" href="${SITE_URL}/llms.txt" title="Resumo para IAs" />`,
-    `<script type="application/ld+json">${JSON.stringify(person).replace(/</g, "\\u003c")}</script>`,
-    // A versão em texto só aparece para quem está sem JavaScript; com JS, o React a substitui antes disso.
-    `<style>.static-snapshot{max-width:760px;margin:0 auto;padding:48px 16px;font:16px/1.6 system-ui,sans-serif;color:#0b2a4a;animation:ss-show 0s 2.5s both}.static-snapshot h1{font-size:34px;font-weight:700;line-height:1.2}.static-snapshot h2{font-size:24px;font-weight:700;margin-top:36px}.static-snapshot h3{font-size:18px;font-weight:600;margin-top:18px}.static-snapshot ul{padding-left:20px;list-style:disc}.static-snapshot p{margin:6px 0}@keyframes ss-show{from{visibility:hidden}to{visibility:visible}}</style>`,
-  ].join("\n    ");
+function findFont(): string | undefined {
+  const dir = join(DIST, "assets");
+  const f = existsSync(dir) ? readdirSync(dir).find((n) => /^archivo-latin-wdth-normal-.*\.woff2$/.test(n)) : undefined;
+  return f ? `${BASE}/assets/${f}` : undefined;
 }
 
 function main(): void {
-  const indexPath = resolve(DIST, "index.html");
-  const html = readFileSync(indexPath, "utf8");
-  if (!html.includes('<div id="root"></div>')) throw new Error("prerender: <div id=\"root\"></div> não encontrado em dist/index.html");
-  const out = html
-    .replace("</head>", `    ${headTags()}\n  </head>`)
-    .replace('<div id="root"></div>', `<div id="root">${snapshotHtml()}</div>`);
-  writeFileSync(indexPath, out);
+  const template = readFileSync(join(DIST, "index.html"), "utf8");
+  const media = readProjectMedia(join(ROOT, "public"));
+  const caseOg = Object.fromEntries(Object.entries(media).map(([id, m]) => [id, m.og]));
+  const opts = { base: BASE, caseOg, fontPreload: findFont() };
+  if (!opts.fontPreload) console.warn("prerender: fonte Archivo (latin, wdth) não encontrada em dist/assets; sem preload");
 
-  const today = new Date().toISOString().slice(0, 10);
-  const demos = cases.flatMap((c) => (c.demoUrl ? [abs(c.demoUrl).slice(SITE_URL.length)] : []));
-  const pages = ["/", ...demos, abs(game.siteUrl).slice(SITE_URL.length), ...webDesigns.map((w) => abs(w.url).slice(SITE_URL.length))];
-  writeFileSync(
-    resolve(DIST, "sitemap.xml"),
-    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-      pages.map((p) => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${today}</lastmod></url>`).join("\n") +
-      `\n</urlset>\n`,
-  );
-  writeFileSync(resolve(DIST, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
-  writeFileSync(resolve(DIST, "llms.txt"), llmsTxt());
-  console.log(`prerender: index.html, sitemap.xml (${pages.length} páginas), robots.txt e llms.txt gerados`);
+  const routes: Route[] = [...allRoutes(), { name: "nao-encontrada", tab: null }];
+  for (const route of routes) {
+    const file = join(DIST, outputFile(route));
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(file, buildPage(template, route, opts));
+  }
+
+  writeFileSync(join(DIST, "sitemap.xml"), sitemapXml(new Date().toISOString().slice(0, 10)));
+  writeFileSync(join(DIST, "robots.txt"), robotsTxt());
+  writeFileSync(join(DIST, "llms.txt"), llmsTxt());
+
+  // A página /projetos (dist/projetos/index.html) e as demos (dist/projetos/<slug>/) precisam conviver.
+  const demos = join(DIST, "projetos");
+  const slugs = readdirSync(demos).filter((n) => statSync(join(demos, n)).isDirectory());
+  if (!existsSync(join(demos, "index.html"))) throw new Error("prerender: dist/projetos/index.html não foi gerado");
+  for (const slug of slugs) {
+    if (!existsSync(join(demos, slug, "index.html"))) console.warn(`prerender: a demo dist/projetos/${slug}/ não tem index.html`);
+  }
+  console.log(`prerender: ${routes.length} páginas (${routes.length - 1} rotas + 404), sitemap, robots e llms.txt. Demos em /projetos/: ${slugs.join(", ") || "nenhuma"}`);
 }
 
 main();

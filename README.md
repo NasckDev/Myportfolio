@@ -1,75 +1,61 @@
 # Alexandre Diogo Nascimento — Portfólio
 
-Portfólio profissional (v3) de Alexandre Diogo Nascimento, Software Engineer · Frontend & Fullstack. Página única com topo 3D (WebGL no desktop, CSS 3D no celular), habilidades pesquisáveis, projetos com linha do tempo pública e gaveta de detalhes, web design, o jogo Véspera, trajetória, código aberto, sobre mim e contato. Tem tema claro/escuro, paleta de comandos (⌘K / Ctrl K), modais, toasts e respeita `prefers-reduced-motion`.
+Portfólio profissional (v4) de Alexandre Diogo Nascimento, engenheiro de software. Casca de app com menu lateral (vira trilho em ≤1180 px e dock inferior em ≤900 px), rotas reais com transições de página, busca com Ctrl K / ⌘ K, painel "Aparência" (tema, cor de destaque, cantos e movimento, salvos no navegador), estudos de caso com galeria e lightbox, prévia em vídeo dos projetos no hover e uma página pré-renderizada por rota.
 
-Stack: React 19, TypeScript, Vite, Tailwind CSS 4 e three.js (carregado sob demanda). Contador de visitas e avaliações em Vercel Functions com Redis (Upstash).
+Stack: React 19, TypeScript (strict), Vite 6 e CSS com design tokens. Fontes Archivo (eixo de largura) e JetBrains Mono auto-hospedadas via @fontsource-variable. Contador de visitas em Vercel Functions com Redis (Upstash).
 
 ## Executar localmente
 
-Requisitos: Node.js 22 e npm.
+Requisitos: Node.js 22+ e npm.
 
 ```bash
 npm install
-npm run dev
+npm run dev        # http://localhost:5180
+npm run build      # tsc + vite build + pré-render
+npm run preview    # http://localhost:5181 (serve o build)
 ```
 
-Validação completa (ESLint + testes de componentes com Vitest + testes das Functions + typecheck + build de produção):
+Validação (é o buildCommand da Vercel, sem navegador):
 
 ```bash
-npm run verify
+npm run verify     # ESLint + Vitest + testes das Functions + build com pré-render
 ```
 
-No `npm run dev` não existem Vercel Functions, então o rodapé usa o comportamento local (contagem e voto guardados só no navegador).
+E2E com Playwright e axe (320 a 1920 px, temas claro e escuro), contra o `vite preview` do build:
+
+```bash
+npx playwright install chromium   # uma vez
+npm run test:e2e
+```
 
 ## Estrutura
 
-- `src/data/portfolio.ts`: todo o conteúdo (projetos, experiências, habilidades, repositórios, links). Para trocar um projeto, edite este arquivo; para adicionar a tela de um case, preencha o campo `image` com um caminho em `public/`.
-- `src/components/sections`: uma seção por arquivo (Hero, Skills, Cases, WebDesign, PlayVespera, Experience, OpenSource, About, Contact). `PhoneStack` é o celular em CSS 3D do topo em telas estreitas; `experience/` divide a trajetória em versão fixada (desktop) e lista (celular).
-- `public/vespera/`: site do jogo Véspera, publicado dentro do portfólio em `/vespera/` (HTML/CSS/JS puro, só caminhos relativos).
-- `public/web-design/<projeto>/`: páginas de web design publicadas no portfólio (código-fonte, prints e READMEs em [NasckDev/web-design](https://github.com/NasckDev/web-design)). Para adicionar uma, copie a pasta para cá, a capa para `public/assets/web-design/` e crie um item em `webDesigns` no `src/data/portfolio.ts`.
-- `scripts/prerender.ts`: roda depois do build e gera uma versão em texto do conteúdo dentro do `index.html`, além de `robots.txt`, `sitemap.xml` e `llms.txt`, para que IAs e robôs que não executam JavaScript consigam ler o portfólio. O texto vem do mesmo `src/data/portfolio.ts`.
-- `src/components/overlays`: gaveta de case, paleta de comandos (também é o menu do celular), modais, toast.
-- `src/lib/live.ts`: loop único de animação que dorme quando nada muda; `src/hooks/useScrollLock.ts` e `useFocusTrap.ts` cuidam de rolagem e foco dos overlays.
-- Testes ficam ao lado do código (`*.test.ts(x)`), com setup em `src/test/`.
-- `src/three`: cenas 3D (topo, trajetória, envelope do contato).
-- `api/visits.ts` e `api/votes.ts`: contador de visitas e avaliações.
-- `public/curriculo-alexandre-diogo-nascimento.pdf` (completo) e `public/curriculo-alexandre-diogo-nascimento-ats.pdf` (ATS).
+- `src/data/`: fonte única de todo o texto. `projects.ts` (projetos), `newProjects.ts` (Coverlist e Garrafão, textos provisórios), `testCounts.ts` (contagens de testes, E2E e stories de cada app), `content.ts` (experiência, habilidades, design, repositórios), `snippets.ts` (trechos de código), `routes.ts` (rotas, títulos e descrições), `site.ts` (URL do site, e-mail, links).
+- `src/router/`: roteador próprio sobre a History API (View Transitions, rolagem restaurada, foco no conteúdo, código dividido por rota).
+- `src/shell/`: casca (menu, topo, dock, rodapé), busca, Aparência, lightbox, abertura e avisos.
+- `src/pages/`: uma página por rota, carregada sob demanda.
+- `src/styles/`: CSS por área (tokens, casca, componentes, capas e uma folha por página).
+- `scripts/prerender.ts` + `scripts/seo.ts`: depois do build, geram `index.html` por rota (título, descrição, canonical, Open Graph/Twitter, JSON-LD e o conteúdo em texto), `404.html`, `robots.txt`, `sitemap.xml` e `llms.txt`.
+- `scripts/projectMedia.ts` + `src/lib/media.ts`: leitor da convenção de mídia dos projetos (abaixo).
+- `e2e/`: Playwright + @axe-core/playwright.
+- `api/`: Vercel Functions (`visits.ts`, `votes.ts`; helpers em `_redis.ts`).
+- `public/projetos/<slug>/`: demos dos apps, publicadas pelos próprios repositórios.
+
+## Mídia dos projetos
+
+`public/assets/projetos/<id>/`: `desktop-1..3.webp` (1440×900), `mobile.webp` (390×844), `preview.mp4` + `preview.webm` + `preview-poster.webp` (opcionais), `og.jpg` (1200×630, prévia de link do estudo de caso) e `meta.json`:
+
+```json
+{ "shots": [["desktop-1", "legenda"]], "mobile": "legenda", "video": false }
+```
+
+Só entram arquivos que existem. Sem `og.jpg`, o estudo de caso usa `/og-image.jpg`. A prévia em vídeo aparece apenas com mouse e sem pedido de menos movimento.
 
 ## Deploy na Vercel
 
-O `vercel.json` instala com `npm ci`, roda `npm run verify` e publica `dist/`. Conecte o repositório e mantenha `main` como Production Branch.
-
-### Contador de visitas e avaliações (curtir / não curtir)
-
-As contagens ficam em um Redis da Upstash, compartilhadas entre todos os visitantes:
-
-- **Visitas**: cada visitante conta uma vez a cada 12 horas.
-- **Avaliações**: cada visitante tem um voto, que pode trocar ou remover; o voto é lembrado pelo servidor.
-- O visitante é identificado por um HMAC-SHA256 do IP com um segredo do servidor (`COUNTER_SALT` ou, na falta dele, o token do Redis). Nada é guardado em texto puro, e o user-agent fica de fora: trocar de navegador não conta como outra pessoa.
-- O IP vem dos headers que a própria Vercel escreve (`x-vercel-forwarded-for`, `x-real-ip`), não de `x-forwarded-for` enviado pelo cliente.
-- Limite de 20 votos a cada 10 minutos por visitante; corpo acima de 1 KB é recusado (413); falhas do Redis respondem 503 e ficam registradas no log da função.
-- Sem login, os contadores são "melhor esforço": quem tem muitos IPs ainda consegue somar votos. É um termômetro, não uma métrica auditável.
-
-Para ativar:
-
-1. No projeto da Vercel, abra **Storage → Create Database → Upstash (Redis)** (plano gratuito) e conecte ao projeto. A integração cria `KV_REST_API_URL` e `KV_REST_API_TOKEN` automaticamente.
-2. Faça um novo deploy.
-
-Também funciona com as variáveis `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN` de um banco criado direto na Upstash. Sem Redis configurado (ou no GitHub Pages), o rodapé continua funcionando no modo local.
-
-### Web Analytics e Speed Insights (opcional)
-
-Ative no dashboard da Vercel e configure `VITE_ENABLE_PROD_ANALYTICS=true` no ambiente Production.
-
-### Feedback por e-mail (opcional)
-
-Com `VITE_WEB3FORMS_KEY` configurada, as sugestões do modal "O que posso melhorar?" chegam por e-mail via Web3Forms. Sem a chave, ficam salvas apenas no navegador do visitante.
-
-## GitHub Pages
-
-O workflow `.github/workflows/static.yml` executa os testes, gera o build com base `/Myportfolio/` e publica `dist/`. Como o GitHub Pages não executa Functions, o rodapé usa o modo local.
+O `vercel.json` instala com `npm ci`, roda `npm run verify` e publica `dist/`. Variáveis opcionais: `VITE_WEB3FORMS_KEY` (envio direto no Contato; sem ela, só "Abrir no meu e-mail" e "Copiar"), `VITE_ENABLE_PROD_ANALYTICS=true` e as do Redis do contador (`KV_REST_API_URL`/`KV_REST_API_TOKEN`). Veja `.env.example`.
 
 ## Versões anteriores
 
 - v1 (HTML, CSS e JavaScript): preservada em `v1/`.
-- v2 (React com Motion/GSAP): disponível no histórico do Git.
+- v2 e v3: disponíveis no histórico do Git.
