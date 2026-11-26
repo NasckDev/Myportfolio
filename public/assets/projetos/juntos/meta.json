@@ -1,0 +1,18 @@
+{
+  "shots": [
+    [
+      "desktop-1",
+      "Início: quanto deve sobrar até o fim do mês, o que entrou e saiu e os próximos vencimentos"
+    ],
+    [
+      "desktop-2",
+      "Divisão proporcional à renda: quanto cada pessoa pagou e quem deve quanto a quem"
+    ],
+    [
+      "desktop-3",
+      "Planejamento: orçamento por categoria, com limite e quanto ainda resta no mês"
+    ]
+  ],
+  "mobile": "Início no celular",
+  "video": true
+}

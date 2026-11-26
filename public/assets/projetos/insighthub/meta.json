@@ -1,0 +1,18 @@
+{
+  "shots": [
+    [
+      "desktop-1",
+      "Painel: NPS +30 com promotores, neutros e detratores e a síntese assistida ao lado"
+    ],
+    [
+      "desktop-2",
+      "Mapa de temas com o tema selecionado e as falas de quem o citou"
+    ],
+    [
+      "desktop-3",
+      "Síntese gerada no navegador, com cada afirmação ligada à resposta de origem"
+    ]
+  ],
+  "mobile": "Painel no celular",
+  "video": true
+}

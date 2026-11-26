@@ -1,0 +1,18 @@
+{
+  "shots": [
+    [
+      "desktop-1",
+      "Caixa de entrada do aprovador, com prazo (SLA) em contagem regressiva e detalhe ao lado"
+    ],
+    [
+      "desktop-2",
+      "Quadro kanban por estado, do rascunho à conclusão"
+    ],
+    [
+      "desktop-3",
+      "Detalhe da solicitação com cadeia de aprovação, decisão e linha do tempo de auditoria"
+    ]
+  ],
+  "mobile": "Quadro no celular, com os cartões da coluna Em revisão",
+  "video": true
+}
