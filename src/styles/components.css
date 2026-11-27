@@ -34,13 +34,14 @@
 .teaser span{position:absolute; left:16px; right:16px; bottom:14px; font-weight:700; line-height:1.2}
 .teaser small{display:block; font-weight:520; opacity:.85; font-size:14px}
 @media (max-width:860px){ .teaser{grid-template-columns:1fr 1fr} .teaser a:first-child{grid-column:1/-1; aspect-ratio:16/10} }
-.principles{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+.principles{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px}
 .principles.two{grid-template-columns:1fr 1fr}
 .principle{background:var(--card); border-radius:var(--r-lg); padding:20px; display:grid; gap:10px; align-content:start}
 .principle .pi{width:46px; height:46px; border-radius:calc(13px*var(--round)); background:var(--accent); color:var(--on-accent); display:grid; place-items:center; transition:transform .5s var(--ease)}
 .principle:hover .pi{transform:rotate(-8deg) scale(1.08)}
 .principle b{font-stretch:80%; font-weight:760; font-size:21px; line-height:1.1}
-@media (max-width:1100px){ .principles{grid-template-columns:1fr 1fr} }
+@media (max-width:1280px){ .principles{grid-template-columns:repeat(6,minmax(0,1fr))} .principles > *{grid-column:span 2} .principles > :nth-last-child(-n+2):nth-child(3n+1),.principles > :nth-last-child(-n+2):nth-child(3n+1) ~ *{grid-column:span 3} }
+@media (max-width:860px){ .principles{grid-template-columns:1fr 1fr} .principles > *,.principles > :nth-last-child(-n+2):nth-child(3n+1),.principles > :nth-last-child(-n+2):nth-child(3n+1) ~ *{grid-column:auto} .principles > :last-child:nth-child(odd){grid-column:1/-1} }
 @media (max-width:520px){ .principles,.principles.two{grid-template-columns:1fr} }
 .divider{height:1px; background:var(--line); margin:clamp(24px,3.6vw,46px) 0}
 .filters{align-items:center}
@@ -94,3 +95,8 @@ a.chip:hover,a.chip:focus-visible{background:var(--ink); color:var(--on-ink); bo
 .side-proj a{min-height:31px}
 @media (max-height:1000px) and (min-width:1181px){ body[data-route="projetos"] .side-links,body[data-route="projeto"] .side-links{display:none} }
 .small-btn{min-height:38px; padding:0 14px; font-size:14px}
+/* ───────── Logos das empresas ───────── */
+.marks{display:flex; flex-wrap:wrap; gap:6px}
+.mark{display:inline-grid; place-items:center; height:40px; min-width:40px; padding:0 10px; background:#FFFFFF; border:1px solid var(--line); border-radius:calc(10px*var(--round))}
+.mark img{height:24px; width:auto}
+.mark.mono{color:#14171B; font-stretch:72%; font-weight:800; font-size:17px; letter-spacing:.03em}

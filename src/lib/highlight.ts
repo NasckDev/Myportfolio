@@ -5,7 +5,7 @@ export interface Token {
 }
 
 const RE =
-  /(\/\*[\s\S]*?\*\/|\/\/[^\n]*)|('(?:\.|[^'\\n])*'|"(?:\.|[^"\\n])*")|\b(import|from|export|function|return|const|let|if|for|of|while|break|continue|interface|type|readonly|new|throw|null|undefined|true|false)\b|\b(\d[\d_]*(?:\.\d+)?)\b|\b([A-Z][A-Za-z0-9_]*)\b|\b([a-z_$][\w$]*)(?=\s*\()/g;
+  /(\/\*[\s\S]*?\*\/|\/\/[^\n]*)|('(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*")|\b(import|from|export|function|return|const|let|if|for|of|while|break|continue|interface|type|readonly|new|throw|null|undefined|true|false)\b|\b(\d[\d_]*(?:\.\d+)?)\b|\b([A-Z][A-Za-z0-9_]*)\b|\b([a-z_$][\w$]*)(?=\s*\()/g;
 
 export function highlight(src: string): Token[] {
   const out: Token[] = [];

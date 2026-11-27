@@ -2,8 +2,6 @@
 
 interface ImportMetaEnv {
   readonly VITE_ENABLE_PROD_ANALYTICS?: string;
-  /** Chave pública do Web3Forms. Sem ela, o contato só oferece "Abrir no meu e-mail" e "Copiar". */
-  readonly VITE_WEB3FORMS_KEY?: string;
 }
 
 interface ImportMeta {

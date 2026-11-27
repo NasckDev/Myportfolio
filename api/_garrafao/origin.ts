@@ -7,6 +7,7 @@ const SITE = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba";
 const STANDINGS = "https://site.api.espn.com/apis/v2/sports/basketball/nba/standings";
 const COMMON = "https://site.web.api.espn.com/apis/common/v3";
 const CORE = "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba";
+const SITE_V3 = "https://site.api.espn.com/apis/site/v3/sports/basketball/nba";
 
 export const ORIGIN_HOSTS: ReadonlySet<string> = new Set([
   "site.api.espn.com",
@@ -20,6 +21,8 @@ const NBA_CUP_TOURNAMENT_ID = "1";
 const MONTH_LIMIT = 400;
 const NEWS_LIMIT = 20;
 const SEARCH_LIMIT = 10;
+/** Líderes por categoria: os 3 primeiros bastam (a resposta completa passa de 2 MB). */
+const LEADERS_LIMIT = 3;
 
 export const originUrl = {
   scoreboardDay: (date: string) => `${SITE}/scoreboard?dates=${date}`,
@@ -38,4 +41,6 @@ export const originUrl = {
   draftSite: (year: number) => `${SITE}/draft?season=${year}`,
   cupTournament: () => `${CORE}/tournaments/${NBA_CUP_TOURNAMENT_ID}`,
   cupSeason: (year: number) => `${CORE}/tournaments/${NBA_CUP_TOURNAMENT_ID}/seasons/${year}`,
+  award: (year: number, awardId: string) => `${CORE}/seasons/${year}/awards/${awardId}`,
+  leaders: (season: number) => `${SITE_V3}/leaders?season=${season}&limit=${LEADERS_LIMIT}`,
 };

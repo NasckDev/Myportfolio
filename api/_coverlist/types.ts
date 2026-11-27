@@ -37,6 +37,13 @@ export interface Track {
 
 export type CollectionGroup = "paradas" | "decadas" | "generos";
 
+/** Década de uma coleção do grupo "decadas" (ano de início). */
+export const ERAS = [1960, 1970, 1980, 1990, 2000, 2010, 2020] as const;
+export type Era = (typeof ERAS)[number];
+
+/** Recorte de origem: música brasileira ou internacional. */
+export type CollectionScope = "brasil" | "mundo";
+
 export type CollectionSourceInfo =
   | { kind: "apple-chart"; country: string; label: string }
   | { kind: "deezer-playlist"; playlistId: string; label: string };
@@ -48,6 +55,10 @@ export interface CollectionSummary {
   group: CollectionGroup;
   theme: ThemeKey;
   source: CollectionSourceInfo;
+  /** Só em décadas. */
+  era?: Era;
+  /** Em décadas e gêneros. */
+  scope?: CollectionScope;
 }
 
 export interface CollectionDetail extends CollectionSummary {
@@ -90,6 +101,28 @@ export interface ResolvedPreview {
 
 export interface SpotifyName {
   title: string;
+}
+
+/** Playlist pública do Deezer encontrada pelo nome (op=playlists). */
+export interface PlaylistHit {
+  id: string;
+  title: string;
+  creator: string | null;
+  total: number;
+  artwork: Artwork | null;
+}
+
+export interface PlaylistSearchResult {
+  playlists: PlaylistHit[];
+}
+
+/**
+ * Para onde aponta um link de compartilhar do app do Deezer (`link.deezer.com/s/…`).
+ * `kind` "other" cobre podcast, episódio e qualquer destino que não seja playlist, álbum, faixa ou artista.
+ */
+export interface ShortLinkTarget {
+  kind: "playlist" | "album" | "track" | "artist" | "other";
+  id: string | null;
 }
 
 export interface ApiError {

@@ -2,17 +2,17 @@
   "shots": [
     [
       "desktop-1",
-      "Jogadores: a página nas cores do time, com médias da temporada e posição entre os destaques"
+      "Jogadores: a página nas cores do time, com foto, médias da temporada e posição entre os destaques"
     ],
     [
       "desktop-2",
-      "Ao vivo: placares da rodada por quarto, atualizados a cada 15 segundos"
+      "Prêmios: disputa pelo MVP com os líderes da temporada, campeão, Copa NBA e prêmios individuais"
     ],
     [
       "desktop-3",
-      "Classificação da Conferência Leste, com a linha dos playoffs e do play-in"
+      "Ao vivo: jogos da rodada com horário de Brasília, status e parciais por quarto"
     ]
   ],
-  "mobile": "Jogadores no celular",
+  "mobile": "Jogadores no celular, no tema escuro",
   "video": true
 }

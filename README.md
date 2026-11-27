@@ -53,7 +53,7 @@ Só entram arquivos que existem. Sem `og.jpg`, o estudo de caso usa `/og-image.j
 
 ## Deploy na Vercel
 
-O `vercel.json` instala com `npm ci`, roda `npm run verify` e publica `dist/`. Variáveis opcionais: `VITE_WEB3FORMS_KEY` (envio direto no Contato; sem ela, só "Abrir no meu e-mail" e "Copiar"), `VITE_ENABLE_PROD_ANALYTICS=true` e as do Redis do contador (`KV_REST_API_URL`/`KV_REST_API_TOKEN`). Veja `.env.example`.
+O `vercel.json` instala com `npm ci`, roda `npm run verify` e publica `dist/`. O envio automático do Contato usa o FormSubmit, sem conta nem variável: o primeiro envio manda ao e-mail de `src/data/site.ts` um pedido de ativação, e as mensagens passam a chegar depois do clique em "Activate Form". Variáveis opcionais: `VITE_ENABLE_PROD_ANALYTICS=true` e as do Redis do contador (`KV_REST_API_URL`/`KV_REST_API_TOKEN`). Veja `.env.example`.
 
 ## Versões anteriores
 

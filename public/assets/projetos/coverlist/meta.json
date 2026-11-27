@@ -2,17 +2,17 @@
   "shots": [
     [
       "desktop-1",
-      "Explorar: paradas reais do Apple Music e do Deezer, cada uma com sua capa de vinil"
+      "Explorar: paradas, décadas e gêneros com capas de vinil e play direto em cada capa"
     ],
     [
       "desktop-2",
-      "“Paradas do Brasil” tocando no modelo editorial, com o vinil girando e a prévia de 30 s"
+      "“Anos 80” aberto pelo play da capa: já tocando a prévia, com voltar, resumo e ações"
     ],
     [
       "desktop-3",
       "Editor de uma playlist criada a partir de “Anos 80”, no modelo pôster"
     ]
   ],
-  "mobile": "Explorar no celular",
+  "mobile": "Décadas no celular, com filtro por década",
   "video": true
 }

@@ -3,8 +3,9 @@ import { Arrow, ChapHead, DesignTeaser, Feats, SpecCards } from "@/components/Bl
 import { CodeBlock } from "@/components/Code";
 import { Cover } from "@/components/Cover";
 import { Icon } from "@/components/Icon";
+import { CompanyMarks } from "@/components/JobDetail";
 import { mediaOf } from "@/data/media";
-import { GAME, JOBS, MAIN_STACK, PRODUCT_WORD, REPOS } from "@/data/content";
+import { CODE_METRICS, GAME, JOBS, MAIN_STACK, PRODUCT_WORD, REPOS } from "@/data/content";
 import { getProject, projectPath } from "@/data/projects";
 import { AVAILABILITY, LINKS, MARQUEE, nf, PORTRAIT } from "@/data/site";
 import { FISCOTRACK_CODE } from "@/data/snippets";
@@ -187,7 +188,8 @@ export default function HomePage() {
         <div className="chap-body">
           <div className="jobs3">
             {JOBS.slice(0, 3).map((job, k) => (
-              <Link className={`jobc${k ? "" : " cur on-dark"}`} to="/experiencia" key={job.when}>
+              <Link className={`jobc${k ? "" : " cur on-dark"}`} to="/experiencia" state={{ job: job.id }} key={job.id}>
+                <CompanyMarks marks={job.marks} />
                 <span className="jw">
                   {job.when}
                   {k ? null : <span className="chip now">Atual</span>}
@@ -273,32 +275,22 @@ export default function HomePage() {
                 <wbr />
                 NasckDev
               </ExtLink>
-              <div className="nums">
-                <div>
-                  <b>
-                    <span className="cnt" data-to={TOTAL_UNIT}>
-                      {nf(TOTAL_UNIT)}
-                    </span>
-                  </b>
-                  <span>testes automatizados</span>
-                </div>
-                <div>
-                  <b>
-                    <span className="cnt" data-to={TOTAL_E2E}>
-                      {nf(TOTAL_E2E)}
-                    </span>
-                  </b>
-                  <span>cenários de ponta a ponta</span>
-                </div>
-                <div>
-                  <b>
-                    <span className="cnt" data-to={REPOS.length}>
-                      {REPOS.length}
-                    </span>
-                  </b>
-                  <span>repositórios públicos</span>
-                </div>
-              </div>
+              <ul className="nums metrics" aria-label="Qualidade medida nos repositórios">
+                {CODE_METRICS.map(([value, suffix, label]) => (
+                  <li key={label}>
+                    <b>
+                      <span className="cnt" data-to={value}>
+                        {nf(value)}
+                      </span>
+                      {suffix}
+                    </b>
+                    <span>{label}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="metrics-note">
+                Somados, {nf(TOTAL_UNIT)} testes automatizados e {nf(TOTAL_E2E)} cenários de ponta a ponta em {REPOS.length} repositórios públicos.
+              </p>
               <div className="links">
                 <ExtLink className="btn btn-accent" href={LINKS.github}>
                   Acessar o GitHub

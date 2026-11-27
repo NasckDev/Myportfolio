@@ -13,10 +13,10 @@ const MEMORY_KEY = "nasck-habilidade";
 const remembered = (): string => readStorage(MEMORY_KEY, "session") ?? "React";
 
 export function SkillPanel({ skill }: { skill: string }) {
-  const { projects, jobs } = skillEvidence(skill);
+  const { projects, jobs, note } = skillEvidence(skill);
   const row = (e: Evidence) => (
     <li key={e.name + e.href}>
-      <Link to={e.href}>
+      <Link to={e.href} state={e.job ? { job: e.job } : undefined}>
         <b>{e.name}</b>
         <span className="q">{e.kind}</span>
         <span className="st">{e.job ? "Ver experiência" : "Abrir"}</span>
@@ -27,6 +27,7 @@ export function SkillPanel({ skill }: { skill: string }) {
     <>
       <p className="small muted">Aplicada em</p>
       <h3 className="h2 xname">{skill}</h3>
+      {note ? <p className="xnote">{note}</p> : null}
       {projects.length ? (
         <>
           <p className="small muted" style={{ marginTop: 8 }}>
@@ -187,6 +188,11 @@ export function FiveStates() {
         <p className="lead muted">
           Carregando, vazio, erro, parcial e sucesso são projetados e testados antes do fluxo principal. Alterne o estado para ver o mesmo componente responder.
         </p>
+        <p className="xcontext" data-testid="prova-contexto">
+          <b>Onde aplico:</b> na <Link to="/experiencia" state={{ job: "mindminers" }}>MindMiners</Link>, as jornadas com serviços de IA tratam carregamento, validação, erro e feedback; no{" "}
+          <Link to="/projeto/insighthub">InsightHub</Link>, toda tela tem carregando, vazio, erro com tentar de novo e resultado parcial. O exemplo usa o formato do{" "}
+          <Link to="/projeto/juntos">Juntos</Link>.
+        </p>
         <div className="seg" role="group" aria-label="Estado do componente">
           {STATES.map(([k, l]) => (
             <button type="button" key={k} aria-pressed={state === k} onClick={() => show(k)}>
@@ -229,11 +235,13 @@ export default function SkillsPage() {
       <div className="sheet">
         <div className="view-head" style={{ paddingBottom: 0 }}>
           <h1 className="display">Habilidades</h1>
-          <p className="lead muted">Cada habilidade está vinculada ao projeto ou à experiência profissional em que foi aplicada. Selecione uma para ver as evidências.</p>
+          <p className="lead muted">
+            Cada habilidade está ligada ao trabalho nas empresas e aos projetos em que foi aplicada, de front-end e back-end a ferramentas e IA: LLMs em produto, RAG e MCP. Selecione uma para ver as evidências.
+          </p>
         </div>
       </div>
       <section className="chap" data-sec="Áreas" aria-labelledby="ar-t">
-        <ChapHead n="01" k="Áreas" titleId="ar-t" title="Áreas de atuação" text="Quatro frentes de entrega. Cada cartão lista onde a habilidade foi aplicada." />
+        <ChapHead n="01" k="Áreas" titleId="ar-t" title="Áreas de atuação" text="Cinco frentes de entrega. Cada cartão abre onde a habilidade foi aplicada, no trabalho e nos projetos." />
         <div className="chap-body">
           <SpecCards />
         </div>

@@ -4,6 +4,8 @@ const P = {
   bg: 0xebe7df, paper: 0xf4f1ec, n200: 0xe6e2da, n300: 0xd6d1c7, n400: 0xb9b4aa, n500: 0x9a958c, n600: 0x6f6b64, n700: 0x55524c, n800: 0x3a3834, ink: 0x151816,
   a100: 0xe9eef0, a200: 0xcfdbe2, a300: 0xa9bfcc, a400: 0x8aa3b3, a500: 0x6f8a9c, accent: 0xd4ec5c, a700: 0x3f5563, a800: 0x2a3a44, a900: 0x141917,
 };
+// Celular ou tela estreita: menos pixels, sombra menor e sem antialias para poupar GPU e bateria.
+const LITE = typeof matchMedia !== 'undefined' && matchMedia('(max-width: 760px), (pointer: coarse)').matches;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const BOX = new THREE.BoxGeometry(1, 1, 1);
@@ -14,7 +16,7 @@ const std = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness
 function addLights(scene, size = 60) {
   const hemi = new THREE.HemisphereLight(0xffffff, 0xd4d4d7, 1.7); scene.add(hemi);
   const sun = new THREE.DirectionalLight(0xffffff, 2.1);
-  sun.position.set(size * 0.6, size, size * 0.5); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+  sun.position.set(size * 0.6, size, size * 0.5); sun.castShadow = true; sun.shadow.mapSize.set(LITE ? 1024 : 2048, LITE ? 1024 : 2048);
   const c = sun.shadow.camera; c.left = -size; c.right = size; c.top = size; c.bottom = -size; c.near = 1; c.far = size * 5;
   sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03; scene.add(sun); scene.add(sun.target);
   return { hemi, sun };
@@ -41,8 +43,8 @@ function mesh(parent, w, h, d, x, y, z, mat, shadow = true) {
 class Viewer {
   constructor(el, { shadows = true } = {}) {
     this.el = el;
-    const r = this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-    r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); r.shadowMap.enabled = shadows; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    const r = this.renderer = new THREE.WebGLRenderer({ antialias: !LITE, alpha: true, preserveDrawingBuffer: true, powerPreference: LITE ? 'low-power' : 'default' });
+    r.setPixelRatio(Math.min(window.devicePixelRatio || 1, LITE ? 1.5 : 2)); r.shadowMap.enabled = shadows; r.shadowMap.type = THREE.PCFSoftShadowMap;
     r.outputColorSpace = THREE.SRGBColorSpace; r.setClearColor(0x000000, 0);
     this.scene = new THREE.Scene(); this.camera = new THREE.PerspectiveCamera(40, 1, 0.1, 3000);
     const c = r.domElement; c.style.cssText = 'display:block;width:100%;height:100%;outline:none;position:absolute;inset:0';

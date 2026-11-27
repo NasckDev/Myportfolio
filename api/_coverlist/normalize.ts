@@ -1,5 +1,5 @@
 import { arr, httpsUrl, idString, isObject, isoDate, num, str, type Json } from "./guards.js";
-import type { Artwork, Track } from "./types.js";
+import type { Artwork, PlaylistHit, ShortLinkTarget, Track } from "./types.js";
 
 /** Hosts aceitos em URLs que saem do proxy. Qualquer outro é descartado. */
 export const DEEZER_HOSTS = ["dzcdn.net", "deezer.com"] as const;
@@ -96,6 +96,54 @@ export function normalizeDeezerPlaylist(raw: unknown, limit: number): { meta: De
     },
     tracks,
   };
+}
+
+/** Resultado de `search/playlist` do Deezer: só playlists públicas, com capa em hosts conhecidos. */
+export function normalizeDeezerPlaylistHits(raw: unknown, limit: number): PlaylistHit[] {
+  const out: PlaylistHit[] = [];
+  for (const item of arr(isObject(raw) ? raw.data : null)) {
+    if (!isObject(item) || item.type !== "playlist" || item.public === false) continue;
+    const id = idString(item.id);
+    const title = str(item.title, 120);
+    if (!id || !title) continue;
+    const small = httpsUrl(item.picture_small, DEEZER_HOSTS);
+    const medium = httpsUrl(item.picture_medium, DEEZER_HOSTS);
+    const large = httpsUrl(item.picture_big, DEEZER_HOSTS);
+    const any = medium ?? large ?? small;
+    out.push({
+      id,
+      title,
+      creator: isObject(item.user) ? str(item.user.name, 80) : null,
+      total: Math.max(0, num(item.nb_tracks) ?? 0),
+      artwork: any ? { small: small ?? any, medium: medium ?? any, large: large ?? any } : null,
+    });
+    if (out.length >= limit) break;
+  }
+  return out;
+}
+
+const DEEZER_ITEM_PATH = /^\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?(playlist|album|track|artist)\/(\d{1,15})\/?$/i;
+
+/**
+ * Destino de um link de compartilhar do Deezer a partir do Location do redirect.
+ * Conferido em 27/11/2026: um código válido responde 301 para `link.deezer.com/?…&dest=<endereço deezer.com>`;
+ * um código vencido ou inexistente responde 302 para `www.deezer.com/deezer-links-404` (devolve null).
+ */
+export function deezerLinkTarget(location: string): ShortLinkTarget | null {
+  let first: URL;
+  try {
+    first = new URL(location, "https://link.deezer.com/");
+  } catch {
+    return null;
+  }
+  const dest = first.hostname === "link.deezer.com" ? first.searchParams.get("dest") : null;
+  const target = httpsUrl(dest ?? first.toString(), ["deezer.com"]);
+  if (!target) return null;
+  const url = new URL(target);
+  if (url.hostname === "link.deezer.com" || /links-404/.test(url.pathname)) return null;
+  const match = DEEZER_ITEM_PATH.exec(url.pathname);
+  if (!match) return { kind: "other", id: null };
+  return { kind: match[1].toLowerCase() as ShortLinkTarget["kind"], id: match[2] };
 }
 
 /* ------------------------------------------------------------- Apple/iTunes */

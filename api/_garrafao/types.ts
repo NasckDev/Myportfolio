@@ -251,6 +251,70 @@ export interface SeasonEvents {
   months: { scanned: string[]; failed: string[] };
 }
 
+/** Atleta resumido para listas de prêmios e líderes: só o que a fonte publica. */
+export interface AthleteBrief {
+  id: string;
+  name: string;
+  headshot: string | null;
+  position: string | null;
+}
+
+export type AwardKey = "mvp" | "finals-mvp" | "roy" | "dpoy" | "sixth" | "mip" | "clutch" | "cup-mvp" | "allstar-mvp";
+
+export interface AwardWinner {
+  athlete: AthleteBrief;
+  /** Time pelo qual o prêmio foi dado (pode diferir do time atual do atleta). */
+  team: TeamRef | null;
+}
+
+export interface Award {
+  key: AwardKey;
+  /** Nome em pt-BR. */
+  name: string;
+  /** Nome original na fonte (inglês). */
+  sourceName: string | null;
+  winners: AwardWinner[];
+}
+
+/** Final da NBA: campeão contado pelas vitórias nos jogos marcados "NBA Finals" do calendário. */
+export interface FinalsResult {
+  champion: TeamRef;
+  runnerUp: TeamRef;
+  wins: number;
+  losses: number;
+  /** Data (ISO, UTC) do último jogo da série. */
+  decidedAt: string;
+}
+
+export interface SeasonAwards {
+  year: number;
+  label: string;
+  awards: Award[];
+  finals: FinalsResult | null;
+  /** Partes que falharam na origem (prêmio ou "finals"): falha parcial vira aviso, não erro. */
+  failed: (AwardKey | "finals")[];
+}
+
+export type LeaderCategoryKey = "pts" | "reb" | "ast" | "stl" | "blk" | "3pm";
+
+export interface LeaderEntry {
+  athlete: AthleteBrief;
+  team: TeamRef | null;
+  value: number | null;
+}
+
+export interface LeaderCategory {
+  key: LeaderCategoryKey;
+  name: string;
+  leaders: LeaderEntry[];
+}
+
+export interface SeasonLeaders {
+  year: number;
+  label: string;
+  categories: LeaderCategory[];
+}
+
 export interface ApiError {
   error: string;
 }

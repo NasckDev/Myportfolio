@@ -55,3 +55,22 @@ for (const scheme of ["light", "dark"] as const) {
     });
   }
 }
+
+const SHORT_SCREENS = [[1920, 1080], [1440, 900], [1536, 864], [1366, 768], [1280, 720], [1280, 600], [1024, 600], [960, 500]] as const;
+
+for (const [width, height] of SHORT_SCREENS) {
+  test(`${width}x${height}: a barra lateral cabe inteira, sem cortar item nem rodapé`, async ({ browser }) => {
+    const ctx = await browser.newContext({ viewport: { width, height }, reducedMotion: "reduce" });
+    await prepare(ctx);
+    const page = await ctx.newPage();
+    const problems: string[] = [];
+    for (const route of ["/", "/projetos", "/projeto/fiscotrack"]) {
+      await page.goto(route);
+      await expect(page.locator("main#conteudo h1").first()).toBeVisible();
+      const [client, scroll] = await page.locator(".side-in").evaluate((el) => [el.clientHeight, el.scrollHeight]);
+      if (scroll! > client!) problems.push(`${route}: ${scroll} > ${client}`);
+    }
+    await ctx.close();
+    expect(problems).toEqual([]);
+  });
+}

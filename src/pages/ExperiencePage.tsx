@@ -1,10 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Arrow } from "@/components/Blocks";
 import { Icon } from "@/components/Icon";
-import { EDU, INTERESTS, JOBS } from "@/data/content";
+import { CompanyMarks, JobDialog } from "@/components/JobDetail";
+import { EDU, getJob, INTERESTS, JOBS } from "@/data/content";
 import { LINKS, PERSON, PORTRAIT } from "@/data/site";
 import { useReveal } from "@/hooks/useReveal";
 import { ExtLink, Link } from "@/router/Link";
+import { useRouter } from "@/router/router";
 import "@/styles/experience.css";
 
 /** Linha do tempo: a barra laranja cresce com a rolagem e marca os empregos já lidos. */
@@ -40,6 +42,9 @@ export default function ExperiencePage() {
   const tl = useRef<HTMLDivElement>(null);
   useReveal(ref);
   useTimeline(tl);
+  const { location } = useRouter();
+  const [openId, setOpenId] = useState<string | null>(() => (location.nav.job && getJob(location.nav.job) ? location.nav.job : null));
+  const open = openId ? (getJob(openId) ?? null) : null;
   return (
     <div className="stack" ref={ref}>
       <div className="sheet">
@@ -86,6 +91,7 @@ export default function ExperiencePage() {
                   <div className="xp-when">
                     <span>{job.when}</span>
                     {k === 0 ? <span className="chip now">Atual</span> : null}
+                    <CompanyMarks marks={job.marks} />
                   </div>
                   <div className="xp-body">
                     <div>
@@ -106,6 +112,16 @@ export default function ExperiencePage() {
                         </span>
                       ))}
                     </div>
+                    <button
+                      type="button"
+                      className="btn btn-line xp-more"
+                      aria-haspopup="dialog"
+                      aria-label={`Ver o que eu fazia: ${job.company}, ${job.when}`}
+                      onClick={() => setOpenId(job.id)}
+                    >
+                      Ver o que eu fazia
+                      <Arrow />
+                    </button>
                   </div>
                 </article>
               ))}
@@ -151,6 +167,7 @@ export default function ExperiencePage() {
           </section>
         </div>
       </div>
+      <JobDialog job={open} onClose={() => setOpenId(null)} />
     </div>
   );
 }

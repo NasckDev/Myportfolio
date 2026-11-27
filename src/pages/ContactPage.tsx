@@ -3,15 +3,39 @@ import { Arrow } from "@/components/Blocks";
 import { Icon } from "@/components/Icon";
 import { EMAIL, FACTS, LINKS, MODES } from "@/data/site";
 import { useReveal } from "@/hooks/useReveal";
-import { contactMessage, contactSubject, isEmail, mailtoHref, MODE_OPTIONS, ROLE_OPTIONS, sendViaWeb3Forms, type ContactInput } from "@/lib/contact";
+import {
+  CONTACT_LIMITS,
+  contactMessage,
+  contactSubject,
+  isEmail,
+  mailtoHref,
+  MODE_OPTIONS,
+  ROLE_OPTIONS,
+  sendCooldown,
+  sendViaFormSubmit,
+  validateContact,
+  type ContactField,
+  type ContactInput,
+} from "@/lib/contact";
+import { readStorage, writeStorage } from "@/lib/storage";
 import { ExtLink, Link } from "@/router/Link";
 import { useUi } from "@/shell/ui";
 import "@/styles/contact.css";
 
-/** Sem a chave no build, o botão "Enviar" não existe: só "Abrir no meu e-mail" e "Copiar". */
-const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY?.trim() ?? "";
-
 type Status = { text: string; kind: "ok" | "warn" | "info" } | null;
+
+const SENDS_KEY = "nasck-contact-sends";
+
+function readSends(): number[] {
+  try {
+    const v: unknown = JSON.parse(readStorage(SENDS_KEY, "session") ?? "[]");
+    return Array.isArray(v) ? v.filter((n): n is number => typeof n === "number") : [];
+  } catch {
+    return [];
+  }
+}
+
+const FALLBACK = "use “Abrir no meu e-mail” ou “Copiar”";
 
 function Choice({ name, legend, options, value, onChange, other, onOther, otherLabel, otherPlaceholder }: {
   name: string;
@@ -61,35 +85,60 @@ export function Composer() {
   const [honeypot, setHoneypot] = useState("");
   const [status, setStatus] = useState<Status>(null);
   const [sending, setSending] = useState(false);
+  const [invalid, setInvalid] = useState<readonly ContactField[]>([]);
+  const nameRef = useRef<HTMLInputElement>(null);
   const mailRef = useRef<HTMLInputElement>(null);
+  const companyRef = useRef<HTMLInputElement>(null);
   const msgRef = useRef<HTMLTextAreaElement>(null);
   const hpId = useId();
 
-  const set = <K extends keyof ContactInput>(k: K, v: ContactInput[K]) => setInput((cur) => ({ ...cur, [k]: v }));
+  const set = <K extends keyof ContactInput>(k: K, v: ContactInput[K]) => {
+    setInput((cur) => ({ ...cur, [k]: v }));
+    setInvalid((cur) => cur.filter((f) => f !== k));
+  };
   const generated = contactMessage(input);
   const message = custom ?? generated;
   const subject = contactSubject(input);
 
+  const fieldRefs = { name: nameRef, email: mailRef, company: companyRef, message: msgRef };
+  const isInvalid = (f: ContactField) => (invalid.includes(f) ? true : undefined);
+
   const send = async () => {
-    if (honeypot) return;
-    if (!message.trim()) {
-      msgRef.current?.focus();
-      setStatus({ text: "Escreva a mensagem antes de enviar.", kind: "warn" });
+    if (sending) return;
+    if (honeypot) {
+      setStatus({ text: "Mensagem enviada.", kind: "ok" });
       return;
     }
-    if (!isEmail(input.email)) {
-      mailRef.current?.focus();
-      setStatus({ text: "Informe um e-mail válido para a resposta.", kind: "warn" });
+    const problems = validateContact({ ...input, message });
+    setInvalid(problems.map((p) => p.field));
+    const first = problems[0];
+    if (first) {
+      fieldRefs[first.field].current?.focus();
+      setStatus({ text: first.text, kind: "warn" });
+      return;
+    }
+    const sends = readSends();
+    const wait = sendCooldown(sends, Date.now());
+    if (wait > 0) {
+      setStatus({
+        text: Number.isFinite(wait)
+          ? `Você acabou de enviar uma mensagem. Aguarde ${Math.ceil(wait / 1000)} s para enviar outra ou ${FALLBACK}.`
+          : `Limite de envios desta sessão atingido. Para mandar outra mensagem, ${FALLBACK}.`,
+        kind: "warn",
+      });
       return;
     }
     setSending(true);
     setStatus({ text: "Enviando…", kind: "info" });
-    const ok = await sendViaWeb3Forms(WEB3FORMS_KEY, { name: input.name.trim(), email: input.email.trim(), company: input.company.trim(), subject, message });
+    const result = await sendViaFormSubmit(EMAIL, { name: input.name, email: input.email, company: input.company, subject, message });
     setSending(false);
+    if (result !== "failed") writeStorage(SENDS_KEY, JSON.stringify([...sends, Date.now()]), "session");
     setStatus(
-      ok
-        ? { text: "Mensagem enviada. A resposta será encaminhada ao e-mail informado.", kind: "ok" }
-        : { text: "A mensagem não foi enviada. Tente de novo ou use “Abrir no meu e-mail”.", kind: "warn" },
+      result === "ok"
+        ? { text: "Mensagem enviada. A resposta chega no e-mail informado.", kind: "ok" }
+        : result === "activation"
+          ? { text: `A mensagem foi recebida, mas o envio automático ainda está sendo ativado. Para garantir a entrega, ${FALLBACK}.`, kind: "warn" }
+          : { text: `Não foi possível enviar agora. Tente de novo em instantes ou ${FALLBACK}.`, kind: "warn" },
     );
   };
 
@@ -100,7 +149,7 @@ export function Composer() {
       noValidate
       onSubmit={(e) => {
         e.preventDefault();
-        if (WEB3FORMS_KEY) void send();
+        void send();
       }}
     >
       <h2 className="h2" id="cp-t">
@@ -109,7 +158,16 @@ export function Composer() {
       <div className="two">
         <label className="field">
           Seu nome
-          <input type="text" autoComplete="name" placeholder="Nome completo" value={input.name} onChange={(e) => set("name", e.target.value)} />
+          <input
+            ref={nameRef}
+            type="text"
+            autoComplete="name"
+            placeholder="Nome completo"
+            maxLength={CONTACT_LIMITS.name}
+            value={input.name}
+            aria-invalid={isInvalid("name")}
+            onChange={(e) => set("name", e.target.value)}
+          />
         </label>
         <label className="field">
           Seu e-mail
@@ -118,15 +176,25 @@ export function Composer() {
             type="email"
             autoComplete="email"
             placeholder="voce@empresa.com"
+            maxLength={CONTACT_LIMITS.email}
             value={input.email}
-            aria-invalid={input.email !== "" && !isEmail(input.email) ? true : undefined}
+            aria-invalid={isInvalid("email") ?? (input.email !== "" && !isEmail(input.email) ? true : undefined)}
             onChange={(e) => set("email", e.target.value)}
           />
         </label>
       </div>
       <label className="field">
         Sua empresa
-        <input type="text" autoComplete="organization" placeholder="Nome da empresa" value={input.company} onChange={(e) => set("company", e.target.value)} />
+        <input
+          ref={companyRef}
+          type="text"
+          autoComplete="organization"
+          placeholder="Nome da empresa"
+          maxLength={CONTACT_LIMITS.company}
+          value={input.company}
+          aria-invalid={isInvalid("company")}
+          onChange={(e) => set("company", e.target.value)}
+        />
       </label>
       <Choice
         name="cvaga"
@@ -152,7 +220,11 @@ export function Composer() {
       />
       <label className="field">
         Mensagem
-        <textarea ref={msgRef} rows={8} value={message} onChange={(e) => setCustom(e.target.value)} />
+        <textarea ref={msgRef} rows={8} maxLength={CONTACT_LIMITS.message} value={message} aria-invalid={isInvalid("message")} onChange={(e) => {
+            setCustom(e.target.value);
+            setInvalid((cur) => cur.filter((f) => f !== "message"));
+          }}
+        />
       </label>
       <div className="msg-foot">
         <span className="small muted">O texto é gerado a partir das opções acima e pode ser editado.</span>
@@ -174,13 +246,11 @@ export function Composer() {
         <input id={hpId} type="text" tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
       </div>
       <div className="links">
-        {WEB3FORMS_KEY ? (
-          <button type="submit" className="btn btn-ink" disabled={sending}>
-            Enviar mensagem
-            <Arrow />
-          </button>
-        ) : null}
-        <a className={`btn ${WEB3FORMS_KEY ? "btn-line" : "btn-ink"}`} href={mailtoHref(EMAIL, subject, message)}>
+        <button type="submit" className="btn btn-ink" disabled={sending} aria-describedby="cp-auto">
+          {sending ? "Enviando…" : "Enviar mensagem"}
+          <Arrow />
+        </button>
+        <a className="btn btn-line" href={mailtoHref(EMAIL, subject, message)}>
           <Icon name="mail" />
           Abrir no meu e-mail
         </a>
@@ -189,6 +259,9 @@ export function Composer() {
           Copiar
         </button>
       </div>
+      <p className="small muted" id="cp-auto">
+        “Enviar mensagem” manda o texto direto para o meu e-mail, sem abrir o seu programa de e-mail.
+      </p>
       {status ? (
         <p className="notice" role="status" data-k={status.kind}>
           {status.text}
