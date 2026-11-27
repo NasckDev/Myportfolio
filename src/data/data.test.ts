@@ -1,6 +1,7 @@
+import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { contrastRatio } from "@/lib/contrast";
-import { DESIGNS, EVIDENCE, JOBS, REPOS, SKILLS, SPECIALTIES } from "./content";
+import { AXE_E2E_PRODUCTS, CODE_METRICS, DESIGNS, EVIDENCE, getJob, JOBS, PRODUCT_COUNT, REPOS, SKILLS, SPECIALTIES, STORIES_TOTAL } from "./content";
 import { mediaOf } from "./media";
 import { FILTERS, filterProjects, PROJECTS, SPOT_IDS } from "./projects";
 import { allRoutes, metaFor, NAV } from "./routes";
@@ -93,5 +94,50 @@ describe("integridade dos dados", () => {
   it("experiências e trechos estão completos", () => {
     for (const j of JOBS) expect(j.items.length).toBeGreaterThan(0);
     for (const s of SNIPPETS) expect(s.code.split("\n").length).toBeGreaterThan(5);
+  });
+
+  it("cada experiência tem id único, logo existente ou monograma e detalhe completo", () => {
+    expect(new Set(JOBS.map((j) => j.id)).size).toBe(JOBS.length);
+    for (const j of JOBS) {
+      expect(j.marks.length, j.id).toBeGreaterThan(0);
+      for (const m of j.marks) {
+        expect(m.alt.length, j.id).toBeGreaterThan(2);
+        if ("src" in m) expect(existsSync(`public${m.src}`), m.src).toBe(true);
+      }
+      expect(j.detail.context.length, j.id).toBeGreaterThan(20);
+      expect(j.detail.did.length, j.id).toBeGreaterThan(0);
+      expect(j.detail.stack.length, j.id).toBeGreaterThan(0);
+    }
+  });
+
+  it("evidência profissional aponta para uma experiência existente", () => {
+    for (const [id, e] of Object.entries(EVIDENCE)) if (e.job) expect(getJob(e.job), id).toBeDefined();
+  });
+
+  it("habilidades têm IA e Ferramentas; toda habilidade tem evidência e as de IA explicam onde foram aplicadas", () => {
+    expect(SKILLS.map(([g]) => g)).toEqual(expect.arrayContaining(["IA", "Ferramentas"]));
+    for (const [, items] of SKILLS) for (const [skill, ev] of items) expect(ev.length, skill).toBeGreaterThan(0);
+    const ia = SKILLS.find(([g]) => g === "IA")![1];
+    for (const [skill, , note] of ia) expect(note, skill).toBeTruthy();
+    const withJob = ia.filter(([, ev]) => ev.some((id) => EVIDENCE[id]?.job)).map(([s]) => s);
+    expect(withJob).toEqual(["LLMs em produto", "MCP (Model Context Protocol)", "Agentes de IA no desenvolvimento"]);
+  });
+
+  it("métricas do Início vêm das contagens medidas", () => {
+    const stories = Object.values(TEST_COUNTS).reduce((a, c) => a + ((c as { stories: number | null }).stories ?? 0), 0);
+    expect(STORIES_TOTAL).toBe(stories);
+    expect(CODE_METRICS.map(([v]) => v)).toEqual([Number.parseInt(TEST_COUNTS.juntos.coreCoverage, 10), stories, TEST_COUNTS.nasckui.components, AXE_E2E_PRODUCTS.length]);
+    const products = PROJECTS.filter((p) => p.id !== "portfolio").map((p) => p.id);
+    for (const id of AXE_E2E_PRODUCTS) expect(products).toContain(id);
+    expect(AXE_E2E_PRODUCTS.length).toBeLessThanOrEqual(PRODUCT_COUNT);
+  });
+
+  it("trechos indicam as linhas de origem e o link aponta para elas", () => {
+    for (const s of SNIPPETS) {
+      const [start, end] = s.lines;
+      expect(end - start + 1, s.id).toBe(s.code.split("\n").length);
+      expect(s.url, s.id).toContain(`/blob/HEAD/${s.file}`);
+      if (start > 1) expect(s.url, s.id).toMatch(new RegExp(`#L${start}-L${end}$`));
+    }
   });
 });

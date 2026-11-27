@@ -1,9 +1,11 @@
 import { dedupeTracks, interleave } from "./dedupe.js";
 import { isObject, str } from "./guards.js";
-import { fetchJson, TtlCache, UpstreamError, withRetry, type UpstreamOptions } from "./http.js";
+import { fetchJson, fetchRedirect, TtlCache, UpstreamError, withRetry, type UpstreamOptions } from "./http.js";
 import {
   deezerError,
+  deezerLinkTarget,
   deezerPreviewUrl,
+  normalizeDeezerPlaylistHits,
   enrichWithLookup,
   normalizeAppleRss,
   normalizeDeezerPlaylist,
@@ -12,9 +14,10 @@ import {
   normalizeItunesTrack,
 } from "./normalize.js";
 import type { AppleCountry } from "./collections.js";
-import type { ChartResult, ImportedPlaylist, ResolvedPreview, SearchResult, SpotifyName, Track } from "./types.js";
+import type { ChartResult, ImportedPlaylist, PlaylistSearchResult, ResolvedPreview, SearchResult, ShortLinkTarget, SpotifyName, Track } from "./types.js";
 
 const DEEZER_API = "https://api.deezer.com";
+const DEEZER_SHARE = "https://link.deezer.com/s";
 const ITUNES_API = "https://itunes.apple.com";
 const APPLE_RSS = "https://rss.marketingtools.apple.com/api/v2";
 /** O lookup do iTunes aceita vários ids separados por vírgula; lotes de 25 diminuem a chance de limite por IP. */
@@ -145,6 +148,23 @@ export async function unifiedSearch(term: string, limit: number, country: AppleC
       itunes: itunesResult.status === "fulfilled" ? "ok" : "error",
     },
   };
+}
+
+/** Playlists públicas do Deezer pelo nome (`search/playlist`): a alternativa quando a pessoa não tem o link. */
+export async function deezerPlaylistSearch(term: string, limit: number, options: UpstreamOptions): Promise<PlaylistSearchResult> {
+  const raw = await deezer(`/search/playlist?q=${encodeURIComponent(term)}&limit=${limit}`, options);
+  return { playlists: normalizeDeezerPlaylistHits(raw, limit) };
+}
+
+/**
+ * Link de compartilhar do app do Deezer (`link.deezer.com/s/{código}`): o servidor monta a URL a partir do
+ * código validado, lê só o cabeçalho Location (sem seguir o redirecionamento) e devolve o tipo e o id.
+ */
+export async function deezerShortLink(code: string, options: UpstreamOptions): Promise<ShortLinkTarget> {
+  const location = await fetchRedirect("deezer-link", `${DEEZER_SHARE}/${code}`, options);
+  const target = location ? deezerLinkTarget(location) : null;
+  if (!target) throw new UpstreamError("deezer-link", "not_found", "no target");
+  return target;
 }
 
 /** O Spotify só oferece oEmbed sem chave: dá o nome da playlist, nunca as faixas. */

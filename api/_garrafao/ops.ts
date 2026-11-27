@@ -1,12 +1,13 @@
 import { fetchJson, ORIGIN_TIMEOUT_MS, OriginError, type FetchLike } from "./fetch-json.js";
 import { originUrl } from "./origin.js";
+import { AWARDS, athleteBrief, buildAward, findFinals, normalizeLeaders, parseAwardRefs, type AwardRefs } from "./normalize/awards.js";
 import { normalizeAthlete, normalizeOverview, normalizeRoster, normalizeSearch, normalizeTeams } from "./normalize/athlete.js";
 import { normalizeGameList, normalizeScoreboard } from "./normalize/game.js";
 import { normalizeNews } from "./normalize/news.js";
 import { buildSeasonEvents, normalizeDraft, normalizeSeason, seasonMonths } from "./normalize/season.js";
 import { normalizeStandings } from "./normalize/standings.js";
 import { normalizeSummary } from "./normalize/summary.js";
-import type { Game, PlayerProfile } from "./types.js";
+import type { Award, AthleteBrief, AwardKey, FinalsResult, Game, PlayerProfile, SeasonAwards, TeamRef } from "./types.js";
 import { dateParam, idListParam, idParam, searchParam, teamIdParam, yearParam, type Query } from "./validate.js";
 
 /** Tempo de cache na CDN (s-maxage) e janela em que a CDN serve o antigo enquanto revalida (stale-while-revalidate). */
@@ -93,8 +94,91 @@ async function playerProfile(ctx: OpContext, id: string): Promise<PlayerProfile>
   return { athlete: expect(normalizeAthlete(athleteRaw)), stats: overviewRaw === null ? null : normalizeOverview(overviewRaw) };
 }
 
+/** Temporada corrente pelo ano em que termina: a partir de setembro, já vale a seguinte (2026-09 -> 2027). */
+export function currentSeason(now: Date): number {
+  const day = leagueDay(now);
+  const year = Number(day.slice(0, 4));
+  return Number(day.slice(4, 6)) >= 9 ? year + 1 : year;
+}
+
 const PLAYERS_CONCURRENCY = 6;
 const MONTHS_CONCURRENCY = 5;
+const AWARDS_CONCURRENCY = 6;
+
+/** Meses (YYYYMM) do fim dos playoffs e o anterior: a final costuma atravessar a virada de mês. */
+export function finalsMonths(playoffsEnd: string): string[] {
+  const end = new Date(playoffsEnd);
+  if (Number.isNaN(end.getTime())) return [];
+  const stamp = (date: Date) => `${date.getUTCFullYear()}${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+  return [stamp(new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth() - 1, 1))), stamp(end)];
+}
+
+/** Campeão da temporada pelo calendário dos playoffs. `failed` quando a origem não respondeu. */
+async function seasonFinals(ctx: OpContext, seasonRaw: unknown): Promise<FinalsResult | null | "failed"> {
+  const season = seasonRaw === null ? null : normalizeSeason(seasonRaw);
+  if (!season) return "failed";
+  const playoffs = season.phases.find((phase) => phase.slug === "playoffs");
+  if (!playoffs?.end || (playoffs.start && playoffs.start > ctx.now.toISOString())) return null;
+  const months = finalsMonths(playoffs.end);
+  const lists = await settleLimited(months, MONTHS_CONCURRENCY, async (month) =>
+    normalizeGameList(await fetchJson(ctx.fetch, originUrl.scoreboardMonth(month), ORIGIN_TIMEOUT_MS + 2_000)),
+  );
+  if (lists.some((list) => list === null)) return "failed";
+  return findFinals(lists.flat() as Game[]);
+}
+
+/**
+ * Prêmios individuais de uma temporada. A core devolve 404 para prêmio ainda não dado (fica de fora);
+ * qualquer outra falha, inclusive o vencedor que não se resolve, entra em `failed` e vira aviso de dado parcial.
+ */
+async function seasonAwards(ctx: OpContext, year: number): Promise<SeasonAwards> {
+  const [results, teamsRaw, seasonRaw] = await Promise.all([
+    settleLimited(
+      AWARDS.map((award) => award.id),
+      AWARDS_CONCURRENCY,
+      async (id): Promise<AwardRefs | "absent"> => {
+        try {
+          const refs = expect(parseAwardRefs(await fetchJson(ctx.fetch, originUrl.award(year, id))));
+          return refs.winners.length ? refs : "absent";
+        } catch (error) {
+          if (error instanceof OriginError && error.status === 404) return "absent";
+          throw error;
+        }
+      },
+    ),
+    fetchJson(ctx.fetch, originUrl.teams()).catch(() => null),
+    fetchJson(ctx.fetch, originUrl.season(year)).catch(() => null),
+  ]);
+
+  const athleteIds = [...new Set(results.flatMap((result) => (result && result !== "absent" ? result.winners.map((w) => w.athleteId) : [])))];
+  const [resolved, finals] = await Promise.all([
+    settleLimited(athleteIds, PLAYERS_CONCURRENCY, async (id) => expect(normalizeAthlete(await fetchJson(ctx.fetch, originUrl.athlete(id))))),
+    seasonFinals(ctx, seasonRaw),
+  ]);
+  const athletes = new Map<string, AthleteBrief>();
+  for (const athlete of resolved) if (athlete) athletes.set(athlete.id, athleteBrief(athlete));
+  const teams = new Map<string, TeamRef>(teamsRaw === null ? [] : normalizeTeams(teamsRaw).map((team) => [team.id, team]));
+
+  const awards: Award[] = [];
+  const failed: (AwardKey | "finals")[] = [];
+  AWARDS.forEach((def, index) => {
+    const result = results[index];
+    if (result === "absent") return;
+    const award = result ? buildAward(def, result, athletes, teams) : null;
+    if (award) awards.push(award);
+    else failed.push(def.key);
+  });
+  if (finals === "failed") failed.push("finals");
+
+  const season = seasonRaw === null ? null : normalizeSeason(seasonRaw);
+  return {
+    year,
+    label: season?.label ?? `${year - 1}-${String(year).slice(2)}`,
+    awards,
+    finals: finals === "failed" ? null : finals,
+    failed,
+  };
+}
 
 export const OPERATIONS: Record<string, Operation> = {
   scoreboard: {
@@ -214,6 +298,25 @@ export const OPERATIONS: Record<string, Operation> = {
         months: months.map((month, index) => ({ month, games: lists[index] as Game[] | null })),
       });
       return { body: events, cache: events.months.failed.length ? CACHE.partial : CACHE.events };
+    },
+  },
+  awards: {
+    params: ["year"],
+    async run(query, ctx) {
+      const year = yearParam(query, ctx.now);
+      const awards = await seasonAwards(ctx, year);
+      // Nada para mostrar e alguma parte falhou: é falha de origem, não temporada sem prêmios.
+      if (awards.awards.length === 0 && awards.finals === null && awards.failed.length > 0) throw new OriginError("status");
+      const cache = awards.failed.length ? CACHE.partial : year < currentSeason(ctx.now) ? CACHE.static : CACHE.profile;
+      return { body: awards, cache };
+    },
+  },
+  leaders: {
+    params: ["season"],
+    async run(query, ctx) {
+      const season = yearParam(query, ctx.now, "season");
+      const leaders = expect(normalizeLeaders(await fetchJson(ctx.fetch, originUrl.leaders(season), ORIGIN_TIMEOUT_MS + 2_000)));
+      return { body: leaders, cache: season < currentSeason(ctx.now) ? CACHE.static : CACHE.stats };
     },
   },
 };

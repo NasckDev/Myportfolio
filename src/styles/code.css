@@ -36,3 +36,12 @@ pre .c{color:#A3ACB8} pre .s{color:#A9E5A2} pre .k{color:#FF9D73} pre .n{color:#
 .code-win.changed pre,.code-win.changed .code-why{animation:up .55s var(--ease) .28s both}
 @keyframes win-in{from{transform:translateY(16px)}}
 @keyframes wipe-out{0%{transform:scaleX(1)}100%{transform:scaleX(0)}}
+/* ───────── Origem, numeração e quebra de linhas ───────── */
+.code-src{font:500 13px var(--mono)}
+.code-ln{color:var(--tile-muted)}
+.code-act{display:flex; flex-wrap:wrap; gap:6px; flex:none}
+.code-bar button[aria-pressed="true"]{background:var(--on-tile); color:var(--tile); border-color:var(--on-tile)}
+pre.numbered .cl{display:block; padding-left:3.4em; text-indent:-3.4em; min-height:1.7em}
+pre.numbered .cl::before{counter-increment:ln; content:counter(ln); content:counter(ln) / ""; display:inline-block; width:2.6em; margin-right:.8em; text-align:right; color:#8A939F; text-indent:0; -webkit-user-select:none; user-select:none}
+pre.wrap{white-space:pre-wrap; overflow-wrap:anywhere}
+@media (max-width:600px){ .code-bar{flex-wrap:wrap; padding:12px 14px} pre{font-size:12.5px; padding:16px 14px} }

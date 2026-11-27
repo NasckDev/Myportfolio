@@ -94,7 +94,7 @@ const PAGE_META: Record<PageId, Omit<PageMeta, "path">> = {
   },
   contato: {
     title: `Contato${SUFFIX}`,
-    description: "Disponível para posições sênior de engenharia de software, front-end ou full stack, remoto ou híbrido em São Paulo, Campinas e Jundiaí.",
+    description: "Aberto a avaliar novas oportunidades sênior de engenharia de software, front-end ou full stack, remoto ou híbrido em São Paulo, Campinas e Jundiaí.",
   },
 };
 

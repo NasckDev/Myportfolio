@@ -1,6 +1,6 @@
 import { APPLE_COUNTRIES, COLLECTIONS, COLLECTIONS_VERSION, findCollection, type AppleCountry, type CollectionDef } from "./collections.js";
 import { UpstreamError, type FetchLike, type UpstreamOptions } from "./http.js";
-import { appleChart, deezerPlaylist, deezerPreview, itunesPreview, spotifyName, unifiedSearch } from "./sources.js";
+import { appleChart, deezerPlaylist, deezerPlaylistSearch, deezerPreview, deezerShortLink, itunesPreview, spotifyName, unifiedSearch } from "./sources.js";
 import type { ApiError, CollectionDetail, CollectionSummary } from "./types.js";
 
 /** Formato mínimo de request/response da Vercel (Node) e do middleware do Vite. */
@@ -20,6 +20,7 @@ export interface CoverlistResponse {
 export const MAX_COLLECTION_TRACKS = 100;
 export const SEARCH_DEFAULT_LIMIT = 20;
 export const SEARCH_MAX_LIMIT = 25;
+export const PLAYLIST_SEARCH_DEFAULT_LIMIT = 12;
 export const QUERY_MIN = 2;
 export const QUERY_MAX = 80;
 const CHART_LIMITS = [10, 25, 50, 100] as const;
@@ -38,6 +39,8 @@ export const CACHE_POLICY = {
   track: { sMaxAge: 300, swr: 60 },
   lookup: { sMaxAge: 86_400, swr: 604_800 },
   spotify: { sMaxAge: 86_400, swr: 604_800 },
+  playlists: { sMaxAge: 1_800, swr: 3_600 },
+  shortlink: { sMaxAge: 86_400, swr: 604_800 },
   notFound: { sMaxAge: 300, swr: 0 },
 } as const;
 
@@ -52,6 +55,8 @@ const OPS = {
   track: ["id"],
   lookup: ["id", "country"],
   spotify: ["id"],
+  playlists: ["q", "limit"],
+  shortlink: ["code"],
 } as const satisfies Record<string, readonly string[]>;
 
 export type Op = keyof typeof OPS;
@@ -127,7 +132,16 @@ function summary(def: CollectionDef): CollectionSummary {
     def.source.kind === "apple-chart"
       ? { kind: "apple-chart" as const, country: def.source.country, label: `Apple Music · ${def.source.country.toUpperCase()}` }
       : { kind: "deezer-playlist" as const, playlistId: def.source.playlistId, label: `Deezer · ${def.source.owner}` };
-  return { id: def.id, title: def.title, description: def.description, group: def.group, theme: def.theme, source };
+  return {
+    id: def.id,
+    title: def.title,
+    description: def.description,
+    group: def.group,
+    theme: def.theme,
+    source,
+    ...(def.era ? { era: def.era } : {}),
+    ...(def.scope ? { scope: def.scope } : {}),
+  };
 }
 
 async function collectionDetail(def: CollectionDef, options: UpstreamOptions): Promise<CollectionDetail> {
@@ -167,6 +181,17 @@ async function run(op: Op, params: Map<string, string>, options: UpstreamOptions
       return { body: await deezerPreview(numericId(params.get("id")), options), policy: CACHE_POLICY.track };
     case "lookup":
       return { body: await itunesPreview(numericId(params.get("id")), country(params.get("country"), "br"), options), policy: CACHE_POLICY.lookup };
+    case "playlists": {
+      const q = (params.get("q") ?? "").replace(/\s+/g, " ").trim();
+      if (q.length < QUERY_MIN || q.length > QUERY_MAX) throw new BadRequest("invalid_query");
+      const limit = intIn(params.get("limit"), PLAYLIST_SEARCH_DEFAULT_LIMIT, 1, SEARCH_MAX_LIMIT);
+      return { body: await deezerPlaylistSearch(q, limit, options), policy: CACHE_POLICY.playlists };
+    }
+    case "shortlink": {
+      const code = params.get("code") ?? "";
+      if (!/^[A-Za-z0-9]{4,40}$/.test(code)) throw new BadRequest("invalid_code");
+      return { body: await deezerShortLink(code, options), policy: CACHE_POLICY.shortlink };
+    }
     case "spotify": {
       const id = params.get("id") ?? "";
       if (!/^[A-Za-z0-9]{22}$/.test(id)) throw new BadRequest("invalid_id");

@@ -1,0 +1,7 @@
+.pal-t{display:flex; flex-direction:column; gap:3px; min-width:0}
+.pal-why{overflow:hidden; font-size:13px; color:var(--muted); text-overflow:ellipsis; white-space:nowrap}
+.pal-i[aria-selected="true"] .pal-why{color:inherit; opacity:.78}
+#pal-list mark{background:transparent; color:inherit; font-weight:720; text-decoration:underline; text-decoration-color:var(--accent); text-decoration-thickness:2px; text-underline-offset:3px}
+.pal-sug{display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; margin-top:12px}
+.pal-sug .chip{min-height:44px; background:transparent; color:var(--ink); font-family:inherit; cursor:pointer}
+.pal-sug .chip:hover{border-color:var(--ink)}

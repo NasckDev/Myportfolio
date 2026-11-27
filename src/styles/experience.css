@@ -37,3 +37,19 @@
 .xp-body li::before{content:""; position:absolute; left:0; top:.62em; width:7px; height:7px; background:var(--ink); border-radius:calc(2px*var(--round))}
 .now{background:var(--accent); color:var(--on-accent); border-color:transparent}
 @media (max-width:860px){ .xp{grid-template-columns:1fr; padding-left:34px} }
+.xp-when .marks{margin-top:4px}
+.xp-more{justify-self:start; margin-top:2px}
+/* ───────── Detalhe da experiência ───────── */
+#job{width:min(760px,calc(100vw - 24px)); max-height:calc(100dvh - 24px); margin:auto; overscroll-behavior:contain}
+.jd{display:grid; gap:20px; padding:clamp(18px,3vw,32px)}
+.jd-head{display:grid; gap:6px}
+.jd-top{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:8px}
+.jd-head .h2{font-size:clamp(28px,3.4vw,42px)}
+.jd .lead{max-width:none; font-size:clamp(17px,1.45vw,20px)}
+.jd-sec{display:grid; gap:10px; padding-top:16px; border-top:1px solid var(--line)}
+.jd-sec h3{font-weight:700; font-size:15.5px; color:var(--muted)}
+.jd-sec ul{display:grid; gap:8px}
+.jd-sec li{position:relative; padding-left:18px}
+.jd-sec li::before{content:""; position:absolute; left:0; top:.62em; width:7px; height:7px; background:var(--accent); border-radius:calc(2px*var(--round))}
+.jd-foot{display:flex; flex-wrap:wrap; justify-content:flex-end; gap:10px; padding-top:16px; border-top:1px solid var(--line)}
+@media (max-width:520px){ .jd-foot{justify-content:stretch} .jd-foot > *{flex:1 1 100%; justify-content:center} }

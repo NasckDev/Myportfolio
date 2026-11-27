@@ -161,3 +161,12 @@
 @media (max-width:1319px) and (min-width:721px){ .hero-grid{grid-template-columns:1fr 1fr} .hero-side{grid-column:1/-1; grid-template-rows:none; grid-template-columns:1fr 1fr} }
 .portrait-clip img{translate:calc(var(--hx,0)*-10px) calc(var(--hy,0)*-6px); transition:translate .5s var(--ease)}
 .portrait-word span{translate:calc(var(--hx,0)*18px) calc(var(--hy,0)*10px); transition:translate .6s var(--ease)}
+/* ───────── Métricas medidas nos repositórios ───────── */
+.nums.metrics{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px 28px}
+.nums.metrics li{display:grid; gap:6px; align-content:start}
+.nums.metrics b{white-space:nowrap}
+.nums.metrics li > span{font-size:14.5px; line-height:1.4; color:var(--tile-muted)}
+.metrics-note{font-size:14.5px; color:var(--tile-muted)}
+.jobc .marks{margin-bottom:4px}
+.jobc.cur .mark{border-color:transparent}
+@media (max-width:380px){ .nums.metrics{grid-template-columns:1fr} }

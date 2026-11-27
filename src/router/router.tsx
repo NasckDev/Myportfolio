@@ -18,6 +18,8 @@ export interface NavState {
   skill?: string;
   /** Rolar até a lista de habilidades depois de abrir. */
   jump?: boolean;
+  /** Emprego a abrir em detalhe na página Experiência. */
+  job?: string;
 }
 
 interface HistoryEntry {

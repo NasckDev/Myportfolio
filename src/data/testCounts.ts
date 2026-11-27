@@ -18,8 +18,8 @@ export const TEST_COUNTS = {
   opsflow: { unit: 331, e2e: 108, stories: 129 },
   fiscotrack: { unit: 276, e2e: 15, stories: 118, engineUnit: 73, uiUnit: 203, wrappers: 45 },
   nasckui: { unit: 246, e2e: 25, stories: 246, components: 28, contract: 142 },
-  coverlist: { unit: 107, e2e: 21, stories: null },
-  garrafao: { unit: 116, e2e: 14, stories: null },
+  coverlist: { unit: 158, e2e: 29, stories: null },
+  garrafao: { unit: 146, e2e: 18, stories: null },
 } as const satisfies Record<string, TestCount & Record<string, number | string | null>>;
 
 export type CountedProjectId = keyof typeof TEST_COUNTS;

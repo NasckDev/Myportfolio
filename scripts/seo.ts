@@ -66,7 +66,7 @@ function pageHtml(route: Route): string {
     case "habilidades":
       return `<h1>Habilidades</h1>${SKILLS.map(([g, items]) => `<h2>${esc(g)}</h2><p>${esc(items.map(([s]) => s).join(", "))}</p>`).join("")}`;
     case "experiencia":
-      return `<h1>Experiência</h1>${JOBS.map((j) => `<h2>${esc(j.company)}</h2><p>${esc(j.when)} · ${esc(j.role)}</p>${list(j.items)}`).join("")}<h2>Formação e certificações</h2>${list(EDU.map(([x, y]) => `${x}: ${y}`))}`;
+      return `<h1>Experiência</h1>${JOBS.map((j) => `<h2>${esc(j.company)}</h2><p>${esc(j.when)} · ${esc(j.role)}</p><p>${esc(j.detail.context)}</p>${list(j.detail.did)}${j.detail.ai ? list(j.detail.ai) : ""}<p>${esc(j.detail.stack.join(", "))}</p>`).join("")}<h2>Formação e certificações</h2>${list(EDU.map(([x, y]) => `${x}: ${y}`))}`;
     case "contato":
       return `<h1>Contato</h1>${list(FACTS.map(([x, y]) => `${x}: ${y}`))}<p>${a(`mailto:${EMAIL}`, EMAIL)} · ${a(LINKS.linkedin, "LinkedIn")} · ${a(LINKS.github, "GitHub")}</p><h2>Modelos de trabalho</h2>${list(MODES)}`;
     default:

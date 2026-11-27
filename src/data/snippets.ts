@@ -25,6 +25,19 @@ export function splitProportional(total: Cents, weights: readonly number[]): Cen
 const OPSFLOW_CODE = `/** Ações que não podem ser executadas por quem criou a solicitação. */
 const SEGREGATED_ACTIONS: readonly WorkflowAction[] = ['return', 'approve', 'reject'];
 
+/** Enviar e reenviar é do dono da solicitação; o administrador pode agir em nome dele (regra explícita). */
+const OWNER_ACTIONS: readonly WorkflowAction[] = ['submit', 'resubmit'];
+
+function violatesOwnership(request: WorkflowRequest, action: WorkflowAction, actor: Actor): boolean {
+  return (
+    OWNER_ACTIONS.includes(action) && request.requester !== actor.name && actor.role !== 'admin'
+  );
+}
+
+function hasComment(comment: string | undefined): boolean {
+  return (comment?.trim().length ?? 0) > 0;
+}
+
 function violatesSegregation(
   request: WorkflowRequest,
   action: WorkflowAction,
@@ -90,24 +103,27 @@ export const SNIPPETS: readonly Snippet[] = [
     id: "juntos",
     repoName: "juntos",
     file: "packages/core/src/money.ts",
+    lines: [72, 92],
     title: "Divisão proporcional sem perda de centavos",
     why: "Dinheiro é inteiro, em centavos. Para dividir uma conta em partes proporcionais uso o método do maior resto: a soma das partes é sempre exatamente o total, sem centavo sobrando por arredondamento.",
-    url: "https://github.com/NasckDev/juntos/blob/HEAD/packages/core/src/money.ts",
+    url: "https://github.com/NasckDev/juntos/blob/HEAD/packages/core/src/money.ts#L72-L92",
     code: JUNTOS_CODE,
   },
   {
     id: "opsflow",
     repoName: "opsflow",
     file: "src/app/domain/workflow-machine.ts",
+    lines: [71, 107],
     title: "Regras de permissão em uma função pura",
     why: "As guardas de estado, papel, dono e segregação de funções ficam em uma função pura, fora dos componentes. A mesma regra decide o que a interface habilita e o que a API simulada recusa.",
-    url: "https://github.com/NasckDev/opsflow/blob/HEAD/src/app/domain/workflow-machine.ts",
+    url: "https://github.com/NasckDev/opsflow/blob/HEAD/src/app/domain/workflow-machine.ts#L71-L107",
     code: OPSFLOW_CODE,
   },
   {
     id: "fiscotrack",
     repoName: "fiscotrack",
     file: "packages/engine/src/rules/getRuleSet.ts",
+    lines: [1, 16],
     title: "Regra fiscal selecionada por vigência",
     why: "As regras são dados versionados por vigência. O motor pergunta qual conjunto valia na data da operação; quando a lei muda, entra uma versão nova e o cálculo continua o mesmo.",
     url: "https://github.com/NasckDev/fiscotrack/blob/HEAD/packages/engine/src/rules/getRuleSet.ts",
@@ -117,9 +133,10 @@ export const SNIPPETS: readonly Snippet[] = [
     id: "nasckui",
     repoName: "nasck-ui",
     file: "contract/contract.test.ts",
+    lines: [29, 48],
     title: "Teste de contrato entre React e Angular",
     why: "Para manter a mesma API nos dois frameworks, o teste abre os arquivos com o compilador do TypeScript, extrai as props de cada componente e falha se os pacotes divergirem do contrato.",
-    url: "https://github.com/NasckDev/nasck-ui/blob/HEAD/contract/contract.test.ts",
+    url: "https://github.com/NasckDev/nasck-ui/blob/HEAD/contract/contract.test.ts#L29-L48",
     code: NASCKUI_CODE,
   },
 ];

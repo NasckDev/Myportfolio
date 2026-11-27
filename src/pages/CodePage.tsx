@@ -22,6 +22,7 @@ export default function CodePage() {
   const { copy } = useUi();
   const [cur, setCur] = useState(remembered());
   const [changed, setChanged] = useState(0);
+  const [wrap, setWrap] = useState(false);
   const s = SNIPPETS.find((x) => x.id === cur) ?? SNIPPETS[0]!;
   const p = getProject(s.id)!;
   const idx = SNIPPETS.indexOf(s);
@@ -89,17 +90,28 @@ export default function CodePage() {
                 <span className="code-n">
                   Trecho {idx + 1} de {SNIPPETS.length}
                 </span>
-                {s.repoName}/{s.file}
+                <span className="code-src">
+                  {s.repoName}/{s.file}
+                  <span className="code-ln">
+                    {" "}
+                    · linhas {s.lines[0]} a {s.lines[1]}
+                  </span>
+                </span>
               </span>
-              <button type="button" onClick={() => copy(s.code, "Trecho copiado")}>
-                Copiar trecho
-              </button>
+              <span className="code-act">
+                <button type="button" aria-pressed={wrap} onClick={() => setWrap((v) => !v)}>
+                  Quebrar linhas
+                </button>
+                <button type="button" onClick={() => copy(s.code, "Trecho copiado")}>
+                  Copiar trecho
+                </button>
+              </span>
             </div>
-            <CodeBlock code={s.code} label={`Código: ${s.file}`} />
+            <CodeBlock code={s.code} start={s.lines[0]} wrap={wrap} label={`Código: ${s.repoName}/${s.file}, linhas ${s.lines[0]} a ${s.lines[1]}`} />
             <div className="code-why">
               <p>{s.why}</p>
               <p>
-                <ExtLink href={s.url}>Ver o arquivo completo no GitHub</ExtLink> ou <Link to={projectPath(p.id)}>ver o estudo de caso do {p.name}</Link>.
+                Trecho idêntico ao arquivo na branch principal. <ExtLink href={s.url}>Abrir estas linhas no GitHub</ExtLink> ou <Link to={projectPath(p.id)}>ver o estudo de caso do {p.name}</Link>.
               </p>
             </div>
           </div>

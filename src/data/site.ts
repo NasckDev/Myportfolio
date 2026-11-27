@@ -33,7 +33,7 @@ export const PORTRAIT = {
   photoAlt: "Alexandre Diogo de braços cruzados, com camisa social preta, diante de um fundo cinza",
 } as const;
 
-export const AVAILABILITY = "Disponível para posições sênior, front-end ou full stack";
+export const AVAILABILITY = "Aberto a avaliar novas oportunidades sênior, front-end ou full stack";
 
 export const MODES = [
   "100% remoto, para empresas de qualquer lugar do Brasil",

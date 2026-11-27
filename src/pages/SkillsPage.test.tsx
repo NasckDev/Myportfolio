@@ -23,6 +23,27 @@ describe("Habilidades", () => {
     expect(ev.jobs.map((j) => j.name)).toEqual(["MindMiners", "EY, projeto Vivo"]);
   });
 
+  it("grupos de IA e Ferramentas ligam cada habilidade ao trabalho e explicam onde foi aplicada", async () => {
+    const { user } = renderWithApp(<SkillsPage />);
+    for (const group of ["IA", "Ferramentas"]) expect(screen.getByRole("group", { name: group })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /^RAG com citações/ }));
+    const panel = screen.getByTestId("xpanel");
+    expect(within(panel).getByText(/cita cada fonte como \[#id\]/)).toBeInTheDocument();
+    expect(within(panel).getByRole("link", { name: /InsightHub/ })).toHaveAttribute("href", "/projeto/insighthub");
+
+    await user.click(screen.getByRole("button", { name: /^MCP \(Model Context Protocol\)/ }));
+    expect(within(screen.getByTestId("xpanel")).getByText(/Grafana e no Loki/)).toBeInTheDocument();
+    expect(skillEvidence("MCP (Model Context Protocol)").jobs.map((j) => j.job)).toEqual(["mindminers"]);
+  });
+
+  it("a prova ao vivo diz onde o padrão foi aplicado", () => {
+    renderWithApp(<SkillsPage />);
+    const ctx = screen.getByTestId("prova-contexto");
+    expect(within(ctx).getByRole("link", { name: "MindMiners" })).toHaveAttribute("href", "/experiencia");
+    expect(within(ctx).getByRole("link", { name: "InsightHub" })).toHaveAttribute("href", "/projeto/insighthub");
+  });
+
   it("cinco estados: alterna e o mesmo componente responde", async () => {
     const { user } = renderWithApp(<SkillsPage />);
     const mock = () => screen.getByTestId("mock");

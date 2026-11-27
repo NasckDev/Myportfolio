@@ -27,7 +27,7 @@ export class UpstreamError extends Error {
   }
 }
 
-export type FetchLike = (input: string, init?: { signal?: AbortSignal; headers?: Record<string, string> }) => Promise<{
+export type FetchLike = (input: string, init?: { signal?: AbortSignal; headers?: Record<string, string>; redirect?: "manual" }) => Promise<{
   ok: boolean;
   status: number;
   headers: { get(name: string): string | null };
@@ -87,6 +87,32 @@ export class TtlCache<T> {
 
   clear() {
     this.entries.clear();
+  }
+}
+
+/**
+ * Lê para onde uma URL montada pelo servidor redireciona, sem seguir o redirecionamento nem ler o corpo.
+ * Devolve o cabeçalho Location de uma resposta 3xx, ou null quando a origem não redireciona.
+ */
+export async function fetchRedirect(upstream: string, url: string, options: UpstreamOptions = {}): Promise<string | null> {
+  const doFetch = options.fetch ?? (globalThis.fetch as unknown as FetchLike);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), options.timeoutMs ?? UPSTREAM_TIMEOUT_MS);
+  try {
+    const response = await doFetch(url, { signal: controller.signal, redirect: "manual", headers: { Accept: "text/html" } });
+    if (response.status === 404) throw new UpstreamError(upstream, "not_found", "http 404");
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get("location");
+      return location && location.length <= 4096 ? location : null;
+    }
+    if (!response.ok) throw new UpstreamError(upstream, "http", `http ${response.status}`, response.status);
+    return null;
+  } catch (error) {
+    if (error instanceof UpstreamError) throw error;
+    if (controller.signal.aborted) throw new UpstreamError(upstream, "timeout", "aborted");
+    throw new UpstreamError(upstream, "http", error instanceof Error ? error.message : "network");
+  } finally {
+    clearTimeout(timer);
   }
 }
 
