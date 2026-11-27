@@ -283,7 +283,7 @@ export default function ContactPage() {
         <div className="view-head" style={{ paddingBottom: 0 }}>
           <h1 className="display">Contato</h1>
           <p className="lead muted">
-            Disponível para posições sênior de engenharia de software, front-end ou full stack. Abaixo estão as informações essenciais e os canais de contato.
+            Aberto a avaliar novas oportunidades sênior de engenharia de software, front-end ou full stack. Abaixo estão as informações essenciais e os canais de contato.
           </p>
         </div>
         <dl className="facts" data-sec="Resumo">

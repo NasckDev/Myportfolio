@@ -104,7 +104,7 @@ export function SideNav() {
           ))}
         </nav>
         <div className="side-foot">
-          <span className="avail">Disponível para vagas sênior</span>
+          <span className="avail">Aberto a novas oportunidades</span>
           <div className="side-links">
             <ExtLink href={LINKS.github}>GitHub</ExtLink>
             <ExtLink href={LINKS.linkedin}>LinkedIn</ExtLink>
